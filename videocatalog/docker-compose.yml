@@ -10,6 +10,6 @@ services:
       # Código fuente — editable en vivo desde Code Server
       - .:/app
       # Datos persistentes (BD, modelos ML)
-      - ./data:/app/data
+      - ${DATA_PATH-./data}:/app/data
       # Vídeos — solo lectura, nunca se modifican
       - ${VIDEOS_PATH:-/videos}:/videos:ro
