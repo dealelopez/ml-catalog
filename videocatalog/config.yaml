@@ -1,0 +1,34 @@
+scan:
+  folders:
+    - /videos
+  extensions: [mp4, mkv, avi, mov, webm, m4v, ts, wmv]
+  ignore_folders: [.trash, temp, .tmp, "@eaDir"]
+
+classification:
+  confidence_threshold: 0.2
+
+categories:
+  Python:
+    keywords: [python, py, pandas, numpy, django, flask, fastapi, asyncio, pydantic]
+  Docker:
+    keywords: [docker, container, contenedor, compose, dockerfile, kubernetes, k8s, podman]
+  Linux:
+    keywords: [linux, bash, shell, terminal, ubuntu, debian, sysadmin, cli, zsh, grep, awk, sed]
+  IA_ML:
+    keywords: [machine learning, ml, inteligencia artificial, ia, ai, neural, llm, gpt, deeplearning, scikit, tensorflow, pytorch]
+  Web:
+    keywords: [javascript, js, react, vue, astro, css, html, node, typescript, ts, frontend, backend, nextjs, svelte]
+  Bases_datos:
+    keywords: [sql, database, db, bases de datos, mongodb, postgres, mysql, sqlite, redis, elasticsearch]
+  Redes:
+    keywords: [redes, network, networking, tcp, ip, dns, http, vpn, firewall, wireshark, proxy]
+  Seguridad:
+    keywords: [seguridad, security, hacking, pentest, ciberseguridad, ctf, exploit, vulnerabilidad, owasp]
+  Sistemas:
+    keywords: [sistemas, devops, cloud, aws, azure, gcp, infrastructure, servidor, nginx, apache, ansible]
+  Electronica:
+    keywords: [electronica, arduino, raspberry, esp32, iot, circuito, hardware, micropython, gpio]
+  Productividad:
+    keywords: [productividad, git, vim, neovim, obsidian, notion, workflow, tmux, makefile]
+  Otros:
+    keywords: []
