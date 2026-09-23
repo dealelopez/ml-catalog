@@ -6,6 +6,10 @@ services:
     tty: true
     working_dir: /app
     restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     volumes:
       # Código fuente — editable en vivo desde Code Server
       - .:/app
