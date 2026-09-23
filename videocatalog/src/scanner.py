@@ -1,27 +1,38 @@
 """
-scanner.py — Recorre las carpetas de vídeos y construye el inventario.
+scanner.py — Orquestador del pipeline completo de escaneo.
 
-Responsabilidad única: encontrar ficheros de vídeo en disco y devolver
-un dict con rutas y metadatos mínimos (tamaño, mtime). No interpreta
-contenido ni clasifica.
+Flujo por fichero:
+  find_video_files → metadata.extract → normalizer.normalize
+                  → rules.classify → db.upsert_video
 
-Diseño:
-- find_video_files() es un generador: empieza a procesar antes de
-  terminar de recorrer el disco, eficiente con colecciones grandes.
-- Usa os.walk(topdown=True) para podar carpetas ignoradas sin entrar en ellas.
-- La detección de cambios futura se basará en modified_at y size_bytes,
-  dos valores que el sistema de ficheros provee sin coste extra.
+La función scan() conecta todos los módulos anteriores en un único
+comando funcional. Cada módulo hace una transformación independiente:
+toma los datos del anterior y pasa el resultado al siguiente.
+Ningún módulo sabe nada de los demás — esta separación es lo que
+permite sustituir el clasificador de reglas por el modelo ML en
+Task 13 sin tocar el pipeline.
+
+Optimización de reescaneos: si size_bytes y modified_at no cambiaron,
+se salta ffprobe y se actualiza solo last_seen. Comparar dos enteros
+del sistema de ficheros tarda microsegundos; llamar a ffprobe sobre
+500 GB de vídeos puede tardar horas.
 """
 
 import argparse
 import os
 import time
-from datetime import datetime
+import traceback
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterator
 
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+
+from src import db as _db
+from src import metadata as _metadata
+from src import normalizer as _normalizer
+from src import rules as _rules
 
 console = Console()
 
@@ -31,68 +42,226 @@ console = Console()
 # ---------------------------------------------------------------------------
 
 def scan(config: dict, dry_run: bool = False) -> dict:
-    """Recorre todas las carpetas configuradas y devuelve un resumen.
+    """Orquesta el pipeline completo: escanea, normaliza, clasifica y persiste.
+
+    Pipeline por fichero:
+        find_video_files → metadata.extract → normalizer.normalize
+                        → rules.classify → db.upsert_video
+
+    Optimización: si size_bytes y modified_at coinciden con la BD,
+    se salta ffprobe y se actualiza solo last_seen (reescaneos muy rápidos).
+
+    Manejo de Ctrl+C: ejecuta mark_missing con los paths procesados hasta
+    ese momento y muestra el resumen parcial.
 
     Args:
-        config: Dict validado por src.config.load().
-        dry_run: Si True, imprime ficheros en terminal; no escribe en BD.
+        config: Dict validado por src.config.load(). Clave opcional
+                ``db_path`` (defecto: ``"data/catalog.db"``).
+        dry_run: Si True, muestra resultados en terminal sin escribir en BD.
 
     Returns:
-        Dict con claves: found, errors, skipped, elapsed_s.
+        Dict con claves: found, inserted, updated, unchanged, missing,
+        errors, elapsed_s.
     """
     folders = config["scan"]["folders"]
     extensions = set(config["scan"]["extensions"])
     ignore_folders = config["scan"].get("ignore_folders", [])
 
     found = 0
+    inserted = 0
+    updated = 0
+    unchanged = 0
+    missing_count = 0
     errors = 0
     t0 = time.monotonic()
+    scanned_paths: set = set()
 
+    # -----------------------------------------------------------------------
+    # Dry-run: mostrar, no escribir
+    # -----------------------------------------------------------------------
     if dry_run:
-        console.print(f"\nEscaneando [bold]{len(folders)}[/bold] carpeta(s)...\n")
+        console.print(
+            f"\n[bold][dry-run][/bold] Escaneando {len(folders)} carpeta(s)...\n"
+        )
+
+        for filepath in find_video_files(folders, extensions, ignore_folders):
+            found += 1
+            try:
+                meta = _metadata.extract(filepath)
+                norm = _normalizer.normalize(filepath.name)
+                classif = _rules.classify(norm["clean_title"], str(filepath), config)
+                size_str = format_size(meta.get("size_bytes") or 0)
+                cat = classif["category"]
+                score = classif["score"]
+                icon = "✓" if cat != "Otros" else "?"
+                console.print(
+                    f"  {icon}  {filepath.name:<55}  {size_str:>8}   {cat} ({score:.2f})"
+                )
+            except Exception:
+                errors += 1
+
+        elapsed = time.monotonic() - t0
+        console.print(
+            f"\n  Encontrados: {found}  |  Errores: {errors}  |  Tiempo: {elapsed:.1f}s"
+        )
+        console.print("  [dim][dry-run] Nada escrito en la base de datos.[/dim]")
+
+        return {
+            "found": found,
+            "inserted": 0,
+            "updated": 0,
+            "unchanged": 0,
+            "missing": 0,
+            "errors": errors,
+            "elapsed_s": elapsed,
+        }
+
+    # -----------------------------------------------------------------------
+    # Modo real — con BD
+    # -----------------------------------------------------------------------
+    db_path = config.get("db_path", "data/catalog.db")
+    log_path = Path(db_path).parent / "scan_errors.log"
+
+    conn = _db.init_db(db_path)
+
+    # Snapshot {path: {size_bytes, modified_at}} para la optimización de reescaneo
+    existing: dict = {
+        r["path"]: {"size_bytes": r["size_bytes"], "modified_at": r["modified_at"]}
+        for r in conn.execute(
+            "SELECT path, size_bytes, modified_at FROM videos WHERE status = 'active'"
+        ).fetchall()
+    }
 
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         TimeElapsedColumn(),
         console=console,
-        transient=True,         # desaparece al terminar
-        disable=dry_run,        # en dry-run mostramos las líneas directamente
+        transient=True,
     ) as progress:
-        task_id = progress.add_task("Buscando vídeos...", total=None)
+        task_id = progress.add_task("Escaneando...", total=None)
 
-        for filepath in find_video_files(folders, extensions, ignore_folders):
-            try:
-                stat = filepath.stat()
-                size = stat.st_size
-                mtime = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d")
-
+        try:
+            for filepath in find_video_files(folders, extensions, ignore_folders):
                 found += 1
-                progress.update(task_id, description=f"Encontrados: {found}")
+                name = filepath.name
+                short = name[:45] + "…" if len(name) > 45 else name
+                progress.update(task_id, description=f"[{found}] {short}")
+                path_str = str(filepath)
 
-                if dry_run:
-                    size_str = format_size(size)
-                    console.print(
-                        f"  {str(filepath):<60}  {size_str:>10}   {mtime}"
+                try:
+                    # ----------------------------------------------------------
+                    # Optimización: si tamaño y mtime no cambiaron, saltar ffprobe
+                    # ----------------------------------------------------------
+                    stat = filepath.stat()
+                    stat_size = stat.st_size
+                    stat_mtime = datetime.fromtimestamp(stat.st_mtime).isoformat(
+                        timespec="seconds"
                     )
 
-            except (PermissionError, OSError):
-                errors += 1
+                    if (
+                        path_str in existing
+                        and existing[path_str]["size_bytes"] == stat_size
+                        and existing[path_str]["modified_at"] == stat_mtime
+                    ):
+                        now = datetime.now(timezone.utc).isoformat()
+                        conn.execute(
+                            "UPDATE videos SET last_seen = ?, status = 'active'"
+                            " WHERE path = ?",
+                            (now, path_str),
+                        )
+                        conn.commit()
+                        unchanged += 1
+                        scanned_paths.add(path_str)
+                        continue
+
+                    # ----------------------------------------------------------
+                    # Pipeline completo para ficheros nuevos o modificados
+                    # ----------------------------------------------------------
+                    meta = _metadata.extract(filepath)
+                    norm = _normalizer.normalize(filepath.name)
+                    classif = _rules.classify(norm["clean_title"], path_str, config)
+
+                    data = {
+                        "path": path_str,
+                        "filename": filepath.name,
+                        "extension": filepath.suffix.lstrip(".").lower(),
+                        **meta,
+                        "channel": norm["channel"],
+                        "yt_id": norm["yt_id"],
+                        "clean_title": norm["clean_title"],
+                        "category": classif["category"],
+                        "subcategory": None,
+                        "rule_score": classif["score"],
+                        "label": None,
+                        "label_source": None,
+                    }
+
+                    result = _db.upsert_video(conn, data)
+                    scanned_paths.add(path_str)
+
+                    if result == "inserted":
+                        inserted += 1
+                    elif result == "updated":
+                        updated += 1
+                    else:
+                        unchanged += 1
+
+                except Exception:
+                    errors += 1
+                    _log_error(log_path, path_str, traceback.format_exc())
+
+        except KeyboardInterrupt:
+            console.print(
+                "\n[yellow]Interrupción detectada: cerrando limpiamente…[/yellow]"
+            )
+
+    # Marcar como 'missing' los activos que no aparecieron en este escaneo
+    missing_count = _db.mark_missing(conn, scanned_paths)
 
     elapsed = time.monotonic() - t0
 
-    console.print("\n[bold]Resumen:[/bold]")
-    console.print(f"  Encontrados : {found}")
-    console.print(f"  Errores     : {errors}")
-    console.print(f"  Tiempo      : {elapsed:.1f}s")
+    console.print("\n[bold]Resumen del escaneo:[/bold]")
+    console.print(f"  Encontrados  : {found}")
+    console.print(f"  Nuevos       : {inserted}")
+    console.print(f"  Actualizados : {updated}")
+    console.print(f"  Sin cambios  : {unchanged}")
+    console.print(f"  Desaparecidos: {missing_count}")
+    console.print(f"  Errores      : {errors}")
+    console.print(f"  Tiempo       : {elapsed:.1f}s")
+    if errors:
+        console.print(f"\n  [dim]Log de errores: {log_path}[/dim]")
 
     return {
         "found": found,
+        "inserted": inserted,
+        "updated": updated,
+        "unchanged": unchanged,
+        "missing": missing_count,
         "errors": errors,
-        "skipped": 0,    # reservado para Task 08 (filtros adicionales)
         "elapsed_s": elapsed,
     }
 
+
+def _log_error(log_path: Path, filepath: str, tb: str) -> None:
+    """Registra un error en scan_errors.log con timestamp y traceback completo.
+
+    Falla silenciosamente: el log nunca debe interrumpir el proceso principal.
+    """
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        ts = datetime.now().isoformat(timespec="seconds")
+        with log_path.open("a", encoding="utf-8") as fh:
+            fh.write(f"\n[{ts}] ERROR procesando: {filepath}\n")
+            fh.write(tb)
+            fh.write("\n")
+    except Exception:
+        pass
+
+
+# ---------------------------------------------------------------------------
+# Funciones de soporte (sin cambios respecto a la versión anterior)
+# ---------------------------------------------------------------------------
 
 def find_video_files(
     folders: list,
@@ -159,7 +328,7 @@ def format_size(size_bytes: int) -> str:
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Escanea carpetas de vídeo y muestra un inventario."
+        description="Escanea carpetas de vídeo y construye el catálogo."
     )
     parser.add_argument(
         "--dry-run",
@@ -176,9 +345,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 if __name__ == "__main__":
-    from src.config import load  # import local para no cargar en tests unitarios
+    from src.config import load
 
     args = _build_parser().parse_args()
-
     cfg = load(args.config) if args.config else load()
     scan(cfg, dry_run=args.dry_run)

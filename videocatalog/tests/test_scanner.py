@@ -2,6 +2,11 @@
 test_scanner.py — Tests para src/scanner.py.
 """
 
+import sqlite3
+from pathlib import Path
+
+import pytest
+
 from src.scanner import find_video_files, format_size, scan
 
 
@@ -135,3 +140,79 @@ def test_scan_dry_run_no_escribe(tmp_path):
     scan(config, dry_run=True)
     archivos_despues = set(tmp_path.iterdir())
     assert archivos_antes == archivos_despues
+
+
+
+# ---------------------------------------------------------------------------
+# Fixtures para tests de integración del pipeline
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def video_folder(tmp_path):
+    """Carpeta temporal con dos ficheros de vídeo ficticios."""
+    folder = tmp_path / "videos"
+    folder.mkdir()
+    (folder / "midudev - Curso Python [abc123].webm").touch()
+    (folder / "midudev - Workshop JSConf [def456].webm").touch()
+    return folder
+
+
+@pytest.fixture
+def config_test(video_folder, tmp_path):
+    """Config mínima para tests de integración con BD aislada en tmp_path."""
+    return {
+        "scan": {
+            "folders": [str(video_folder)],
+            "extensions": ["webm"],
+            "ignore_folders": [],
+        },
+        "db_path": str(tmp_path / "catalog.db"),
+        "categories": {
+            "Python": {"keywords": ["python", "py", "pandas", "numpy"]},
+            "Web": {"keywords": ["javascript", "js", "react", "jsconf"]},
+            "Otros": {"keywords": []},
+        },
+        "classification": {"confidence_threshold": 0.2},
+    }
+
+
+# ---------------------------------------------------------------------------
+# Tests de integración del pipeline
+# ---------------------------------------------------------------------------
+
+def test_pipeline_inserta_videos(config_test, tmp_path):
+    result = scan(config_test, dry_run=False)
+    assert result["found"] == 2
+    assert result["inserted"] == 2
+    assert result["errors"] == 0
+
+
+def test_pipeline_no_duplica_en_segundo_scan(config_test, tmp_path):
+    scan(config_test, dry_run=False)
+    result2 = scan(config_test, dry_run=False)
+    assert result2["inserted"] == 0
+    assert result2["unchanged"] == 2
+
+
+def test_pipeline_detecta_fichero_eliminado(config_test, video_folder, tmp_path):
+    scan(config_test, dry_run=False)
+    (video_folder / "midudev - Curso Python [abc123].webm").unlink()
+    result2 = scan(config_test, dry_run=False)
+    assert result2["missing"] == 1
+
+
+def test_pipeline_clasifica_python(config_test, tmp_path):
+    scan(config_test, dry_run=False)
+    conn = sqlite3.connect(str(tmp_path / "catalog.db"))
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT category FROM videos WHERE filename LIKE '%Python%'"
+    ).fetchone()
+    assert row["category"] == "Python"
+
+
+def test_dry_run_no_escribe(config_test, tmp_path):
+    db_path = str(tmp_path / "catalog.db")
+    config_test["db_path"] = db_path
+    scan(config_test, dry_run=True)
+    assert not Path(db_path).exists()
