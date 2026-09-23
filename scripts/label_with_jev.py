@@ -30,13 +30,6 @@ import requests
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 
-API_KEY = os.environ.get("AI_GATEWAY_API_KEY")
-if not API_KEY:
-    raise EnvironmentError(
-        "Falta la variable de entorno AI_GATEWAY_API_KEY.\n"
-        "Obtén una API key en https://vercel.com/dashboard → AI Gateway."
-    )
-
 DB_PATH = os.environ.get("DB_PATH", "data/catalog.db")
 JEV_ENDPOINT = "https://ai-gateway.vercel.sh/v1/evaluate"
 
@@ -63,7 +56,7 @@ CATEGORIES = [
 
 # ── Lógica principal ───────────────────────────────────────────────────────────
 
-def classify_with_jev(clean_title: str, channel: str, path: str) -> dict:
+def classify_with_jev(clean_title: str, channel: str, path: str, api_key: str) -> dict:
     """
     Envía un vídeo a Jev y devuelve la categoría predicha y la probabilidad
     de ambigüedad.
@@ -105,7 +98,7 @@ def classify_with_jev(clean_title: str, channel: str, path: str) -> dict:
     resp = requests.post(
         JEV_ENDPOINT,
         headers={
-            "Authorization": f"Bearer {API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
         json=payload,
@@ -121,6 +114,16 @@ def classify_with_jev(clean_title: str, channel: str, path: str) -> dict:
 
 
 def run():
+    # Comprobar clave antes de tocar la BD
+    api_key = os.environ.get("AI_GATEWAY_API_KEY")
+    if not api_key:
+        print(
+            "⚠️  AI_GATEWAY_API_KEY no está definida — etiquetado con Jev desactivado.\n"
+            "   Añade la clave a .env y a docker-compose.yml para activarlo.\n"
+            "   Obtén una API key en: https://vercel.com/dashboard → AI Gateway"
+        )
+        return
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
@@ -152,6 +155,7 @@ def run():
                 clean_title=row["clean_title"] or "",
                 channel=row["channel"] or "",
                 path=row["path"] or "",
+                api_key=api_key,
             )
 
             is_uncertain = result["ambiguous_prob"] >= AMBIGUITY_THRESHOLD

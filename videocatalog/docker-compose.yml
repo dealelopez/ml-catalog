@@ -22,3 +22,5 @@ services:
       - ${DATA_PATH-./data}:/app/data
       # Vídeos — solo lectura, nunca se modifican
       - ${VIDEOS_PATH:-/videos}:/videos:ro
+      # Scripts del proyecto (check_db.py, label_with_jev.py, etc.)
+      - ../scripts:/app/scripts:ro
