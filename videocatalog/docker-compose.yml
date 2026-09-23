@@ -10,6 +10,11 @@ services:
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
+      # Jev / Vercel AI Gateway — opcional; si no está definida, label_with_jev.py
+      # avisa y sale sin tocar la BD.
+      - AI_GATEWAY_API_KEY=${AI_GATEWAY_API_KEY:-}
+      # Ruta interna a la BD (por defecto data/catalog.db relativo a /app)
+      - DB_PATH=${DB_PATH:-data/catalog.db}
     volumes:
       # Código fuente — editable en vivo desde Code Server
       - .:/app

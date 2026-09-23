@@ -199,15 +199,17 @@ def interactive_label(conn, config: dict) -> None:
 
 
 def review_low_confidence(conn, config: dict, threshold: float = 0.3) -> None:
-    """Sesión de revisión centrada en vídeos con baja confianza de reglas.
+    """Sesión de revisión centrada en vídeos con baja confianza de reglas
+    o marcados como inciertos por Jev (label_source = 'jev_uncertain').
 
-    Muestra solo los vídeos con rule_score < threshold, ordenados de
-    menor a mayor score (los más inciertos primero).
+    Orden de prioridad:
+      1. jev_uncertain (Jev los pidió explícitamente)
+      2. rule_score bajo (los más inciertos primero)
 
     Args:
         conn: Conexión SQLite activa.
         config: Dict validado por src.config.load().
-        threshold: Score máximo para incluir un vídeo en la revisión.
+        threshold: Score máximo de reglas para incluir un vídeo en la revisión.
     """
     categories = _get_categories(config)
 
@@ -216,15 +218,28 @@ def review_low_confidence(conn, config: dict, threshold: float = 0.3) -> None:
                label, label_source
         FROM videos
         WHERE status = 'active'
-          AND (rule_score IS NULL OR rule_score < ?)
-        ORDER BY rule_score ASC NULLS FIRST
+          AND (
+            label_source = 'jev_uncertain'
+            OR rule_score IS NULL
+            OR rule_score < ?
+          )
+        ORDER BY
+          CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END,
+          rule_score ASC NULLS FIRST
     """, (threshold,)).fetchall()
 
     if not rows:
-        print(f"  No hay vídeos activos con score < {threshold}.")
+        print(f"  No hay vídeos con score < {threshold} ni marcados como jev_uncertain.")
         return
 
-    print(f"\n  {len(rows)} vídeos con score < {threshold} para revisar.")
+    jev_count = sum(1 for r in rows if r["label_source"] == "jev_uncertain")
+    low_count = len(rows) - jev_count
+    parts = []
+    if jev_count:
+        parts.append(f"{jev_count} jev_uncertain")
+    if low_count:
+        parts.append(f"{low_count} con score < {threshold}")
+    print(f"\n  {len(rows)} vídeos para revisar ({', '.join(parts)}).")
     labeled = _run_label_loop(conn, rows, categories)
     print(f"\n  Sesión terminada. {labeled} vídeo(s) etiquetado(s) en esta sesión.")
 
@@ -239,16 +254,19 @@ def stats(conn) -> dict:
         "SELECT COUNT(*) FROM videos WHERE status = 'active'"
     ).fetchone()[0]
 
-    # Conteo por label_source
-    by_source = {}
-    for source in ["rule", "manual", "model", "model+reviewed"]:
-        count = conn.execute(
-            "SELECT COUNT(*) FROM videos WHERE status = 'active' AND label_source = ?",
-            (source,),
-        ).fetchone()[0]
-        by_source[source] = count
+    # Conteo por label_source — dinámico, incluye jev_reviewed / jev_uncertain
+    src_rows = conn.execute("""
+        SELECT COALESCE(label_source, '(sin label_source)') AS src,
+               COUNT(*) AS n
+        FROM videos
+        WHERE status = 'active'
+        GROUP BY src
+        ORDER BY n DESC
+    """).fetchall()
+    by_source = {r["src"]: r["n"] for r in src_rows}
 
-    # pct_reviewed = % con label_source distinto de 'rule' (confirmados por humano o modelo)
+    # pct_reviewed = % con label_source que NO es 'rule' ni NULL
+    # (incluye manual, model, model+reviewed, jev_reviewed, jev_uncertain)
     not_rule = conn.execute(
         "SELECT COUNT(*) FROM videos "
         "WHERE status = 'active' AND label_source IS NOT NULL AND label_source != 'rule'",
@@ -279,10 +297,7 @@ def stats(conn) -> dict:
     print("  Por fuente (label_source):")
     for source, count in by_source.items():
         bar = "█" * min(count, 40)
-        print(f"    {source:<20s} {count:>5}  {bar}")
-    null_count = total - sum(by_source.values())
-    if null_count:
-        print(f"    {'(sin label_source)':<20s} {null_count:>5}")
+        print(f"    {source:<25s} {count:>5}  {bar}")
     print()
     print("  Por categoría (label o category):")
     for cat, count in by_category.items():

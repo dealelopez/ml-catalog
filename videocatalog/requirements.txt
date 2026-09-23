@@ -6,3 +6,4 @@ pandas==2.2.2
 scikit-learn==1.5.1
 notebook==7.2.1
 ipykernel==6.29.5
+requests==2.32.3
