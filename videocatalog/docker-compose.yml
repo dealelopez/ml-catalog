@@ -1,0 +1,15 @@
+services:
+  videocatalog:
+    build: .
+    container_name: videocatalog
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      # Código fuente — editable en vivo desde Code Server
+      - .:/app
+      # Datos persistentes (BD, modelos ML)
+      - ./data:/app/data
+      # Vídeos — solo lectura, nunca se modifican
+      - ${VIDEOS_PATH:-/videos}:/videos:ro
