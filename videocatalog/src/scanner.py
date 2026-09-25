@@ -32,6 +32,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from src import db as _db
 from src import metadata as _metadata
 from src import normalizer as _normalizer
+from src import path_context as _path_context
 from src import rules as _rules
 
 console = Console()
@@ -89,7 +90,10 @@ def scan(config: dict, dry_run: bool = False) -> dict:
             try:
                 meta = _metadata.extract(filepath)
                 norm = _normalizer.normalize(filepath.name)
-                classif = _rules.classify(norm["clean_title"], str(filepath), config)
+                ctx = _path_context.summarize(str(filepath))
+                classif = _rules.classify(
+                    norm["clean_title"], str(filepath), config, context=ctx
+                )
                 size_str = format_size(meta.get("size_bytes") or 0)
                 cat = classif["category"]
                 score = classif["score"]
@@ -119,7 +123,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
     # -----------------------------------------------------------------------
     # Modo real — con BD
     # -----------------------------------------------------------------------
-    db_path = config.get("db_path", "data/catalog.db")
+    db_path = config.get("db_path", os.getenv("DB_PATH", "data/catalog.db"))
     log_path = Path(db_path).parent / "scan_errors.log"
 
     conn = _db.init_db(db_path)
@@ -180,7 +184,10 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                     # ----------------------------------------------------------
                     meta = _metadata.extract(filepath)
                     norm = _normalizer.normalize(filepath.name)
-                    classif = _rules.classify(norm["clean_title"], path_str, config)
+                    ctx = _path_context.summarize(path_str)
+                    classif = _rules.classify(
+                        norm["clean_title"], path_str, config, context=ctx
+                    )
 
                     data = {
                         "path": path_str,
@@ -190,6 +197,9 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                         "channel": norm["channel"],
                         "yt_id": norm["yt_id"],
                         "clean_title": norm["clean_title"],
+                        "platform": ctx["platform"],
+                        "course": ctx["course"],
+                        "teacher": ctx["teacher"],
                         "category": classif["category"],
                         "subcategory": None,
                         "rule_score": classif["score"],

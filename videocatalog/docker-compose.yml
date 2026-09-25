@@ -13,13 +13,13 @@ services:
       # Jev / Vercel AI Gateway — opcional; si no está definida, label_with_jev.py
       # avisa y sale sin tocar la BD.
       - AI_GATEWAY_API_KEY=${AI_GATEWAY_API_KEY:-}
-      # Ruta interna a la BD (por defecto data/catalog.db relativo a /app)
+      # Ruta interna a la BD (relativa a /app; debe coincidir con el montaje /app/data)
       - DB_PATH=${DB_PATH:-data/catalog.db}
     volumes:
       # Código fuente — editable en vivo desde Code Server
       - .:/app
       # Datos persistentes (BD, modelos ML)
-      - ${DATA_PATH-./data}:/app/data
+      - ${DATA_PATH:-./data}:/app/data
       # Vídeos — solo lectura, nunca se modifican
       - ${VIDEOS_PATH:-/videos}:/videos:ro
       # Scripts del proyecto (check_db.py, label_with_jev.py, etc.)

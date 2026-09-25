@@ -14,13 +14,14 @@ import os
 import sqlite3
 from datetime import datetime, timezone
 
-# Campos que provienen del exterior (scanner, normalizer, rules).
+# Campos que provienen del exterior (scanner, normalizer, rules, path_context).
 # No incluye los campos de control (first_seen, last_seen, status)
 # ni el id autogenerado.
 _VIDEO_FIELDS = [
     "path", "filename", "extension", "size_bytes", "modified_at",
     "duration_s", "width", "height", "codec",
     "channel", "yt_id", "clean_title",
+    "platform", "course", "teacher",
     "category", "subcategory", "rule_score",
     "label", "label_source",
 ]
@@ -40,6 +41,9 @@ CREATE TABLE IF NOT EXISTS videos (
     channel       TEXT,
     yt_id         TEXT,
     clean_title   TEXT,
+    platform      TEXT,
+    course        TEXT,
+    teacher       TEXT,
     category      TEXT,
     subcategory   TEXT,
     rule_score    REAL,
@@ -84,6 +88,42 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+# Columnas añadidas por migraciones (Task 17: contexto de ruta).
+_MIGRATION_COLUMNS = [
+    ("platform", "TEXT"),
+    ("course", "TEXT"),
+    ("teacher", "TEXT"),
+]
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Aplica migraciones de esquema idempotentes + backfill.
+
+    - Crea las columnas que falten (BDs creadas antes de la Task 17).
+    - Rellena platform/course/teacher desde la ruta donde sean NULL.
+      Nunca toca label/label_source/category/rule_score.
+    """
+    existing = {r["name"] for r in conn.execute("PRAGMA table_info(videos)")}
+    for col, ctype in _MIGRATION_COLUMNS:
+        if col not in existing:
+            conn.execute(f"ALTER TABLE videos ADD COLUMN {col} {ctype}")
+    conn.commit()
+
+    from src.path_context import summarize  # noqa: PLC0415 (evita ciclo)
+
+    rows = conn.execute(
+        "SELECT id, path FROM videos WHERE platform IS NULL"
+    ).fetchall()
+    for r in rows:
+        ctx = summarize(r["path"])
+        conn.execute(
+            "UPDATE videos SET platform = ?, course = ?, teacher = ? WHERE id = ?",
+            (ctx["platform"], ctx["course"], ctx["teacher"], r["id"]),
+        )
+    if rows:
+        conn.commit()
+
+
 def init_db(db_path: str) -> sqlite3.Connection:
     """Crea la BD, el esquema FTS5 y los triggers si no existen. Idempotente.
 
@@ -101,6 +141,7 @@ def init_db(db_path: str) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(_SCHEMA)
+    _migrate(conn)
     return conn
 
 
@@ -111,6 +152,11 @@ def upsert_video(conn: sqlite3.Connection, data: dict) -> str:
       - No existe → INSERT con first_seen=now, last_seen=now, status='active'
       - Existe y cambió (size_bytes o modified_at) → UPDATE todos los campos
       - Existe sin cambios → solo actualiza last_seen y status
+
+    Excepción importante: `label` / `label_source` nunca se borran.
+    El scanner trae None (no etiquetó); solo se actualizan si el dato
+    entrante trae un valor no nulo. Así un rescan no destruye el
+    etiquetado manual, de Jev o del modelo.
 
     Args:
         conn: Conexión activa.
@@ -142,8 +188,19 @@ def upsert_video(conn: sqlite3.Connection, data: dict) -> str:
     )
 
     if changed:
-        update_cols = _VIDEO_FIELDS + ["last_seen", "status"]
-        vals = [data.get(f) for f in _VIDEO_FIELDS] + [now, "active", path]
+        # label/label_source solo se pisan con valores no nulos (ver docstring)
+        update_cols = [
+            c for c in _VIDEO_FIELDS if c not in ("label", "label_source")
+        ]
+        vals = [data.get(f) for f in update_cols]
+        if data.get("label") is not None:
+            update_cols.append("label")
+            vals.append(data["label"])
+        if data.get("label_source") is not None:
+            update_cols.append("label_source")
+            vals.append(data["label_source"])
+        update_cols += ["last_seen", "status"]
+        vals += [now, "active", path]
         set_clause = ", ".join(f"{c} = ?" for c in update_cols)
         conn.execute(f"UPDATE videos SET {set_clause} WHERE path = ?", vals)
         conn.commit()
@@ -236,7 +293,9 @@ if __name__ == "__main__":
     import json
     import sys
 
-    db_path = "data/catalog.db"
+    # DB_PATH es ruta interna al contenedor (ver docker-compose.yml).
+    # Por defecto data/catalog.db relativo a /app (working_dir).
+    db_path = os.getenv("DB_PATH", "data/catalog.db")
     cmd = sys.argv[1] if len(sys.argv) > 1 else "stats"
 
     if cmd == "stats":

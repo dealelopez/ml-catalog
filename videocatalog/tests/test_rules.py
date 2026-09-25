@@ -123,3 +123,46 @@ def test_extract_path_segments_ruta_con_trailing_slash():
     segments = extract_path_segments("/tutoriales/python/")
     assert "tutoriales" in segments
     assert "python" in segments
+
+
+# ---------------------------------------------------------------------------
+# Tests de classify() con contexto de ruta (Task 17)
+# ---------------------------------------------------------------------------
+
+def test_contexto_no_cambia_resultado_sin_contexto():
+    """Sin contexto el algoritmo es el de siempre."""
+    a = classify("curso completo python desde cero", "/videos/", CONFIG)
+    b = classify("curso completo python desde cero", "/videos/", CONFIG, context=None)
+    assert a == b
+
+
+def test_contexto_rescata_titulo_ambiguo():
+    """El contexto pesa doble: el curso puede imponerse al título."""
+    cfg = {"categories": {**CONFIG["categories"],
+                          "Pintura": {"keywords": ["painting", "watercolor", "oil", "canvas"]}}}
+    path = "/videos/docker/intro.mp4"
+    sin = classify("docker basics", path, cfg)
+    con = classify("docker basics", path, cfg,
+                   context="painting watercolor oil")
+    assert sin["category"] == "Docker"
+    assert con["category"] == "Pintura"
+    assert con["score"] > sin["score"]
+
+
+def test_contexto_end_to_end_con_path_context():
+    """summarize() + classify() rescatan un título genérico real."""
+    from src.path_context import summarize
+    path = ("/videos/51.005--masterclass-maestro/"
+            "masterclass-david_mamet_teaches_dramatic_writing/16 Scenes.mp4")
+    ctx = summarize(path)
+    cfg = {"categories": {"Escritura": {"keywords": ["writing", "narrative", "novel"]},
+                          "Otros": {"keywords": []}}}
+    r = classify("16 scenes", path, cfg, context=ctx)
+    assert r["category"] == "Escritura"
+
+
+def test_contexto_acepta_string():
+    """El contexto también puede pasarse como texto ya preparado."""
+    r = classify("tutorial basico", "/misc/", CONFIG,
+                 context="python pandas numpy")
+    assert r["category"] == "Python"

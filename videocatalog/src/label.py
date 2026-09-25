@@ -125,8 +125,8 @@ def _run_label_loop(conn, rows, categories: list) -> int:
 def export_csv(conn, output_path: str) -> int:
     """Genera un CSV con todos los vídeos activos para etiquetar.
 
-    Columnas: path, channel, clean_title, tokens, category, rule_score,
-              label, label_source
+    Columnas: path, channel, clean_title, tokens, platform, course,
+              teacher, category, rule_score, label, label_source
 
     Args:
         conn: Conexión SQLite activa.
@@ -136,8 +136,8 @@ def export_csv(conn, output_path: str) -> int:
         Número de filas exportadas.
     """
     rows = conn.execute("""
-        SELECT path, channel, clean_title, category, rule_score,
-               label, label_source
+        SELECT path, channel, clean_title, platform, course, teacher,
+               category, rule_score, label, label_source
         FROM videos
         WHERE status = 'active'
         ORDER BY path
@@ -151,6 +151,7 @@ def export_csv(conn, output_path: str) -> int:
         writer = csv.writer(fh)
         writer.writerow([
             "path", "channel", "clean_title", "tokens",
+            "platform", "course", "teacher",
             "category", "rule_score", "label", "label_source",
         ])
         for r in rows:
@@ -160,6 +161,9 @@ def export_csv(conn, output_path: str) -> int:
                 r["channel"],
                 r["clean_title"],
                 tokens_str,
+                r["platform"],
+                r["course"],
+                r["teacher"],
                 r["category"],
                 r["rule_score"],
                 r["label"],
@@ -313,6 +317,7 @@ def stats(conn) -> dict:
 
 if __name__ == "__main__":
     import argparse
+    import os
     from src.config import load
     from src.db import init_db
 
@@ -335,8 +340,8 @@ if __name__ == "__main__":
         help="Umbral de rule_score para --review (default: 0.3)",
     )
     parser.add_argument(
-        "--db", default="data/catalog.db",
-        help="Ruta al fichero SQLite (default: data/catalog.db)",
+        "--db", default=os.getenv("DB_PATH", "data/catalog.db"),
+        help="Ruta al fichero SQLite (default: $DB_PATH o data/catalog.db)",
     )
     parser.add_argument(
         "--output", default="data/labels.csv",

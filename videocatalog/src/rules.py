@@ -99,22 +99,28 @@ def _count_matches(text: str, keywords: list) -> int:
     return count
 
 
-def classify(clean_title: str, path: str, config: dict) -> dict:
+def classify(clean_title: str, path: str, config: dict, context=None) -> dict:
     """Clasifica un vídeo usando las keywords del config.
 
     Algoritmo:
     1. Normalizar ``clean_title`` y segmentos de la ruta.
     2. Concatenar ambos en un único texto de búsqueda.
     3. Para cada categoría, contar coincidencias de keywords.
-    4. Score = coincidencias / total_keywords_de_la_categoría.
-    5. Ganadora = categoría con mayor score.
-    6. Empate → gana la que tiene más coincidencias en la ruta.
-    7. Si score ganador == 0.0 → ``{"category": "Otros", "score": 0.0}``.
+    4. Si hay contexto (Task 17: dict de ``path_context.summarize`` o
+       string), sus coincidencias pesan doble: el curso/profesor es
+       más informativo que un segmento de ruta en crudo.
+    5. Score = (base + 2×contexto) / total_keywords (tope 1.0).
+    6. Ganadora = categoría con mayor score.
+    7. Empate → más coincidencias en ruta + contexto.
+    8. Si score ganador == 0.0 → ``{"category": "Otros", "score": 0.0}``.
+
+    Sin contexto el resultado es idéntico a la versión anterior.
 
     Args:
         clean_title: Título normalizado (o crudo; se re-normaliza internamente).
         path: Ruta absoluta del fichero (se usan los segmentos de carpeta).
         config: Dict cargado por ``src.config.load()``.
+        context: Dict de ``summarize()`` o string con texto de contexto.
 
     Returns:
         ``{"category": str, "score": float}``
@@ -124,6 +130,13 @@ def classify(clean_title: str, path: str, config: dict) -> dict:
     search_title = _normalize_text(clean_title)
     search_path = extract_path_segments(path)
     search_text = (search_title + " " + search_path).strip()
+
+    if isinstance(context, dict):
+        search_ctx = _normalize_text(context.get("context_text") or "")
+    elif isinstance(context, str):
+        search_ctx = _normalize_text(context)
+    else:
+        search_ctx = ""
 
     best_cat = "Otros"
     best_score = 0.0
@@ -138,10 +151,11 @@ def classify(clean_title: str, path: str, config: dict) -> dict:
         norm_kw = [_normalize_text(k) for k in keywords]
 
         matches = _count_matches(search_text, norm_kw)
-        score = matches / total
+        ctx_matches = _count_matches(search_ctx, norm_kw) if search_ctx else 0
+        score = min(1.0, (matches + 2 * ctx_matches) / total)
 
-        # Coincidencias en la ruta (para desempate)
-        path_matches = _count_matches(search_path, norm_kw)
+        # Coincidencias en la ruta + contexto (para desempate)
+        path_matches = _count_matches(search_path, norm_kw) + ctx_matches
 
         # Actualizar ganadora: mayor score; empate → más coincidencias en ruta
         if score > best_score or (

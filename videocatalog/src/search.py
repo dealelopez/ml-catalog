@@ -164,10 +164,11 @@ def format_results(results: list[dict]) -> str:
 
 
 if __name__ == "__main__":
+    import os
     import sys
     from src.db import init_db
 
     query = " ".join(sys.argv[1:])
-    conn = init_db("data/catalog.db")
+    conn = init_db(os.getenv("DB_PATH", "data/catalog.db"))
     results = search(conn, query)
     print(format_results(results), end="")

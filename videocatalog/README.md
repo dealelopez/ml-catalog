@@ -52,6 +52,7 @@ videocatalog/
 │   ├── scanner.py       # Recorre carpetas y construye inventario
 │   ├── metadata.py      # Extrae metadatos técnicos con ffprobe
 │   ├── normalizer.py    # Normaliza nombres de fichero
+│   ├── path_context.py  # Plataforma/curso/profesor desde la ruta (Task 17)
 │   ├── rules.py         # Clasificador por keywords (config.yaml)
 │   ├── chapters.py      # Extrae capítulos/marcadores temporales
 │   ├── db.py            # Persistencia SQLite

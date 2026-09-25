@@ -248,3 +248,36 @@ def test_init_db_crea_directorio(tmp_path):
     conn.close()
     import os
     assert os.path.exists(db_path)
+
+
+# ---------------------------------------------------------------------------
+# Tests de preservación de labels en upsert (Task 17)
+# ---------------------------------------------------------------------------
+
+def test_upsert_no_borra_label_en_update(conn):
+    """Un rescan (label=None) no debe borrar una etiqueta Jev/manual."""
+    etiquetado = {**VIDEO_A, "label": "Pintura", "label_source": "jev_reviewed"}
+    assert upsert_video(conn, etiquetado) == "inserted"
+    # El scanner re-emite el vídeo modificado con label=None
+    rescaneado = {**VIDEO_A, "size_bytes": 999_000_000, "label": None, "label_source": None}
+    assert upsert_video(conn, rescaneado) == "updated"
+    row = conn.execute(
+        "SELECT label, label_source, category FROM videos WHERE path = ?",
+        (VIDEO_A["path"],),
+    ).fetchone()
+    assert row["label"] == "Pintura"
+    assert row["label_source"] == "jev_reviewed"
+
+
+def test_upsert_actualiza_label_si_viene_valor(conn):
+    """Un label no nulo sí se actualiza (p. ej. corrección manual)."""
+    upsert_video(conn, VIDEO_A)
+    corregido = {
+        **VIDEO_A, "size_bytes": 999_000_000,
+        "label": "Docker", "label_source": "manual",
+    }
+    assert upsert_video(conn, corregido) == "updated"
+    row = conn.execute(
+        "SELECT label, label_source FROM videos WHERE path = ?", (VIDEO_A["path"],)
+    ).fetchone()
+    assert (row["label"], row["label_source"]) == ("Docker", "manual")

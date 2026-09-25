@@ -17,9 +17,9 @@ categories:
   IA_ML:
     keywords: [machine learning, ml, inteligencia artificial, ia, ai, neural, llm, gpt, deeplearning, scikit, tensorflow, pytorch]
   Web:
-    keywords: [javascript, js, react, vue, astro, css, html, node, typescript, ts, frontend, backend, nextjs, svelte]
+    keywords: [javascript, js, react, vue, astro, css, html, node, typescript, ts, frontend, backend, nextjs, svelte, wordpress]
   Bases_datos:
-    keywords: [sql, database, db, bases de datos, mongodb, postgres, mysql, sqlite, redis, elasticsearch]
+    keywords: [sql, database, db, bases de datos, mongodb, postgres, mysql, sqlite, redis, elasticsearch, dbt]
   Redes:
     keywords: [redes, network, networking, tcp, ip, dns, http, vpn, firewall, wireshark, proxy]
   Seguridad:
@@ -30,5 +30,19 @@ categories:
     keywords: [electronica, arduino, raspberry, esp32, iot, circuito, hardware, micropython, gpio]
   Productividad:
     keywords: [productividad, git, vim, neovim, obsidian, notion, workflow, tmux, makefile]
+  Arte_dibujo:
+    keywords: [arte, art, dibujo, boceto, sketch, drawing, anatomia, anatomy, figure, gesture, composition, composicion, perspective, perspectiva, character, personaje, procreate, photoshop, warhammer, miniature, ilustracion, illustration]
+  Pintura:
+    keywords: [pintura, painting, acuarela, watercolor, oleo, oil, acrilico, acrylic, gouache, lienzo, canvas, paleta, palette, pincel, brush, color, colour]
+  Escritura:
+    keywords: [writing, escritura, writer, novel, novela, fiction, ficcion, narrative, narrativa, synopsis, sinopsis, relato, storytelling, screenwriting, guion]
+  Escritura:
+    keywords: [writing, escritura, writer, novel, novela, fiction, ficcion, narrative, narrativa, synopsis, sinopsis, relato]
+  Creatividad:
+    keywords: [creatividad, creativity, creative, creativo, inspiracion, inspiration, ideas, journal, sketchbook]
+  Costura:
+    keywords: [costura, sewing, coser, patronaje, tela, fabric, hilo, thread, aguja, needle, bordado, embroidery, crochet, patchwork]
+  Gestion:
+    keywords: [management, gestion, negocio, business, proyecto, project, liderazgo, leadership, marketing, finanzas, finance, pricing, stakeholder, requirements, estrategia, strategy]
   Otros:
     keywords: []

@@ -258,7 +258,7 @@ carpeta de vídeos (:ro)
         │
         ├──▶ rules.py        ← categoría + score por diccionario de keywords
         │
-        └──▶ [chapters.py]   ← opcional: número de capítulo, lección (Task 17)
+        └──▶ [chapters.py]   ← opcional: número de capítulo, lección (Task 18)
                 │
                 ▼
             db.py            ← upsert en SQLite + actualiza índice FTS5

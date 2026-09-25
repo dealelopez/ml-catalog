@@ -1,108 +1,81 @@
-# Prerequisitos para usar label_with_jev.py
+# Etiquetado con Jev (TypeSafe AI vía Vercel AI Gateway)
 
-Script: `scripts/label_with_jev.py`  
-Propósito: etiquetar masivamente los vídeos del catálogo usando Jev (TypeSafe AI)
-a través del Vercel AI Gateway, antes de entrenar el clasificador ML.
+Script: `scripts/label_with_jev.py` (montado `:ro` en `/app/scripts`).
+Propósito: asignar `label` + `label_source` (`jev_reviewed` / `jev_uncertain`)
+a los vídeos activos, como bootstrap antes del etiquetado manual y el
+entrenamiento del clasificador ML.
 
-## Prerequisito cubierto por Task 08
+> Estado a 2026-09-24: prerequisitos de código cubiertos (`requests==2.32.3`
+> instalado, `AI_GATEWAY_API_KEY` pasada en `docker-compose.yml`,
+> `CATEGORIES` sincronizadas con las 18 de `config.yaml`, `src/label.py`
+> implementado). **Bloqueador actual: la cuenta de Vercel exige tarjeta
+> de crédito para activar los créditos gratuitos** (ver §4).
 
-El pipeline ya corrió y `data/catalog.db` contiene vídeos con `label_source = 'rule'`.
-El script filtra exactamente esos registros:
-
-```sql
-WHERE status = 'active'
-  AND (label_source = 'rule' OR label_source IS NULL)
-  AND clean_title IS NOT NULL
-```
-
-## Bloqueadores pendientes
-
-### 1. `requests` no está en `requirements.txt`
-
-El script importa `requests` directamente pero no está declarado como dependencia.
-
-Añadir a `videocatalog/requirements.txt`:
-```
-requests==2.32.3
-```
-
-Reconstruir la imagen tras el cambio:
-```bash
-docker compose build
-```
-
-### 2. Falta `AI_GATEWAY_API_KEY` en el entorno
-
-El script lanza `EnvironmentError` si no encuentra la variable:
-
-```python
-API_KEY = os.environ.get("AI_GATEWAY_API_KEY")
-if not API_KEY:
-    raise EnvironmentError(...)
-```
-
-Pasos:
-1. Obtener una API key en https://vercel.com/dashboard → AI Gateway
-2. Añadir a `videocatalog/.env`:
-   ```
-   AI_GATEWAY_API_KEY=tu_clave_aqui
-   ```
-3. Declarar la variable en `docker-compose.yml` bajo `environment:`:
-   ```yaml
-   environment:
-     - PUID=${PUID:-1000}
-     - PGID=${PGID:-1000}
-     - AI_GATEWAY_API_KEY=${AI_GATEWAY_API_KEY}   # ← añadir
-   ```
-
-### 3. Ruta de la base de datos
-
-El script usa `DB_PATH = os.environ.get("DB_PATH", "data/catalog.db")`.  
-El directorio `data/` está montado como volumen en Docker, así que la ruta por defecto
-es correcta siempre que se ejecute desde `/app` dentro del contenedor.
-
-Forma recomendada de ejecución:
-```bash
-docker compose exec videocatalog python scripts/label_with_jev.py
-```
-
-Si se ejecuta en el host (fuera del contenedor), hay que estar en `videocatalog/`
-y tener `requests` instalado localmente también.
-
-### 4. `src/label.py` está sin implementar (Task 09)
-
-`label_with_jev.py` no depende de `label.py` — accede directamente a SQLite y funciona
-independientemente. Pero los pasos que el script sugiere al terminar sí lo requieren:
-
-```
-python -m src.label --review    # ← necesita Task 09
-python -m src.label --export    # ← necesita Task 09
-```
-
-Para ejecutar el etiquetado con Jev solo son necesarios los puntos 1, 2 y 3.
-El punto 4 es el flujo posterior de revisión, que es exactamente Task 09.
-
-## Secuencia completa de acciones
+## 1. Configuración (una vez)
 
 ```bash
-# 1. Añadir requests
-echo "requests==2.32.3" >> videocatalog/requirements.txt
+cd /opt/docker/ml-catalog/videocatalog
 
-# 2. Añadir la clave al .env (sustituir con la clave real)
-echo "AI_GATEWAY_API_KEY=tu_clave" >> videocatalog/.env
+# 1. Key real en .env (ya existe la línea; sustituir el valor)
+#    AI_GATEWAY_API_KEY=vck-...
 
-# 3. Editar docker-compose.yml — añadir la variable en environment:
-#    - AI_GATEWAY_API_KEY=${AI_GATEWAY_API_KEY}
-
-# 4. Reconstruir la imagen
-docker compose build
-
-# 5. Etiquetar con Jev
-docker compose exec videocatalog python scripts/label_with_jev.py
-
-# 6. Revisar los inciertos (requiere Task 09 completada)
-docker compose exec videocatalog python -m src.label --review
-
-# 7. Exportar labels.csv para entrenar el modelo (requiere Task 09 completada)
-docker compose exec videocatalog python -m src.label --export
+# 2. Recrear para inyectar la variable (los cambios de env lo exigen)
+docker compose up -d --force-recreate
+docker compose exec -T videocatalog sh -c 'if [ -z "$AI_GATEWAY_API_KEY" ]; then echo KEY=MISSING; else echo KEY=SET; fi'
+# Nunca imprimir el valor de la key en terminal ni logs
 ```
+
+## 2. Probar con 1 vídeo (antes del lote)
+
+```bash
+docker compose exec -T videocatalog python -c "
+import os, sys; sys.path.insert(0, 'scripts')
+from label_with_jev import classify_with_jev
+print(classify_with_jev('curso de acuarela para principiantes', '',
+      '/videos/51.001--arte/curso.mp4', os.environ['AI_GATEWAY_API_KEY']))"
+# Esperado: {'category': 'Pintura', 'ambiguous_prob': 0.xx}
+```
+
+## 3. Lote completo (6232 vídeos, 1–3 h)
+
+Solo con la BD ya poblada y estable (no correr a la vez que un scan).
+Escribe `label`/`label_source` en todos los activos con
+`label_source='rule'` o `NULL`. Log en `DATA_PATH` + aviso ntfy:
+
+```bash
+DATA_DIR=$(grep -E '^DATA_PATH=' .env | cut -d= -f2-)
+LOG="$DATA_DIR/jev-$(date +%Y%m%d-%H%M).log"
+nohup bash -c 'docker compose exec -T videocatalog python scripts/label_with_jev.py; CODE=$?; if [ $CODE -eq 0 ]; then MSG="jev OK (exit 0)"; else MSG="jev FALLO (exit $CODE)"; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
+```
+
+Parámetros en el script: `AMBIGUITY_THRESHOLD = 0.3`
+(`>=` → `jev_uncertain`), `REQUEST_DELAY = 1.0`, timeout 10 s por petición,
+reintentos ante 429 (`MAX_429_RETRIES = 8`, espera `Retry-After` o 60 s
+con backoff). El script es idempotente: solo toca filas aún con
+`label_source='rule'` o `NULL`, así que se puede relanzar tras un 429
+masivo sin duplicar trabajo.
+
+## 4. Errores conocidos
+
+| Síntoma | Causa | Acción |
+|---|---|---|
+| `AI_GATEWAY_API_KEY no está definida` | falta en `.env` o contenedor sin recrear | §1 |
+| `403 customer_verification_required` | Vercel exige tarjeta en el dashboard (AI Gateway) para desbloquear créditos gratis | añadir tarjeta en https://vercel.com/dashboard → AI Gateway y reintentar §2 |
+| `400 ... criteria: expected record` | las preguntas `choice` exigen `criteria` (mapa opción → descripción); `options` como lista es rechazado | ya corregido en el script (2026-09-24): `CATEGORIES` es dict con descripciones en inglés |
+
+Coste orientativo (Jev: $0.042 por 1M tokens de input, solo input):
+6232 vídeos × ~150 tokens ≈ 1M tokens ≈ **unos pocos céntimos**.
+| `429` masivo tras ~30 peticiones (tier gratuito) | rate limit por segundo | ya mitigado (2026-09-24): `REQUEST_DELAY=1.0` + reintento con backoff; si persiste, subir `REQUEST_DELAY` y relanzar (es idempotente) |
+
+## 5. Después del lote
+
+```bash
+docker compose exec -T videocatalog python -m src.label --review --threshold 0.3  # solo jev_uncertain
+docker compose exec -T videocatalog python -m src.label --stats                   # % revisado
+docker compose exec -T videocatalog python -m src.label --export                  # data/labels.csv → entrenar modelo
+```
+
+- `label_with_jev.py`: el `state` envía `Platform / Course / Teacher`
+  estructurados (Task 17, columnas `platform/course/teacher` de la BD)
+  en vez de la ruta en crudo; `CATEGORIES` sincronizado con `config.yaml`
+  (18 categorías con descripciones en inglés para `criteria`).
