@@ -1,1 +1,0 @@
-- Analizar todo el repositorio de ZFS para identificar todas las extensiones que existen para no dejar ningún video sin analizar
