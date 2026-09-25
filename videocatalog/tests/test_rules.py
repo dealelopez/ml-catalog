@@ -166,3 +166,196 @@ def test_contexto_acepta_string():
     r = classify("tutorial basico", "/misc/", CONFIG,
                  context="python pandas numpy")
     assert r["category"] == "Python"
+
+
+# ---------------------------------------------------------------------------
+# Tests del margen 1º−2º (score bajo pero claro vs. ambiguo)
+# ---------------------------------------------------------------------------
+
+def test_margen_claro_con_score_bajo():
+    """1 acierto frente a 0 en el resto: score bajo pero margen = score."""
+    r = classify("curso completo python desde cero", "/videos/", CONFIG)
+    assert r["category"] == "Python"
+    assert r["second_score"] == 0.0
+    assert r["margin"] == r["score"]
+    assert r["margin"] > 0
+    assert r["matches"] == 1
+    assert r["second_matches"] == 0
+
+
+def test_margen_cero_si_otros():
+    """Sin coincidencias: Otros con margen 0."""
+    r = classify("video sin titulo claro xyzabc", "/misc/", CONFIG)
+    assert r["category"] == "Otros"
+    assert r["score"] == 0.0
+    assert r["margin"] == 0.0
+
+
+def test_margen_pequeno_si_ambiguo():
+    """Dos categorías con aciertos: el margen es menor que el score."""
+    r = classify("introduccion al machine learning con python", "/videos/", CONFIG)
+    assert r["score"] > 0
+    assert r["second_score"] > 0
+    assert r["margin"] < r["score"]
+    assert r["margin"] >= 0.0
+
+
+def test_margen_no_altera_compatibilidad():
+    """Las claves nuevas no rompen el contrato antiguo category/score."""
+    r = classify("aprende docker y docker compose desde cero", "/videos/", CONFIG)
+    assert set(("category", "score")) <= set(r.keys())
+    assert 0.0 <= r["score"] <= 1.0
+    assert 0.0 <= r["margin"] <= 1.0
+    assert abs((r["score"] - r["second_score"]) - r["margin"]) < 1e-3
+
+
+# ---------------------------------------------------------------------------
+# Tests de categorías no-técnicas (Task 20: ampliación evidencial)
+# ---------------------------------------------------------------------------
+
+from src.config import load as _load_config  # noqa: E402
+
+
+def _real_config():
+    return _load_config()
+
+
+def test_config_real_sin_duplicados_y_con_nuevas():
+    """El bug del 'Escritura' duplicado silenció storytelling: que no vuelva."""
+    cfg = _real_config()
+    cats = cfg["categories"]
+    for nueva in ("Ciencia", "Diseno_UX", "Fotografia", "Modelado_3D"):
+        assert nueva in cats, f"falta categoría {nueva}"
+        assert len(cats[nueva]["keywords"]) >= 5
+    assert "storytelling" in cats["Escritura"]["keywords"]
+    assert "story" not in cats["Escritura"]["keywords"]  # pisa cómics (Task 19)
+    assert "negotiation" in cats["Gestion"]["keywords"]
+    assert "software architecture" in cats["Sistemas"]["keywords"]
+
+
+def test_ciencia_bill_nye():
+    cfg = _real_config()
+    r = classify(
+        "05 achieve freedom from fear",
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-bill_nye_teaches_science_and_problem-solving/x.mkv",
+        cfg,
+    )
+    assert r["category"] == "Ciencia"
+
+
+def test_escritura_sedaris():
+    cfg = _real_config()
+    r = classify(
+        "04 breaking into a story",
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-david_sedaris_teaches_storytelling_and_humor/x.mkv",
+        cfg,
+    )
+    assert r["category"] == "Escritura"
+
+
+def test_gestion_negotiation():
+    cfg = _real_config()
+    r = classify(
+        "02 useless negotiation",
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-chris-voss-win-workplace-negotiations/x.mkv",
+        cfg,
+    )
+    assert r["category"] == "Gestion"
+
+
+def test_modelado_3d_sketchup_y_sistemas_no_roba_software():
+    """'architecture' es 3D pero 'software architecture' es Sistemas."""
+    cfg = _real_config()
+    r3d = classify(
+        "navigating the model",
+        "/videos/51.000--buzon/curso-sketchup/01.mp4",
+        cfg,
+    )
+    assert r3d["category"] == "Modelado_3D"
+    rsw = classify(
+        "software architecture foundations",
+        "/videos/51.003--tecnologia-ordenar/linkedin/"
+        "Lynda.Software.Architecture.Foundations/x.mp4",
+        cfg,
+    )
+    assert rsw["category"] == "Sistemas"
+
+
+def test_diseno_ux_y_fotografia():
+    cfg = _real_config()
+    rux = classify(
+        "16 empathy maps",
+        "/videos/packt-ux-design-process/x.mp4",
+        cfg,
+    )
+    assert rux["category"] == "Diseno_UX"
+    rph = classify(
+        "what is photo colorization",
+        "/videos/51.000--buzon/curso-photo/x.mp4",
+        cfg,
+    )
+    assert rph["category"] == "Fotografia"
+
+
+# ---------------------------------------------------------------------------
+# Tests del diccionario de carpetas (Task 19)
+# ---------------------------------------------------------------------------
+
+FOLDER_CFG = {
+    "categories": CONFIG["categories"],
+    "folder_categories": {
+        "curso python": "Python",
+        "masterclass maestro": "Gestion",
+        "masterclass bill nye teaches science": "Ciencia",
+    },
+}
+
+
+def test_folder_override_gana_a_keywords():
+    """Título docker en carpeta Python → manda la carpeta."""
+    r = classify(
+        "docker container compose",
+        "/videos/curso-python/x.mp4",
+        FOLDER_CFG,
+    )
+    assert r["category"] == "Python"
+    assert r["source"] == "folder"
+    assert r["score"] == 0.95
+    assert r["second_category"] == "Docker"
+
+
+def test_folder_gana_nivel_profundo():
+    """El segmento más profundo manda sobre el área."""
+    r = classify(
+        "01 meet your instructor",
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-bill-nye-teaches-science/x.mp4",
+        FOLDER_CFG,
+    )
+    assert r["category"] == "Ciencia"
+    assert r["source"] == "folder"
+
+
+def test_folder_sin_mapeo_source_rules():
+    r = classify("curso completo python desde cero", "/videos/", FOLDER_CFG)
+    assert r["category"] == "Python"
+    assert r["source"] == "rules"
+
+
+def test_folder_otros_se_ignora():
+    """Mapear a Otros no rompe el invariante Otros ⟺ 0.0."""
+    cfg = {
+        "categories": CONFIG["categories"],
+        "folder_categories": {"cajon desastre": "Otros"},
+    }
+    r = classify("aprende docker compose", "/videos/cajon-desastre/x.mp4", cfg)
+    assert r["category"] == "Docker"
+    assert r["source"] == "rules"
+
+
+def test_sin_folder_categories_source_rules():
+    r = classify("curso completo python desde cero", "/videos/", CONFIG)
+    assert r["source"] == "rules"

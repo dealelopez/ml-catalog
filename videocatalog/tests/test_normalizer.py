@@ -97,9 +97,19 @@ def test_tokenize_elimina_tokens_una_letra():
     assert "python" in tokens
 
 
-def test_tokenize_conserva_digitos_unitarios():
-    tokens = tokenize("parte 1 de python")
-    assert "1" in tokens
+def test_tokenize_elimina_numeros():
+    """Los números puros (orden de episodio, años) nunca son tokens."""
+    tokens = tokenize("05 achieve freedom from fear")
+    assert "05" not in tokens
+    assert "achieve" in tokens
+    assert "1" not in tokenize("parte 1 de python")
+    assert "2023" not in tokenize("sketchbook tour episode 2023")
+
+
+def test_tokenize_conserva_alfanumericos():
+    """Con letras sí cuentan: 3d, jsconf2026 aportan tema."""
+    assert "3d" in tokenize("curso de impresion 3d")
+    assert "jsconf2026" in tokenize("astro workshop jsconf2026")
 
 
 def test_tokenize_vacio():

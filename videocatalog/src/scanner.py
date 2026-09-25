@@ -97,9 +97,11 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                 size_str = format_size(meta.get("size_bytes") or 0)
                 cat = classif["category"]
                 score = classif["score"]
+                margin = classif.get("margin", 0.0)
+                src_tag = "·folder" if classif.get("source") == "folder" else ""
                 icon = "✓" if cat != "Otros" else "?"
                 console.print(
-                    f"  {icon}  {filepath.name:<55}  {size_str:>8}   {cat} ({score:.2f})"
+                    f"  {icon}  {filepath.name:<55}  {size_str:>8}   {cat} ({score:.2f}, Δ{margin:.2f}{src_tag})"
                 )
             except Exception:
                 errors += 1
@@ -203,6 +205,8 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                         "category": classif["category"],
                         "subcategory": None,
                         "rule_score": classif["score"],
+                        "rule_margin": classif.get("margin", 0.0),
+                        "rule_source": classif.get("source", "rules"),
                         "label": None,
                         "label_source": None,
                     }

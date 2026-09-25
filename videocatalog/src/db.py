@@ -22,7 +22,7 @@ _VIDEO_FIELDS = [
     "duration_s", "width", "height", "codec",
     "channel", "yt_id", "clean_title",
     "platform", "course", "teacher",
-    "category", "subcategory", "rule_score",
+    "category", "subcategory", "rule_score", "rule_margin", "rule_source",
     "label", "label_source",
 ]
 
@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS videos (
     category      TEXT,
     subcategory   TEXT,
     rule_score    REAL,
+    rule_margin   REAL,
+    rule_source   TEXT,
     label         TEXT,
     label_source  TEXT,
     first_seen    TEXT NOT NULL,
@@ -88,11 +90,14 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-# Columnas añadidas por migraciones (Task 17: contexto de ruta).
+# Columnas añadidas por migraciones (Task 17: contexto; Task 18: margen;
+# Task 19: fuente de la regla).
 _MIGRATION_COLUMNS = [
     ("platform", "TEXT"),
     ("course", "TEXT"),
     ("teacher", "TEXT"),
+    ("rule_margin", "REAL"),
+    ("rule_source", "TEXT"),
 ]
 
 

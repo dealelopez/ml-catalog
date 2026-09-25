@@ -135,7 +135,9 @@ def tokenize(text: str) -> list[str]:
     1. Minúsculas.
     2. Transliterar acentos a ASCII (``á→a``, ``é→e`` …, ``ñ→n``).
     3. Dividir por espacios.
-    4. Filtrar tokens vacíos y de un solo carácter (salvo dígitos únicos).
+    4. Filtrar tokens vacíos, de un solo carácter y números puros
+       (``01``, ``2023`` son orden de episodio/año, no tema; ``3d`` o
+       ``jsconf2026`` sí se conservan porque contienen letras).
     5. Filtrar stopwords básicas (español e inglés).
 
     Args:
@@ -153,10 +155,10 @@ def tokenize(text: str) -> list[str]:
     # 3. Dividir por espacios
     tokens = text.split()
 
-    # 4. Filtrar vacíos y tokens de un solo carácter (excepto dígitos)
+    # 4. Filtrar vacíos, un solo carácter y números puros
     tokens = [
         t for t in tokens
-        if len(t) > 1 or (len(t) == 1 and t.isdigit())
+        if len(t) > 1 and not t.isdigit()
     ]
 
     # 5. Filtrar stopwords

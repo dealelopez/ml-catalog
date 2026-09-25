@@ -1,6 +1,7 @@
 """Tests de src.path_context — contexto estructurado desde la ruta."""
 
 from src.path_context import (
+    dir_tokens,
     is_workflow,
     split_segments,
     state_lines,
@@ -86,3 +87,39 @@ def test_fail_soft_ruta_rara():
     assert r["platform"] is None
     assert r["teacher"] is None
     assert isinstance(r["context_text"], str)
+
+
+# ---------------------------------------------------------------------------
+# Tests de dir_tokens() (Task 18)
+# ---------------------------------------------------------------------------
+
+def test_dir_tokens_caso_bill_nye():
+    toks = dir_tokens(
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-bill_nye_teaches_science_and_problem-solving/"
+        "05.Achieve Freedom From Fear.mkv"
+    )
+    for w in ("bill", "nye", "science", "masterclass"):
+        assert w in toks
+    # Dewey y fichero fuera
+    assert "51" not in toks and "005" not in toks
+    assert "achieve" not in toks and "fear" not in toks
+
+
+def test_dir_tokens_carpeta_simple():
+    toks = dir_tokens("/videos/51.004--electronica/kenn_yap/03 intro.mp4")
+    assert "kenn" in toks and "yap" in toks
+    assert "electronica" in toks
+    assert "intro" not in toks  # el fichero no cuenta
+
+
+def test_dir_tokens_filtra_workflow_digitos_y_duplicados():
+    toks = dir_tokens("/videos/51.000--buzon/tuts/01 curso-x/curso-x/02.mp4")
+    assert "tuts" not in toks
+    assert "01" not in toks and "02" not in toks
+    assert toks.count("curso") == 1
+    assert "buzon" in toks  # nivel 1 sí cuenta (no es workflow)
+
+
+def test_dir_tokens_ruta_sin_carpetas():
+    assert dir_tokens("/video.mp4") == []

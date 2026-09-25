@@ -205,6 +205,46 @@ def summarize(path: str) -> dict:
     }
 
 
+def dir_tokens(path: str) -> list:
+    """Tokens temáticos de las carpetas de la ruta (sin el fichero).
+
+    Complementa a los tokens del título: en cursos multi-vídeo la carpeta
+    (`masterclass-bill_nye_teaches_...`, `kenn_yap`) suele decir más que
+    nombres genéricos como `01 meet your instructor`.
+
+    Filtra lo no temático: raíz de montaje, carpetas workflow
+    (`00-sin_revisar`, `tuts`…), prefijos Dewey (`51.005--`) y dígitos
+    puros (contadores `01`, restos `005`). Sin duplicados.
+
+    Ejemplo::
+
+        dir_tokens("/videos/51.005--masterclass-maestro/"
+                   "masterclass-bill_nye_teaches_science_and_problem-solving/"
+                   "05.Achieve Freedom From Fear.mkv")
+        # → ["masterclass", "maestro", "bill", "nye", "teaches",
+        #    "science", "problem", "solving"]
+
+    Args:
+        path: Ruta absoluta o relativa del fichero de vídeo.
+
+    Returns:
+        Lista de tokens en minúsculas sin acentos ni stopwords.
+    """
+    from src.normalizer import tokenize  # noqa: PLC0415 (evita acoplamiento en import)
+
+    words = []
+    for seg in split_segments(path):
+        if is_workflow(seg):
+            continue
+        cleaned = re.sub(r"[-_.,|]+", " ", strip_dewey(seg))
+        if cleaned.strip():
+            words.append(cleaned)
+
+    toks = tokenize(" ".join(words))
+    toks = [t for t in toks if not t.isdigit()]
+    return list(dict.fromkeys(toks))
+
+
 def state_lines(parsed: dict) -> str:
     """Líneas estructuradas en inglés para el `state` de Jev."""
     def val(v):
