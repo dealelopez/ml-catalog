@@ -7,9 +7,12 @@ entrenamiento del clasificador ML.
 
 > Estado a 2026-09-24: prerequisitos de código cubiertos (`requests==2.32.3`
 > instalado, `AI_GATEWAY_API_KEY` pasada en `docker-compose.yml`,
-> `CATEGORIES` sincronizadas con las 18 de `config.yaml`, `src/label.py`
+> `CATEGORIES` con las 18 categorías de entonces, `src/label.py`
 > implementado). **Bloqueador actual: la cuenta de Vercel exige tarjeta
 > de crédito para activar los créditos gratuitos** (ver §4).
+> ⚠️ Deriva pendiente: `config.yaml` tiene 22 categorías desde las Tasks
+> 18-20 y `CATEGORIES` del script sigue en 18 (faltan Ciencia, Diseno_UX,
+> Fotografia y Modelado_3D).
 
 ## 1. Configuración (una vez)
 
@@ -19,16 +22,16 @@ cd /opt/docker/ml-catalog
 # 1. Key real en .env (ya existe la línea; sustituir el valor)
 #    AI_GATEWAY_API_KEY=vck-...
 
-# 2. Recrear para inyectar la variable (los cambios de env lo exigen)
-docker compose up -d --force-recreate
-docker compose exec -T videocatalog sh -c 'if [ -z "$AI_GATEWAY_API_KEY" ]; then echo KEY=MISSING; else echo KEY=SET; fi'
+# 2. Comprobar que la key llega al contenedor (se inyecta en cada run
+#    desde .env; no hay que recrear nada porque no hay demonio persistente)
+docker compose run --rm --entrypoint sh videocatalog -c 'if [ -z "$AI_GATEWAY_API_KEY" ]; then echo KEY=MISSING; else echo KEY=SET; fi'
 # Nunca imprimir el valor de la key en terminal ni logs
 ```
 
 ## 2. Probar con 1 vídeo (antes del lote)
 
 ```bash
-docker compose exec -T videocatalog python -c "
+docker compose run --rm --entrypoint python videocatalog -c "
 import os, sys; sys.path.insert(0, 'scripts')
 from label_with_jev import classify_with_jev
 print(classify_with_jev('curso de acuarela para principiantes', '',
@@ -45,7 +48,7 @@ Escribe `label`/`label_source` en todos los activos con
 ```bash
 DATA_DIR=$(grep -E '^DATA_PATH=' .env | cut -d= -f2-)
 LOG="$DATA_DIR/jev-$(date +%Y%m%d-%H%M).log"
-nohup bash -c 'docker compose exec -T videocatalog python scripts/label_with_jev.py; CODE=$?; if [ $CODE -eq 0 ]; then MSG="jev OK (exit 0)"; else MSG="jev FALLO (exit $CODE)"; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
+nohup bash -c 'docker compose run --rm -T --entrypoint python videocatalog scripts/label_with_jev.py; CODE=$?; if [ $CODE -eq 0 ]; then MSG="jev OK (exit 0)"; else MSG="jev FALLO (exit $CODE)"; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
 ```
 
 Parámetros en el script: `AMBIGUITY_THRESHOLD = 0.3`
@@ -70,9 +73,9 @@ Coste orientativo (Jev: $0.042 por 1M tokens de input, solo input):
 ## 5. Después del lote
 
 ```bash
-docker compose exec -T videocatalog python -m src.label --review --threshold 0.3  # solo jev_uncertain
-docker compose exec -T videocatalog python -m src.label --stats                   # % revisado
-docker compose exec -T videocatalog python -m src.label --export                  # data/labels.csv → entrenar modelo
+docker compose run --rm videocatalog label --review --threshold 0.3  # solo jev_uncertain
+docker compose run --rm videocatalog label --stats                   # % revisado
+docker compose run --rm videocatalog label --export                  # data/labels.csv → entrenar modelo
 ```
 
 - `label_with_jev.py`: el `state` envía `Platform / Course / Teacher`

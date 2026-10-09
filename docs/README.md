@@ -3,6 +3,12 @@
 Índice de la documentación del proyecto. Las tasks están en orden
 secuencial con sus dependencias (`01→…→08→09→…→17→…`).
 
+> Los `task-*.md` y `specs.md` son registros históricos: muestran la CLI
+> por módulo (`python -m src.scanner …`) y el layout anterior
+> (`videocatalog/…`). La CLI unificada actual es
+> `videocatalog scan|search|label|health` (ver `guia-uso.md` y `README.md`
+> de la raíz).
+
 ## Tasks de implementación
 
 | Task | Fichero | Tema |
