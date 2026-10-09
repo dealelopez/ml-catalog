@@ -9,7 +9,7 @@
 [project]
 name = "videocatalog"
 version = "0.1.0"
-description = "Catálogo local de vídeos tutoriales con clasificación automática"
+description = "Catálogo local de vídeos con clasificación automática"
 authors = [{name = "Ale López"}]
 license = {text = "GPL-3.0-or-later"}
 requires-python = ">=3.12"

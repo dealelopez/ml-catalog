@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 Tareas previas completadas:
 - Task 04: `metadata.extract()` devuelve metadatos del fichero
 - Task 05: `normalizer.normalize()` devuelve `channel`, `yt_id`, `clean_title`, `tokens`

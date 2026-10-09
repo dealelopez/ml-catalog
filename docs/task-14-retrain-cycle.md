@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 Tareas previas completadas:
 - Task 09: etiquetado manual con `src/label.py`
 - Task 12: primer modelo entrenado con métricas guardadas

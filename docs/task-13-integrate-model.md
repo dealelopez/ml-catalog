@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 Tareas previas completadas:
 - Task 12: `data/model.joblib` y `data/model_metrics.json` generados en el notebook
 - Task 08: pipeline de escaneo completo con clasificación por reglas

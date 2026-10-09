@@ -87,7 +87,7 @@ def classify_with_jev(clean_title: str, channel: str, path: str, api_key: str,
     def known(v):
         return v if v else "unknown"
     state = (
-        f"Tutorial video title: '{clean_title}'. "
+        f"Video title: '{clean_title}'. "
         f"Channel: '{channel}'. "
         f"Platform: '{known(platform)}'. "
         f"Course: '{known(course)}'. "
@@ -102,7 +102,7 @@ def classify_with_jev(clean_title: str, channel: str, path: str, api_key: str,
             "category": {
                 "type": "choice",
                 "instructions": (
-                    "What is the main category of this tutorial video? "
+                    "What is the main category of this video? "
                     "Choose the most specific match from the options."
                 ),
                 # La API exige `criteria` (mapa opción → descripción);

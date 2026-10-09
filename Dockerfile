@@ -1,7 +1,7 @@
 # =============================================================================
 # Dockerfile — videocatalog
 # =============================================================================
-# Imagen de Python para el catálogo local de vídeos tutoriales.
+# Imagen de Python para el catálogo local de vídeos.
 # Incluye ffmpeg/ffprobe para extraer metadatos técnicos.
 # No incluye los vídeos ni la BD — se montan como volúmenes en compose.
 # =============================================================================

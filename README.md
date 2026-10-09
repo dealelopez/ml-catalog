@@ -1,6 +1,6 @@
 # videocatalog
 
-Catálogo local de vídeos tutoriales con clasificación automática por categorías.
+Catálogo local de vídeos con clasificación automática por categorías.
 
 `videocatalog` escanea carpetas de vídeos, extrae metadatos técnicos con ffprobe,
 normaliza los nombres de fichero y clasifica cada vídeo en una categoría temática

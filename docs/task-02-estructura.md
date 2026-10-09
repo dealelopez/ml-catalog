@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 El entorno Docker ya está creado (Task 01). Ahora se crea el esqueleto completo del código:
 módulos vacíos, configuración base, y la función de carga validada de `config.yaml`.
 

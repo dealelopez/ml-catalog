@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 El desarrollador usa Code Server (VSCode en navegador) como entorno de desarrollo.
 Ya tiene experiencia con Docker y monta rutas locales con `:ro`.
 

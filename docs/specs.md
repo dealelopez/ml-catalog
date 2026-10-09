@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Construir un catálogo local de vídeos tutoriales (~500 GB) almacenados en un servidor Linux, usando los metadatos de los ficheros (nombre, ruta, tamaño, fecha, metadatos técnicos) como única fuente de información. Sin transcripción, sin análisis audiovisual, sin servicios externos.
+Construir un catálogo local de vídeos (~500 GB) almacenados en un servidor Linux, usando los metadatos de los ficheros (nombre, ruta, tamaño, fecha, metadatos técnicos) como única fuente de información. Sin transcripción, sin análisis audiovisual, sin servicios externos.
 
 **El objetivo real de este proyecto es aprender Machine Learning de clasificación de texto.** El código Python lo implementa Kiro; lo que tú aprendes es cómo funciona un clasificador supervisado desde cero: por qué se necesitan datos etiquetados, qué hace TF-IDF, cómo se evalúa un modelo honestamente, qué es el ciclo iterativo de etiquetar→entrenar→evaluar, y cuándo el ML añade valor sobre reglas simples.
 

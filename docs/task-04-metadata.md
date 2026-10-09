@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 Tareas previas completadas:
 - Task 01: entorno Docker con ffmpeg/ffprobe instalados
 - Task 02: esqueleto de `src/metadata.py`

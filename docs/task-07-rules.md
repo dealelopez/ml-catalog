@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Proyecto: `videocatalog` — catálogo local de vídeos tutoriales en servidor Linux.
+Proyecto: `videocatalog` — catálogo local de vídeos en servidor Linux.
 Tareas previas completadas:
 - Task 05: `normalizer.normalize()` produce `clean_title` y `tokens`
 - Task 06: la BD tiene columnas `category`, `rule_score` y `label_source`
