@@ -9,7 +9,7 @@
 
 ```bash
 cd /opt/docker/ml-catalog
-docker compose run --rm videocatalog label --stats
+docker compose run --rm ml-catalog label --stats
 ```
 
 Muestra total, `% revisados` y barras por fuente y categoría. Míralo antes
@@ -18,7 +18,7 @@ y después de cada tanda para ver tu avance.
 ### 1. Abrir sesión
 
 ```bash
-docker compose run --rm videocatalog label --review
+docker compose run --rm ml-catalog label --review
 ```
 
 Enseña primero los `jev_uncertain` y luego los de score bajo de reglas.
@@ -52,7 +52,7 @@ minuto), luego muestras de 20–30 por categoría grande.
 
 ### 5. Cerrar el ciclo (con ayuda)
 
-`videocatalog label --export` → `labels.csv` → reentreno comparando F1 contra 0.847.
+`ml-catalog label --export` → `labels.csv` → reentreno comparando F1 contra 0.847.
 
 ## Duda 1 — ¿Qué significa el score (p. ej. 0.14)?
 

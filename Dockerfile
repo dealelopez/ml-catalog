@@ -1,5 +1,5 @@
 # =============================================================================
-# Dockerfile — videocatalog
+# Dockerfile — ml-catalog
 # =============================================================================
 # Imagen de Python para el catálogo local de vídeos.
 # Incluye ffmpeg/ffprobe para extraer metadatos técnicos.
@@ -33,7 +33,7 @@ RUN adduser --disabled-password --no-create-home --gecos "" appuser
 USER appuser
 
 # Punto de entrada por defecto: CLI del catálogo.
-# Se puede sobreescribir con: docker compose run videocatalog scan --help
+# Se puede sobreescribir con: docker compose run ml-catalog scan --help
 ENTRYPOINT ["python", "-m", "src.cli"]
 
 # Comando por defecto si no se pasa ningún argumento: mostrar ayuda.

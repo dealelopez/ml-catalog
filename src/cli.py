@@ -35,7 +35,7 @@ console = Console()
 def build_parser() -> argparse.ArgumentParser:
     """Construye el parser de argumentos con todos los subcomandos."""
     parser = argparse.ArgumentParser(
-        prog="videocatalog",
+        prog="ml-catalog",
         description="Catálogo local de vídeos con clasificación automática",
     )
     subparsers = parser.add_subparsers(dest="command", help="Subcomando a ejecutar")

@@ -7,7 +7,7 @@ mayoritaria; los segmentos con mayoria 'Otros' se omiten (mapear a Otros
 no aporta nada al override).
 
 Uso:
-    docker compose exec -T videocatalog \
+    docker compose exec -T ml-catalog \
         python scripts/generate_folder_candidates.py [--min-purity 0.95] [--min-n 5]
 
 Salida: informe por consola + snippet YAML listo para revisar en

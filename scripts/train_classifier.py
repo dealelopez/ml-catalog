@@ -9,7 +9,7 @@ Diseño según docs/task-12-train-classifier.md:
     del título; se compara contra título-solo como baseline.
 
 Uso (desde la raíz, working_dir /app en contenedor):
-    docker compose exec -T videocatalog python scripts/train_classifier.py
+    docker compose exec -T ml-catalog python scripts/train_classifier.py
 
 Genera en data/ (volumen DATA_PATH):
     model.joblib        — mejor Pipeline serializado

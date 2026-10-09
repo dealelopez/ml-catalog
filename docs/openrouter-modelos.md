@@ -135,7 +135,7 @@ OpenRouter tiene sus propios modelos, principalmente experimentales y sin precio
 
 ## Resumen comparativo por tipo de tarea
 
-Para este proyecto (videocatalog / ml-tut), la orientación concreta es:
+Para este proyecto (ml-catalog), la orientación concreta es:
 
 | Tipo de tarea | Modelo recomendado | Precio aprox. |
 |---|---|---|

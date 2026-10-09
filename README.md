@@ -1,8 +1,8 @@
-# videocatalog
+# ml-catalog
 
 Catálogo local de vídeos con clasificación automática por categorías.
 
-`videocatalog` escanea carpetas de vídeos, extrae metadatos técnicos con ffprobe,
+`ml-catalog` escanea carpetas de vídeos, extrae metadatos técnicos con ffprobe,
 normaliza los nombres de fichero y clasifica cada vídeo en una categoría temática
 (Python, Docker, Linux, IA/ML, Web, etc.) usando un clasificador de reglas o un
 modelo ML entrenado con etiquetas manuales.
@@ -40,7 +40,7 @@ TF-IDF (5000, 1-2 gramas) + Regresión Logística / Naive Bayes sobre
 ## Arquitectura
 
 ```
-videocatalog/
+ml-catalog/
 ├── config.yaml          # keywords, folder_categories, scan
 ├── src/                 # scanner → metadata → normalizer → rules → db
 ├── tests/               # pytest (sin vídeos reales por defecto)
@@ -77,31 +77,31 @@ cp example.env .env
 # Editar .env: ajustar VIDEOS_PATH, DATA_PATH, PUID y PGID
 docker compose build
 docker compose up -d
-docker compose run videocatalog health
+docker compose run ml-catalog health
 ```
 
 ## Uso
 
 ```bash
 # Escanear (dry-run primero, sin escribir en BD)
-docker compose run videocatalog scan --dry-run
-docker compose run videocatalog scan
+docker compose run ml-catalog scan --dry-run
+docker compose run ml-catalog scan
 
 # Buscar (FTS5; query vacío = últimos por last_seen)
-docker compose run videocatalog search "python asyncio"
-docker compose run videocatalog search "" -n 5
+docker compose run ml-catalog search "python asyncio"
+docker compose run ml-catalog search "" -n 5
 
 # Etiquetado (dataset ML)
-docker compose run videocatalog label --stats
-docker compose run videocatalog label --export
-docker compose run videocatalog label --interactive
-docker compose run videocatalog label --review --threshold 0.3
+docker compose run ml-catalog label --stats
+docker compose run ml-catalog label --export
+docker compose run ml-catalog label --interactive
+docker compose run ml-catalog label --review --threshold 0.3
 
 # Salud del sistema
-docker compose run videocatalog health
+docker compose run ml-catalog health
 
 # Shell en el contenedor
-docker compose exec videocatalog bash
+docker compose exec ml-catalog bash
 ```
 
 Pipeline de escaneo (por fichero):

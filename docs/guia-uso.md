@@ -1,4 +1,4 @@
-# videocatalog — Guía de uso
+# ml-catalog — Guía de uso
 
 > Estado a 2026-09-24: 6232 vídeos (543 GB) catalogados.
 > Task 17 (contexto por ruta) aplicada: `Otros` 87% → **12.9%** (803),
@@ -13,26 +13,26 @@ cd /opt/docker/ml-catalog
 Dentro del contenedor el directorio de trabajo es `/app`.
 
 > Sin demonio persistente: el servicio es solo CLI, así que todo se lanza
-> con `docker compose run --rm videocatalog …` (contenedor efímero con los
+> con `docker compose run --rm ml-catalog …` (contenedor efímero con los
 > mismos montajes). Para utilidades fuera de la CLI (`src.db`,
 > `scripts/check_db.py`, `python -c …`) se usa
-> `docker compose run --rm --entrypoint python videocatalog …`.
+> `docker compose run --rm --entrypoint python ml-catalog …`.
 
 ## 1. Cómo ver lo analizado
 
 ```bash
 # Resumen: totales, por categoría y por canal
-docker compose run --rm --entrypoint python videocatalog -m src.db stats
+docker compose run --rm --entrypoint python ml-catalog -m src.db stats
 
 # Estado del etiquetado manual (para la fase ML)
-docker compose run --rm videocatalog label --stats
+docker compose run --rm ml-catalog label --stats
 
 # Búsqueda libre (FTS5, top-20 por relevancia)
-docker compose run --rm videocatalog search "python asyncio"
-docker compose run --rm videocatalog search ""   # últimos 20
+docker compose run --rm ml-catalog search "python asyncio"
+docker compose run --rm ml-catalog search ""   # últimos 20
 
 # Filtros exactos (solo vía Python, sin CLI)
-docker compose run --rm --entrypoint python videocatalog -c "
+docker compose run --rm --entrypoint python ml-catalog -c "
 from src.db import init_db
 from src.search import search_filters, format_results
 c = init_db('data/catalog.db')
@@ -40,7 +40,7 @@ print(format_results(search_filters(c, category='Pintura', limit=5)), end='')"
 # Filtros: category, channel, min_size, max_size, after_date, before_date, status, limit
 
 # Diagnóstico de entorno y permisos
-docker compose run --rm --entrypoint python videocatalog scripts/check_db.py
+docker compose run --rm --entrypoint python ml-catalog scripts/check_db.py
 ```
 
 ## 2. Cómo escanear (y re-escanear)
@@ -53,12 +53,12 @@ El escaneo es **incremental**: compara `size_bytes + modified_at` con la BD.
 
 ```bash
 # Prueba sin escribir en BD (siempre primero con carpetas grandes)
-docker compose run --rm videocatalog scan --dry-run
+docker compose run --rm ml-catalog scan --dry-run
 
 # Scan real en segundo plano, log en DATA_PATH y aviso ntfy al terminar
 DATA_DIR=$(grep -E '^DATA_PATH=' .env | cut -d= -f2-)
 LOG="$DATA_DIR/scan-$(date +%Y%m%d-%H%M).log"
-nohup bash -c 'docker compose run --rm -T videocatalog scan; CODE=$?; STATS=$(docker compose run --rm -T --entrypoint python videocatalog -m src.db stats 2>/dev/null | grep -E "\"total\"|\"active\"|\"missing\""); if [ $CODE -eq 0 ]; then MSG="scan videocatalog OK (exit 0). $STATS"; else MSG="scan videocatalog FALLO (exit $CODE). Revisa el log."; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
+nohup bash -c 'docker compose run --rm -T ml-catalog scan; CODE=$?; STATS=$(docker compose run --rm -T --entrypoint python ml-catalog -m src.db stats 2>/dev/null | grep -E "\"total\"|\"active\"|\"missing\""); if [ $CODE -eq 0 ]; then MSG="scan ml-catalog OK (exit 0). $STATS"; else MSG="scan ml-catalog FALLO (exit $CODE). Revisa el log."; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
 echo "PID $! — log: $LOG"
 
 # Seguir progreso / comprobar que sigue vivo
@@ -71,7 +71,7 @@ ps aux | grep "src.cli scan" | grep -v grep
 > y re-escanear desde cero (solo es seguro si `label` sigue a NULL,
 > es decir, antes del etiquetado manual):
 > ```bash
-> docker compose run --rm --entrypoint sh videocatalog -c 'rm -f /app/data/catalog.db*'
+> docker compose run --rm --entrypoint sh ml-catalog -c 'rm -f /app/data/catalog.db*'
 > # …y lanzar el scan del bloque anterior (~15 min para 6232 vídeos)
 > ```
 > Los errores por fichero quedan en `DATA_PATH/scan_errors.log`.
@@ -124,13 +124,13 @@ Lecciones ya aprendidas (no repetir):
    keywords/categorías en `config.yaml` si algún tema queda fuera
    (ver `task-10-notebook-explore.md`).
 3. **Etiquetar dataset** (a partir de aquí la BD ya no se resetea):
-   `videocatalog label --interactive` (20–50 por categoría) o `--review --threshold 0.3`
+   `ml-catalog label --interactive` (20–50 por categoría) o `--review --threshold 0.3`
    para los dudosos. Rellena `label` / `label_source`. Guía completa del
    trabajo manual (pasos, teclas, qué significan `rule_score` y F1 macro):
    `docs/revision-manual.md`. Alternativa masiva ya ejecutada:
    etiquetado bootstrap con Jev — ver `jev-labeling-setup.md`
    (6232/6232 el 2026-09-24; 683 reviewed + 5549 uncertain).
-4. **Exportar** `videocatalog label --export` → `data/labels.csv` (materia prima ML).
+4. **Exportar** `ml-catalog label --export` → `data/labels.csv` (materia prima ML).
 5. **Explorar y entrenar** (tasks 10–12): notebook `00_intro_notebooks.ipynb`,
    TF-IDF + clasificador scikit-learn → `model.joblib`.
    Atajo reproducible ya ejecutado 2026-09-24: `scripts/train_classifier.py`

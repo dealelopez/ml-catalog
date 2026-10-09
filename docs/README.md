@@ -1,12 +1,12 @@
-# Documentación — videocatalog
+# Documentación — ml-catalog
 
 Índice de la documentación del proyecto. Las tasks están en orden
 secuencial con sus dependencias (`01→…→08→09→…→17→…`).
 
 > Los `task-*.md` y `specs.md` son registros históricos: muestran la CLI
-> por módulo (`python -m src.scanner …`) y el layout anterior
-> (`videocatalog/…`). La CLI unificada actual es
-> `videocatalog scan|search|label|health` (ver `guia-uso.md` y `README.md`
+> por módulo (`python -m src.scanner …`), el layout anterior y el nombre
+> anterior (`videocatalog/…`). La CLI unificada actual es
+> `ml-catalog scan|search|label|health` (ver `guia-uso.md` y `README.md`
 > de la raíz).
 
 ## Tasks de implementación
@@ -47,4 +47,4 @@ secuencial con sus dependencias (`01→…→08→09→…→17→…`).
 - [specs.md](specs.md) — especificación maestra (objetivo doble: catálogo + aprender ML)
 - [fin.md](fin.md) — ajustes sept 2026 (dependencias diferidas, bootstrapping con Jev)
 - [estandares-proyecto.md](estandares-proyecto.md) — estándar de estructura entre proyectos
-- [videocatalog-README-origen.md](videocatalog-README-origen.md) — README original (pre-reorganización)
+- [ml-catalog-README-origen.md](ml-catalog-README-origen.md) — README original (pre-reorganización)

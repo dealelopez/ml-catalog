@@ -1,5 +1,5 @@
 # =============================================================================
-# pyproject.toml — videocatalog
+# pyproject.toml — ml-catalog
 # =============================================================================
 # Configuración del proyecto y herramientas de desarrollo.
 # No usamos pyproject.toml para empaquetar (la app corre en Docker),
@@ -7,7 +7,7 @@
 # =============================================================================
 
 [project]
-name = "videocatalog"
+name = "ml-catalog"
 version = "0.1.0"
 description = "Catálogo local de vídeos con clasificación automática"
 authors = [{name = "Ale López"}]

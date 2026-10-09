@@ -2,7 +2,7 @@
 check_db.py — Diagnóstico rápido de la base de datos.
 
 Uso:
-    docker compose exec videocatalog python scripts/check_db.py
+    docker compose exec ml-catalog python scripts/check_db.py
 """
 
 import os

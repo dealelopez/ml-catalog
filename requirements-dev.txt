@@ -1,5 +1,5 @@
 # =============================================================================
-# Dependencias de desarrollo y testing — videocatalog
+# Dependencias de desarrollo y testing — ml-catalog
 # =============================================================================
 # Incluye todas las dependencias de producción + herramientas de test.
 # Uso:  pip install -r requirements-dev.txt

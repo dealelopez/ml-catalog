@@ -1,5 +1,5 @@
 # =============================================================================
-# Dependencias de producción — videocatalog
+# Dependencias de producción — ml-catalog
 # =============================================================================
 # Solo lo necesario en runtime (escaneo, BD, reglas, ML inferencia).
 # Versiones pinneadas exactas (==) para builds reproducibles.

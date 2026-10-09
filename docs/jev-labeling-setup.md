@@ -24,14 +24,14 @@ cd /opt/docker/ml-catalog
 
 # 2. Comprobar que la key llega al contenedor (se inyecta en cada run
 #    desde .env; no hay que recrear nada porque no hay demonio persistente)
-docker compose run --rm --entrypoint sh videocatalog -c 'if [ -z "$AI_GATEWAY_API_KEY" ]; then echo KEY=MISSING; else echo KEY=SET; fi'
+docker compose run --rm --entrypoint sh ml-catalog -c 'if [ -z "$AI_GATEWAY_API_KEY" ]; then echo KEY=MISSING; else echo KEY=SET; fi'
 # Nunca imprimir el valor de la key en terminal ni logs
 ```
 
 ## 2. Probar con 1 vídeo (antes del lote)
 
 ```bash
-docker compose run --rm --entrypoint python videocatalog -c "
+docker compose run --rm --entrypoint python ml-catalog -c "
 import os, sys; sys.path.insert(0, 'scripts')
 from label_with_jev import classify_with_jev
 print(classify_with_jev('curso de acuarela para principiantes', '',
@@ -48,7 +48,7 @@ Escribe `label`/`label_source` en todos los activos con
 ```bash
 DATA_DIR=$(grep -E '^DATA_PATH=' .env | cut -d= -f2-)
 LOG="$DATA_DIR/jev-$(date +%Y%m%d-%H%M).log"
-nohup bash -c 'docker compose run --rm -T --entrypoint python videocatalog scripts/label_with_jev.py; CODE=$?; if [ $CODE -eq 0 ]; then MSG="jev OK (exit 0)"; else MSG="jev FALLO (exit $CODE)"; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
+nohup bash -c 'docker compose run --rm -T --entrypoint python ml-catalog scripts/label_with_jev.py; CODE=$?; if [ $CODE -eq 0 ]; then MSG="jev OK (exit 0)"; else MSG="jev FALLO (exit $CODE)"; fi; curl -d "$MSG" "$NTFY_URL"' > "$LOG" 2>&1 &
 ```
 
 Parámetros en el script: `AMBIGUITY_THRESHOLD = 0.3`
@@ -73,9 +73,9 @@ Coste orientativo (Jev: $0.042 por 1M tokens de input, solo input):
 ## 5. Después del lote
 
 ```bash
-docker compose run --rm videocatalog label --review --threshold 0.3  # solo jev_uncertain
-docker compose run --rm videocatalog label --stats                   # % revisado
-docker compose run --rm videocatalog label --export                  # data/labels.csv → entrenar modelo
+docker compose run --rm ml-catalog label --review --threshold 0.3  # solo jev_uncertain
+docker compose run --rm ml-catalog label --stats                   # % revisado
+docker compose run --rm ml-catalog label --export                  # data/labels.csv → entrenar modelo
 ```
 
 - `label_with_jev.py`: el `state` envía `Platform / Course / Teacher`

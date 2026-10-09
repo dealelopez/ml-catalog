@@ -1,25 +1,25 @@
 # =============================================================================
-# Docker Compose — videocatalog
+# Docker Compose — ml-catalog
 # =============================================================================
 #
 # Servicios:
-#   videocatalog → App Python (CLI: scan / search / label / health)
+#   ml-catalog → App Python (CLI: scan / search / label / health)
 #
 # Uso rápido:
 #   cp example.env .env            # configurar rutas y claves
 #   docker compose up -d            # arranca el servicio
-#   docker compose exec videocatalog bash            # shell en el contenedor
-#   docker compose run videocatalog scan --dry-run   # escaneo sin escribir
-#   docker compose run videocatalog search "python"  # buscar en el catálogo
+#   docker compose exec ml-catalog bash            # shell en el contenedor
+#   docker compose run ml-catalog scan --dry-run   # escaneo sin escribir
+#   docker compose run ml-catalog search "python"  # buscar en el catálogo
 #
 # Los vídeos se montan en solo lectura (:ro) — la app nunca los modifica.
 # La BD y los modelos ML viven en ${DATA_PATH}:/app/data (persistente).
 # =============================================================================
 
 services:
-  videocatalog:
+  ml-catalog:
     build: .
-    container_name: videocatalog
+    container_name: ml-catalog
     stdin_open: true
     tty: true
     working_dir: /app
