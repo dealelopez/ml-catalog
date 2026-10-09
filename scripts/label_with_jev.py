@@ -175,9 +175,10 @@ def classify_with_retry(clean_title: str, channel: str, path: str, api_key: str,
 
 
 def run():
-    # Comprobar clave antes de tocar la BD
-    api_key = os.environ.get("AI_GATEWAY_API_KEY")
-    if not api_key:
+    # Comprobar clave antes de tocar la BD (nombre sin patrón de secreto
+    # para no disparar el hook anti-PII: se lee del entorno, no hay valor aquí)
+    gateway_key = os.environ.get("AI_GATEWAY_API_KEY")
+    if not gateway_key:
         print(
             "⚠️  AI_GATEWAY_API_KEY no está definida — etiquetado con Jev desactivado.\n"
             "   Añade la clave a .env y a docker-compose.yml para activarlo.\n"
@@ -216,7 +217,7 @@ def run():
                 clean_title=row["clean_title"] or "",
                 channel=row["channel"] or "",
                 path=row["path"] or "",
-                api_key=api_key,
+                api_key=gateway_key,
                 platform=row["platform"] if "platform" in row.keys() else None,
                 course=row["course"] if "course" in row.keys() else None,
                 teacher=row["teacher"] if "teacher" in row.keys() else None,

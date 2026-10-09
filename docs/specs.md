@@ -461,7 +461,7 @@ assert classify("video sin titulo claro", "/misc/")["category"] == "otros"
 - `"model"` — predicho por el modelo ML, sin revisión humana
 - `"model+reviewed"` — predicho por el modelo ML y confirmado por el usuario
 
-Ver detalle completo en `tasks/task-09-labeling.md`.
+Ver detalle completo en `task-09-labeling.md`.
 
 ---
 
@@ -483,7 +483,7 @@ Ver detalle completo en `tasks/task-09-labeling.md`.
 
 **Criterio de aceptación:** El notebook produce al menos dos gráficos y las celdas de conclusiones tienen texto escrito respondiendo las preguntas planteadas.
 
-Ver detalle completo en `tasks/task-10-notebook-explore.md`.
+Ver detalle completo en `task-10-notebook-explore.md`.
 
 ---
 
@@ -505,7 +505,7 @@ Ver detalle completo en `tasks/task-10-notebook-explore.md`.
 
 **Criterio de aceptación:** La implementación manual coincide cualitativamente con scikit-learn. La tabla de palabras discriminativas por categoría está interpretada en Markdown.
 
-Ver detalle completo en `tasks/task-11-tfidf.md`.
+Ver detalle completo en `task-11-tfidf.md`.
 
 ---
 
@@ -529,7 +529,7 @@ Ver detalle completo en `tasks/task-11-tfidf.md`.
 
 **Criterio de aceptación:** Produce `data/model.joblib` y `data/model_metrics.json`. La celda de F1 macro tiene explicación escrita sobre por qué es mejor que accuracy.
 
-Ver detalle completo en `tasks/task-12-train-classifier.md`.
+Ver detalle completo en `task-12-train-classifier.md`.
 
 ---
 
@@ -545,7 +545,7 @@ Ver detalle completo en `tasks/task-12-train-classifier.md`.
 - El pipeline guarda siempre `rule_score` aunque esté usando el modelo (necesario para Task 16)
 - `python -m src.classifier predict "..."` y `python -m src.classifier info` funcionan desde terminal
 
-Ver detalle completo en `tasks/task-13-integrate-model.md`.
+Ver detalle completo en `task-13-integrate-model.md`.
 
 ---
 
@@ -570,7 +570,7 @@ Sin este ciclo, entrenar un modelo es un evento único. Con él, el modelo mejor
 - Guarda versión histórica en `data/model_history/model_YYYYMMDD_HHMMSS.joblib`
 - Advierte sobre categorías con menos de N ejemplos (omitidas del entrenamiento)
 
-Ver detalle completo en `tasks/task-14-retrain-cycle.md`.
+Ver detalle completo en `task-14-retrain-cycle.md`.
 
 ---
 
@@ -591,7 +591,7 @@ Ver detalle completo en `tasks/task-14-retrain-cycle.md`.
 
 **Criterio de aceptación:** Las celdas de análisis están ejecutadas y las celdas de conclusiones tienen texto escrito con un plan de mejora concreto.
 
-Ver detalle completo en `tasks/task-15-notebook-errors.md`.
+Ver detalle completo en `task-15-notebook-errors.md`.
 
 ---
 
@@ -612,7 +612,7 @@ Ver detalle completo en `tasks/task-15-notebook-errors.md`.
 
 **Criterio de aceptación:** La curva de aprendizaje está generada e interpretada. Las conclusiones tienen una recomendación concreta con justificación numérica.
 
-Ver detalle completo en `tasks/task-16-rules-vs-model.md`.
+Ver detalle completo en `task-16-rules-vs-model.md`.
 
 ---
 

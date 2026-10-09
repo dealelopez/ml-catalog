@@ -1,0 +1,49 @@
+# =============================================================================
+# pyproject.toml — videocatalog
+# =============================================================================
+# Configuración del proyecto y herramientas de desarrollo.
+# No usamos pyproject.toml para empaquetar (la app corre en Docker),
+# pero sí para configurar pytest, markers, y herramientas (mypy, ruff).
+# =============================================================================
+
+[project]
+name = "videocatalog"
+version = "0.1.0"
+description = "Catálogo local de vídeos tutoriales con clasificación automática"
+authors = [{name = "Ale López"}]
+license = {text = "GPL-3.0-or-later"}
+requires-python = ">=3.12"
+
+# ---------------------------------------------------------------------------
+# pytest — Configuración de tests
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# caché fuera del repo (el código se monta como volumen en Docker)
+cache_dir = "/tmp/.pytest_cache"
+# Markers personalizados para separar tests rápidos de lentos.
+# Uso: pytest -m "not integration" (solo tests rápidos, sin vídeos reales)
+#       pytest -m integration        (solo tests que necesitan datos reales)
+markers = [
+    "integration: tests que requieren vídeos reales o servicios externos (lentos)",
+]
+# Mostrar output de print() en tests (útil para depurar)
+addopts = "-v --tb=short"
+
+# ---------------------------------------------------------------------------
+# mypy — Verificación de tipos
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+# ---------------------------------------------------------------------------
+# ruff — Linter + formatter (alternativa rápida a flake8+black)
+# ---------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]  # errores, warnings, imports

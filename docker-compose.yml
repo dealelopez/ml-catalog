@@ -1,0 +1,43 @@
+# =============================================================================
+# Docker Compose — videocatalog
+# =============================================================================
+#
+# Servicios:
+#   videocatalog → App Python (CLI: scan / search / label / health)
+#
+# Uso rápido:
+#   cp example.env .env            # configurar rutas y claves
+#   docker compose up -d            # arranca el servicio
+#   docker compose exec videocatalog bash            # shell en el contenedor
+#   docker compose run videocatalog scan --dry-run   # escaneo sin escribir
+#   docker compose run videocatalog search "python"  # buscar en el catálogo
+#
+# Los vídeos se montan en solo lectura (:ro) — la app nunca los modifica.
+# La BD y los modelos ML viven en ${DATA_PATH}:/app/data (persistente).
+# =============================================================================
+
+services:
+  videocatalog:
+    build: .
+    container_name: videocatalog
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    restart: unless-stopped
+    env_file: .env
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      # Jev / Vercel AI Gateway — opcional; si no está definida, label_with_jev.py
+      # avisa y sale sin tocar la BD.
+      - AI_GATEWAY_API_KEY=${AI_GATEWAY_API_KEY:-}
+      # Ruta interna a la BD (relativa a /app; debe coincidir con el montaje /app/data)
+      - DB_PATH=${DB_PATH:-data/catalog.db}
+    volumes:
+      # Código fuente — editable en vivo desde el host
+      - .:/app
+      # Datos persistentes (BD, modelos ML)
+      - ${DATA_PATH:-./data}:/app/data
+      # Vídeos — solo lectura, nunca se modifican
+      - ${VIDEOS_PATH:-/videos}:/videos:ro

@@ -2,9 +2,9 @@
 
 > Estado a 2026-09-24: 6232 vídeos (543 GB) catalogados.
 > Task 17 (contexto por ruta) aplicada: `Otros` 87% → **12.9%** (803),
-> 5984 labels Jev intactos. Ver `tasks/task-17-path-context.md`.
+> 5984 labels Jev intactos. Ver `task-17-path-context.md`.
 
-Todos los comandos se lanzan desde el host, en `videocatalog/`:
+Todos los comandos se lanzan desde el host, en la raíz del proyecto:
 
 ```bash
 cd /opt/docker/ml-catalog/videocatalog
@@ -116,7 +116,7 @@ Lecciones ya aprendidas (no repetir):
 1. **Cerrar el rescan actual** (llega solo por ntfy). Objetivo: `Otros` < 30%.
 2. **Revisar `Otros` restante** con `search ""` y muestras aleatorias; ajustar
    keywords/categorías en `config.yaml` si algún tema queda fuera
-   (ver `tasks/task-10-notebook-explore.md`).
+   (ver `task-10-notebook-explore.md`).
 3. **Etiquetar dataset** (a partir de aquí la BD ya no se resetea):
    `src.label --interactive` (20–50 por categoría) o `--review --threshold 0.3`
    para los dudosos. Rellena `label` / `label_source`. Guía completa del

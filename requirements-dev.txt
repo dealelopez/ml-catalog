@@ -1,0 +1,20 @@
+# =============================================================================
+# Dependencias de desarrollo y testing — videocatalog
+# =============================================================================
+# Incluye todas las dependencias de producción + herramientas de test.
+# Uso:  pip install -r requirements-dev.txt
+# =============================================================================
+
+# Todas las dependencias de producción.
+-r requirements.txt
+
+# --- Testing ---
+pytest==8.3.5
+
+# --- Notebooks / exploración ML (Tasks 10-12, 15-16) ---
+notebook==7.2.1
+ipykernel==6.29.5
+
+# --- Calidad de código ---
+mypy==1.15.0
+ruff==0.11.12

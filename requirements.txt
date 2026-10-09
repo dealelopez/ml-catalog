@@ -1,0 +1,14 @@
+# =============================================================================
+# Dependencias de producción — videocatalog
+# =============================================================================
+# Solo lo necesario en runtime (escaneo, BD, reglas, ML inferencia).
+# Versiones pinneadas exactas (==) para builds reproducibles.
+# Dev/testing (pytest, notebook, mypy, ruff) va en requirements-dev.txt.
+# =============================================================================
+
+pyyaml==6.0.2
+rich==13.7.1
+ffmpeg-python==0.2.0
+pandas==2.2.2
+scikit-learn==1.5.1
+requests==2.32.3

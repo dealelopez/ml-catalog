@@ -1,14 +1,14 @@
 """
 train_classifier.py — Entrena el clasificador ML del catálogo (Task 12).
 
-Diseño según tasks/task-12-train-classifier.md:
+Diseño según docs/task-12-train-classifier.md:
   - TF-IDF (max_features=5000, ngram_range=(1,2)) + 3 variantes:
     Regresión Logística, Naive Bayes, LR con class_weight='balanced'.
   - Split estratificado 80/20 (random_state=42), métrica F1 macro.
   - Aporte Task 17: el texto incluye plataforma/curso/profesor además
     del título; se compara contra título-solo como baseline.
 
-Uso (desde videocatalog/, working_dir /app en contenedor):
+Uso (desde la raíz, working_dir /app en contenedor):
     docker compose exec -T videocatalog python scripts/train_classifier.py
 
 Genera en data/ (volumen DATA_PATH):
