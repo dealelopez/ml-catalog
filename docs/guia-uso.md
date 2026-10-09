@@ -7,7 +7,7 @@
 Todos los comandos se lanzan desde el host, en la raíz del proyecto:
 
 ```bash
-cd /opt/docker/ml-catalog/videocatalog
+cd /opt/docker/ml-catalog
 ```
 
 Dentro del contenedor el directorio de trabajo es `/app`.

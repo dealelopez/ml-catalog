@@ -1,6 +1,6 @@
 # Etiquetado con Jev (TypeSafe AI vía Vercel AI Gateway)
 
-Script: `scripts/label_with_jev.py` (montado `:ro` en `/app/scripts`).
+Script: `scripts/label_with_jev.py` (vive en el repo, disponible en `/app/scripts` vía el montaje `.:/app`).
 Propósito: asignar `label` + `label_source` (`jev_reviewed` / `jev_uncertain`)
 a los vídeos activos, como bootstrap antes del etiquetado manual y el
 entrenamiento del clasificador ML.
@@ -14,7 +14,7 @@ entrenamiento del clasificador ML.
 ## 1. Configuración (una vez)
 
 ```bash
-cd /opt/docker/ml-catalog/videocatalog
+cd /opt/docker/ml-catalog
 
 # 1. Key real en .env (ya existe la línea; sustituir el valor)
 #    AI_GATEWAY_API_KEY=vck-...

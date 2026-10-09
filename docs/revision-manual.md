@@ -8,7 +8,7 @@
 ### 0. Ver el marcador
 
 ```bash
-cd /opt/docker/ml-catalog/videocatalog
+cd /opt/docker/ml-catalog
 docker compose exec videocatalog python -m src.label --stats
 ```
 
