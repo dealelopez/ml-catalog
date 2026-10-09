@@ -1,8 +1,3 @@
-- El fin de este proyecto es aprender ML y todo lo relacionado con clasificadores, etc, no pretendo propiamente aprender python. No tiene sentido que aprenda python porque nunca haré este tipo de codificación manualmente, pero sí que me interesa conocer cómo se estructura el proyecto y cómo funciona a grandes rasgos python en este tipo de proyectos. Actualiza la documentación y las tareas en este sentido.
-- Poder extrapolar esto a los juegos y roms
-
----
-
 ## Ajustes acordados (septiembre 2026)
 
 ### Dependencias diferidas: Code Server y notebooks
