@@ -33,6 +33,44 @@ def load_model(model_path: str = MODEL_PATH_DEFAULT):
     return joblib.load(model_path)
 
 
+def try_load_model(model_path: str = MODEL_PATH_DEFAULT):
+    """Carga el modelo si existe; si no, devuelve None (fallback silencioso).
+
+    Pensado para el pipeline de escaneo: si no hay modelo, se usan solo
+    reglas sin error ni log.
+
+    Args:
+        model_path: Ruta al fichero del modelo.
+
+    Returns:
+        Pipeline de scikit-learn o None.
+    """
+    if not os.path.exists(model_path):
+        return None
+    import joblib  # noqa: PLC0415
+    return joblib.load(model_path)
+
+
+def get_model_info(model_path: str = MODEL_PATH_DEFAULT) -> dict | None:
+    """Devuelve metadatos básicos del modelo sin cargar el pipeline completo.
+
+    Lee `model_metrics.json` junto al modelo.
+
+    Args:
+        model_path: Ruta al fichero del modelo (.joblib).
+
+    Returns:
+        Dict con claves: f1_macro, algorithm, n_train, n_test, classes,
+        features, trained_at; o None si no existe.
+    """
+    metrics_path = os.path.splitext(model_path)[0] + "_metrics.json"
+    if not os.path.exists(metrics_path):
+        return None
+    import json  # noqa: PLC0415
+    with open(metrics_path, "r", encoding="utf-8") as fh:
+        return json.load(fh)
+
+
 def predict(model, clean_title: str, context_text: str = "") -> dict:
     """Predice la categoría de un vídeo con el modelo ML.
 

@@ -109,6 +109,39 @@ def build_parser() -> argparse.ArgumentParser:
         help="CSV de salida para --export (default: data/labels.csv)",
     )
 
+    # --- apply-model (re-clasifica BD con modelo ML) ---
+    apply_parser = subparsers.add_parser(
+        "apply-model", help="Re-clasifica la BD con el modelo ML (escribe label_source='model')"
+    )
+    apply_parser.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Confianza mínima para auto-etiquetar (default: config.classification.confidence_threshold = 0.2)",
+    )
+    apply_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Muestra qué haría sin escribir en la BD.",
+    )
+    apply_parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Máximo de vídeos a procesar (para pruebas).",
+    )
+    apply_parser.add_argument(
+        "--config",
+        default=None,
+        metavar="RUTA",
+        help="Ruta al config.yaml (default: config.yaml en la raíz).",
+    )
+    apply_parser.add_argument(
+        "--db",
+        default=os.getenv("DB_PATH", "data/catalog.db"),
+        help="Ruta al SQLite (default: $DB_PATH o data/catalog.db).",
+    )
+
     # --- health ---
     subparsers.add_parser("health", help="Comprueba configuración, BD y ffprobe")
 
@@ -198,7 +231,37 @@ def _cmd_health(_args: argparse.Namespace) -> int:
     else:
         console.print("[yellow]![/yellow] ffprobe no encontrado (metadata en modo fail-soft)")
 
+    # 4. Modelo ML
+    try:
+        from src.classifier import get_model_info
+
+        info = get_model_info()
+        if info:
+            console.print(f"[green]✓[/green] Modelo ML: F1={info.get('f1_macro')}, algo={info.get('algorithm')}")
+        else:
+            console.print("[yellow]![/yellow] Modelo ML: no entrenado (data/model.joblib)")
+    except Exception as e:
+        console.print(f"[yellow]![/yellow] Modelo ML: {e}")
+
     return 0 if ok else 1
+
+
+def _cmd_apply_model(args: argparse.Namespace) -> int:
+    from src.config import load
+    from src.model_apply import apply_model
+
+    cfg = load(args.config) if args.config else load()
+    result = apply_model(
+        cfg,
+        args.db,
+        threshold=args.threshold,
+        dry_run=args.dry_run,
+        limit=args.limit,
+    )
+
+    if result["dry_run"]:
+        return 0
+    return 0
 
 
 # =============================================================================
@@ -218,6 +281,7 @@ def main(argv: list[str] | None = None) -> int:
         "scan": _cmd_scan,
         "search": _cmd_search,
         "label": _cmd_label,
+        "apply-model": _cmd_apply_model,
         "health": _cmd_health,
     }
     try:

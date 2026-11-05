@@ -34,6 +34,7 @@ from src import metadata as _metadata
 from src import normalizer as _normalizer
 from src import path_context as _path_context
 from src import rules as _rules
+from src import classifier as _classifier
 
 console = Console()
 
@@ -85,6 +86,9 @@ def scan(config: dict, dry_run: bool = False) -> dict:
             f"\n[bold][dry-run][/bold] Escaneando {len(folders)} carpeta(s)...\n"
         )
 
+        # Cargar modelo ML si existe (fallback silencioso a solo reglas)
+        model = _classifier.try_load_model()
+
         for filepath in find_video_files(folders, extensions, ignore_folders):
             found += 1
             try:
@@ -94,6 +98,14 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                 classif = _rules.classify(
                     norm["clean_title"], str(filepath), config, context=ctx
                 )
+
+                # Predicción ML si hay modelo
+                ml_tag = ""
+                if model is not None:
+                    ctx_text = ctx.get("context_text", "")
+                    ml_pred = _classifier.predict(model, norm["clean_title"], ctx_text)
+                    ml_tag = f"  → ML: {ml_pred['category']} ({ml_pred['confidence']:.2f})"
+
                 size_str = format_size(meta.get("size_bytes") or 0)
                 cat = classif["category"]
                 score = classif["score"]
@@ -101,7 +113,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                 src_tag = "·folder" if classif.get("source") == "folder" else ""
                 icon = "✓" if cat != "Otros" else "?"
                 console.print(
-                    f"  {icon}  {filepath.name:<55}  {size_str:>8}   {cat} ({score:.2f}, Δ{margin:.2f}{src_tag})"
+                    f"  {icon}  {filepath.name:<55}  {size_str:>8}   {cat} ({score:.2f}, Δ{margin:.2f}{src_tag}){ml_tag}"
                 )
             except Exception:
                 errors += 1
@@ -129,6 +141,9 @@ def scan(config: dict, dry_run: bool = False) -> dict:
     log_path = Path(db_path).parent / "scan_errors.log"
 
     conn = _db.init_db(db_path)
+
+    # Cargar modelo ML si existe (fallback silencioso a solo reglas)
+    model = _classifier.try_load_model()
 
     # Snapshot {path: {size_bytes, modified_at}} para la optimización de reescaneo
     existing: dict = {
@@ -191,6 +206,15 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                         norm["clean_title"], path_str, config, context=ctx
                     )
 
+                    # Predicción ML si hay modelo cargado
+                    model_category = None
+                    model_confidence = None
+                    if model is not None:
+                        ctx_text = ctx.get("context_text", "")
+                        ml_pred = _classifier.predict(model, norm["clean_title"], ctx_text)
+                        model_category = ml_pred["category"]
+                        model_confidence = ml_pred["confidence"]
+
                     data = {
                         "path": path_str,
                         "filename": filepath.name,
@@ -207,6 +231,8 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                         "rule_score": classif["score"],
                         "rule_margin": classif.get("margin", 0.0),
                         "rule_source": classif.get("source", "rules"),
+                        "model_category": model_category,
+                        "model_confidence": model_confidence,
                         "label": None,
                         "label_source": None,
                     }

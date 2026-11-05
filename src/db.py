@@ -23,6 +23,7 @@ _VIDEO_FIELDS = [
     "channel", "yt_id", "clean_title",
     "platform", "course", "teacher",
     "category", "subcategory", "rule_score", "rule_margin", "rule_source",
+    "model_category", "model_confidence",
     "label", "label_source",
 ]
 
@@ -91,13 +92,15 @@ def _now() -> str:
 
 
 # Columnas añadidas por migraciones (Task 17: contexto; Task 18: margen;
-# Task 19: fuente de la regla).
+# Task 19: fuente de la regla; Task 13: predicción ML).
 _MIGRATION_COLUMNS = [
     ("platform", "TEXT"),
     ("course", "TEXT"),
     ("teacher", "TEXT"),
     ("rule_margin", "REAL"),
     ("rule_source", "TEXT"),
+    ("model_category", "TEXT"),
+    ("model_confidence", "REAL"),
 ]
 
 
