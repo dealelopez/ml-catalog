@@ -1,0 +1,342 @@
+# folder_categories (Task 19) — GENERADO AUTOMATICAMENTE, NO EDITAR A MANO.
+# Regenerar con: python scripts/generate_folder_candidates.py
+# Clave = segmento normalizado (strip Dewey, minusculas). Gana el nivel mas profundo.
+folder_categories:
+  "01 establishing the world": Arte_dibujo
+  "01 gesture": Arte_dibujo
+  "01 getting started": Web
+  "01 job searching interviewing and negotiating salary": Gestion
+  "01 line and color technique": Arte_dibujo
+  "01 observed color": Pintura
+  "02 become the most trusted person at work": Gestion
+  "02 characters": Arte_dibujo
+  "02 city brainstorming": Arte_dibujo
+  "02 define your project": Gestion
+  "02 defining imposter syndrome": Gestion
+  "02 growth hacking": Gestion
+  "02 illustration mini workshop": Arte_dibujo
+  "02 intro why do you do ux research": Gestion
+  "02 line and color tips and thoughts": Arte_dibujo
+  "02 objects": Web
+  "02 outlining the role of requirements life cycle management": Gestion
+  "02 preparing for elicitation efforts": Gestion
+  "02 pricing strategy explained": Gestion
+  "02 refined lines": Arte_dibujo
+  "02 specialized locations": Pintura
+  "03 character brainstorming": Arte_dibujo
+  "03 configuring compute and networking": Sistemas
+  "03 direct color": Pintura
+  "03 eliciting information from stakeholders": Gestion
+  "03 entendiendo los circuitos electricos": Electronica
+  "03 prototypes": Web
+  "03 simple shading": Arte_dibujo
+  "03 small scale environments": Pintura
+  "03 strengthen your workplace influence": Gestion
+  "03 tracing requirements": Gestion
+  "03 when to do ux research": Gestion
+  "04 configuring database and storage": Sistemas
+  "04 confirming elicitation results": Gestion
+  "04 create epiphanies to land the deal": Gestion
+  "04 finalizing sketches": Arte_dibujo
+  "04 keyart": Arte_dibujo
+  "04 maintaining requirements": Gestion
+  "04 prototypical inheritance": Web
+  "04 research and margins for pricing": Gestion
+  "04 technical drawing": Arte_dibujo
+  "04 ux research techniques": Gestion
+  "05 communicating business analysis information to stakeholders": Gestion
+  "05 getting to the agreement": Gestion
+  "05 imaginary color": Pintura
+  "05 imaginary subjects": Arte_dibujo
+  "05 landscapes": Pintura
+  "05 pricing influencers": Gestion
+  "05 prioritizing requirements": Gestion
+  "06 assessing requirements changes": Gestion
+  "06 es6 tooling": Web
+  "06 managing stakeholder collaboration in change efforts": Gestion
+  "06 negotiating your future": Gestion
+  "06 portfolio builder": Arte_dibujo
+  "06 pricing models": Gestion
+  "07 approving requirements": Gestion
+  "07 gantt chart": Gestion
+  "07 s3 your reliable progress": Arte_dibujo
+  "1 1 introduction": Arte_dibujo
+  "1 3 sketching basics": Arte_dibujo
+  "1 4 first brainstorm sketches": Arte_dibujo
+  "1 5 color blocking": Pintura
+  "1 5 landscape brainstorm sketches": Arte_dibujo
+  "1 advanced product management vision strategy and metrics": Gestion
+  "1 course introduction": Bases_datos
+  "1 influences": Arte_dibujo
+  "1 intro": Arte_dibujo
+  "1 python basics": Python
+  "1 sql for data engineers": Bases_datos
+  "1 table structures in snowflake": Bases_datos
+  "10 regular expressions": Python
+  "10 seeds and sources": Bases_datos
+  "11 files": Python
+  "13 macros custom tests and packages": Bases_datos
+  "14 documentation": Bases_datos
+  "15 analyses hooks and exposures": Bases_datos
+  "2 2 general street scenes": Arte_dibujo
+  "2 3 rough paintings": Pintura
+  "2 3 specialized locations": Arte_dibujo
+  "2 4 creating shapes": Arte_dibujo
+  "2 4 small details": Pintura
+  "2 5 color": Arte_dibujo
+  "2 7 bonus material": Arte_dibujo
+  "2 advanced product management leadership and communication": Gestion
+  "2 basic lines": Arte_dibujo
+  "2 configuration of dbt core": Bases_datos
+  "2 getting and setting up your arduino": Electronica
+  "2 mastering communication for pms": Gestion
+  "2 measuring solution performance": Gestion
+  "2 modeling in sql": Bases_datos
+  "2 product management foundations of vision and strategy": Gestion
+  "2 python collections": Python
+  "2 views in snowflake": Bases_datos
+  "21 draw learn character design in 21 days david perez": Arte_dibujo
+  "3 3 citizen context explorations": Arte_dibujo
+  "3 adding components to the arduino": Electronica
+  "3 analyzing performance measures": Gestion
+  "3 building the basic dbt project": Bases_datos
+  "3 leadership for product managers": Gestion
+  "3 optimizing query performance": Bases_datos
+  "3 perspective": Arte_dibujo
+  "3 pillar la gracia el guión": Arte_dibujo
+  "3 sources": Bases_datos
+  "3 table materializations": Bases_datos
+  "4 2 character sheets": Arte_dibujo
+  "4 2 poster line art": Arte_dibujo
+  "4 3 cloud native strategies": Sistemas
+  "4 3 color sketching basics": Arte_dibujo
+  "4 4 character color frames": Arte_dibujo
+  "4 5 location line art refinement": Arte_dibujo
+  "4 6 location color sketch": Arte_dibujo
+  "4 7 environment value sketch": Arte_dibujo
+  "4 8 bonus material": Arte_dibujo
+  "4 8 environment line art": Arte_dibujo
+  "4 accelerating your pm career": Gestion
+  "4 advanced dbt testing": Bases_datos
+  "4 advanced metrics for product managers": Gestion
+  "4 assessing solution limitations": Gestion
+  "4 common table expressions vs subqueries": Bases_datos
+  "4 composition": Arte_dibujo
+  "4 models": Bases_datos
+  "4 pandas dataframe api": Python
+  "4 theory normalization": Bases_datos
+  "5 2 color blocking": Pintura
+  "5 3 rough paintings": Pintura
+  "5 4 back up using third party plugins": Web
+  "5 4 small details": Pintura
+  "5 5 final checks": Pintura
+  "5 advanced dbt data modelling": Bases_datos
+  "5 assessing enterprise limitations": Gestion
+  "5 managing people as a pm": Gestion
+  "5 numpy": Python
+  "5 python for data engineering from beginner to advanced": Python
+  "5 testing sql with dbt": Bases_datos
+  "5 theory slowly changing dimension (scd)": Bases_datos
+  "6 advanced dbt commands and selectors": Bases_datos
+  "6 data engineering dbt for sql": Bases_datos
+  "6 how to use color": Arte_dibujo
+  "6 increasing solution value": Gestion
+  "7 advanced dbt jinja and macros": Bases_datos
+  "7 advanced snowflake deep dive cloud data warehousing and analytics": Bases_datos
+  "7 practice setup": Bases_datos
+  "8 cant you think of anything": Arte_dibujo
+  "8 dbt cloud": Bases_datos
+  "9 a few tips": Arte_dibujo
+  "9 materializations": Bases_datos
+  "[ freecourseweb com ] domestika graphic humour for beginners": Arte_dibujo
+  "[domestika] animated illustration in procreate tell a story with movement": Arte_dibujo
+  "advanced composition francis vallejo": Arte_dibujo
+  "ai technical": IA_ML
+  "alex hillkurtz comprimidos": Arte_dibujo
+  "animal character design david colman": Arte_dibujo
+  "animal clips for class": Arte_dibujo
+  "artwod beginner design course": Arte_dibujo
+  "artwod character design": Arte_dibujo
+  "artwod illustration course": Arte_dibujo
+  "artwod prop design": Arte_dibujo
+  "automate the boring stuff with python programming": Python
+  "bancroft drawing character poses": Arte_dibujo
+  "basic": Arte_dibujo
+  "business analysis assessing and improving solutions": Gestion
+  "character design": Arte_dibujo
+  "coloso human body croquis master from hobby to practice": Arte_dibujo
+  "complete sql mastery": Bases_datos
+  "costura": Costura
+  "craftsy sketching your point of view paul heaston": Arte_dibujo
+  "ctrl paint digital color starting kit": Pintura
+  "ctrl paint digital sketching starting kit": Arte_dibujo
+  "ctrl paint perspective sketching 1": Arte_dibujo
+  "ctrl paint perspective sketching 2": Arte_dibujo
+  "daily sketching for creative inspiration": Arte_dibujo
+  "deciding what to draw irshad karim drawabox": Arte_dibujo
+  "devops foundations going cloud native": Sistemas
+  "domestika animated illustration procreate martin tognola": Arte_dibujo
+  "domestika architectural drawing from paper to photoshop david drazil": Arte_dibujo
+  "domestika architectural drawing saleh alenzawe": Arte_dibujo
+  "domestika basic principles of drawing people from imagination": Arte_dibujo
+  "domestika business plan for creatives build your brand and career by lizzie snow": Gestion
+  "domestika cartoon style character portraits with procreate by cristina gomez": Arte_dibujo
+  "domestika character design dan kelby": Arte_dibujo
+  "domestika childrens fiction write compelling adventure stories": Escritura
+  "domestika childrens fiction write compelling adventure stories ross montgomery": Escritura
+  "domestika concept art design titus lunter": Arte_dibujo
+  "domestika design own creative process alejandro masferrer": Creatividad
+  "domestika drawing 101 jean fraisse": Arte_dibujo
+  "domestika drawing animal characters florian satzinger": Arte_dibujo
+  "domestika expressive architectural sketching with colored markers albert kiefer": Arte_dibujo
+  "domestika fantasy character design in procreate nicholas kole": Arte_dibujo
+  "domestika guille rancel": Arte_dibujo
+  "domestika illustrated characters factory patricio betteo": Arte_dibujo
+  "domestika illustrated portrait in watercolor by ana santos": Pintura
+  "domestika illustration and character design for childrens stories teresa martinez": Arte_dibujo
+  "domestika illustration for animation jean fraisse": Arte_dibujo
+  "domestika inking for comics and ilustrations sergio bleda": Arte_dibujo
+  "domestika intro character design animation jean fraisse": Arte_dibujo
+  "domestika intro character design pixel daniel benitez": Arte_dibujo
+  "domestika introduction digital comic albert monteys": Arte_dibujo
+  "domestika isometric map jess wilson": Arte_dibujo
+  "domestika lapin botanical sketchbooking": Arte_dibujo
+  "domestika lobon leal sketchbook drawing techniques": Arte_dibujo
+  "domestika mattias adolfsson creative sketching fill": Arte_dibujo
+  "domestika original illustration tablet puño": Arte_dibujo
+  "domestika search and find victor beuren": Arte_dibujo
+  "domestika sketchbook creating characters based real people ramirez jacinto": Arte_dibujo
+  "domestika sketching techniques": Arte_dibujo
+  "domestika superdibujante puño": Arte_dibujo
+  "domestika teoria color jean fraisse": Pintura
+  "domestika the art of sketching transform your doodles into art by mattias adolfsson": Arte_dibujo
+  "domestika tom fox drawing people": Arte_dibujo
+  "domestika watercolor coloring for comics and ilustrations sergio bleda": Pintura
+  "drawing clear expressions with aaron blaise": Arte_dibujo
+  "drawing with life david colman": Arte_dibujo
+  "drawingcodex line color artisan tim mcburnie": Arte_dibujo
+  "drawingcodex tim mcburnie": Arte_dibujo
+  "dynamic sketching 1 with peter han": Arte_dibujo
+  "dynamic sketching 2 with peter han": Arte_dibujo
+  "electronica": Electronica
+  "electronica21": Electronica
+  "elegoo": Electronica
+  "fantasy procreate rafael sarmento": Arte_dibujo
+  "fundamentals of design tyler edlin": Arte_dibujo
+  "glenn vilppu": Arte_dibujo
+  "growth hacking tips": Gestion
+  "gumroad academic drawing made easy jake taplin jakedontdraw": Arte_dibujo
+  "hue teo storytelling": Escritura
+  "intro comic george pratt": Arte_dibujo
+  "js": Web
+  "julie mellan dynamic animals": Arte_dibujo
+  "kim jung gi how to draw figures in perspective": Arte_dibujo
+  "learn python the hard way 3rd edition": Python
+  "learn squared sketching everything kleinerhai": Arte_dibujo
+  "learn squared sketching the right way zahir aghakhani": Arte_dibujo
+  "linkedin learning growth hacking tips zh": Gestion
+  "linkedin learning job searching interviewing and negotiating salary": Gestion
+  "linkedin learning overcoming imposter syndrome zh": Gestion
+  "linkedin learning pricing strategy explained": Gestion
+  "linkedin learning succeeding in devops xqzt": Sistemas
+  "linkedin learning transitioning from waterfall to agile project management": Gestion
+  "lulu ferris optim": Costura
+  "lynda business intelligence for consultants apollo bitdownload ir": Gestion
+  "lynda devops foundations going cloud native xqzt bitdownload ir": Sistemas
+  "lynda project management simplified apollo": Gestion
+  "lynda writing a business case apollo bitdownload ir": Gestion
+  "lyndon ruddy art storyboard": Arte_dibujo
+  "maestro alan moore storytelling course": Escritura
+  "management": Gestion
+  "marco bucci color survival guide": Pintura
+  "marco bucci digital brushwork": Arte_dibujo
+  "marco bucci drawing for experienced beginners": Arte_dibujo
+  "marco bucci figure drawing": Arte_dibujo
+  "marco bucci illustrating childrens books": Arte_dibujo
+  "marco bucci sketchbook painting": Pintura
+  "masterclass aaron sorkin teaches screenwritting": Escritura
+  "masterclass amy tan teaches fiction memory and imagination": Escritura
+  "masterclass bob iger teaches business strategy and leadership": Gestion
+  "masterclass chris voss teaches the art of negotiation": Gestion
+  "masterclass chris voss win workplace negotiations": Gestion
+  "masterclass dan brown teaches writing thrillers": Escritura
+  "masterclass david baldacci teaches mystery and thriller writing": Escritura
+  "masterclass david mamet teaches dramatic writing": Escritura
+  "masterclass david sedaris teaches storytelling and humor": Escritura
+  "masterclass james patterson teaches writing": Escritura
+  "masterclass joyce carol oates teaches the art of the short story": Escritura
+  "masterclass levar burton teaches the power of storytelling": Escritura
+  "masterclass malcolm gladwell teaches writing": Escritura
+  "masterclass margaret atwood teaches creative writing": Escritura
+  "masterclass neil gaiman teaches the art of storytelling": Escritura
+  "masterclass nk jemisin teaches fantasy and science fiction writing": Escritura
+  "masterclass rl stine teaches writing for young audiences": Escritura
+  "masterclass salman rushdie teaches storytelling and writing": Escritura
+  "masterclass the duffer brothers teach developing an original tv series": Escritura
+  "masterclass walter mosley teaches fiction and storytelling": Escritura
+  "microsoft power bi": Productividad
+  "midudev astro headless": Web
+  "moderndayjames 1": Arte_dibujo
+  "overcoming imposter syndrome": Gestion
+  "part 1": Web
+  "platzi intro pixel art josue hernandez": Arte_dibujo
+  "pluralsight business analysis assessing and improving solutions vigorous bitdownload ir": Gestion
+  "pluralsight business analysis managing requirements": Gestion
+  "pluralsight business analysis managing requirements jgtiso bitdownload ir": Gestion
+  "pluralsight business analysis working with stakeholders using elicitation and collaboration": Gestion
+  "pluralsight business analysis working with stakeholders using elicitation and collaboration jgtiso bitdownload ir": Gestion
+  "pluralsight conducting ux research": Gestion
+  "pluralsight conducting ux research jgtiso": Gestion
+  "pluralsight deploying basic infrastructure services on aws": Sistemas
+  "pluralsight deploying basic infrastructure services on aws jgtiso bitdownload ir": Sistemas
+  "pricing strategy explained": Gestion
+  "product manager coursehunters": Gestion
+  "proko": Arte_dibujo
+  "proko drawing basics": Arte_dibujo
+  "proko introduction figure michael hampton": Arte_dibujo
+  "python": Python
+  "recursos adicionales": Arte_dibujo
+  "segments": Arte_dibujo
+  "simon stalenhag": Pintura
+  "skillshare fantasy cities in photoshop by daniel hasenbos": Arte_dibujo
+  "skillshare fun drawing improve skills robert joyner": Arte_dibujo
+  "sneaky artist": Arte_dibujo
+  "succeeding in devops": Sistemas
+  "the javascript advanced course": Web
+  "the travelers tutorial": Arte_dibujo
+  "thefutur practical project management by matthew encina": Gestion
+  "tim mcburnie": Arte_dibujo
+  "u2 the image making": Arte_dibujo
+  "u2 your book": Arte_dibujo
+  "u3": Arte_dibujo
+  "u3 cretae portrait": Arte_dibujo
+  "u3 invisible base of the drawing": Arte_dibujo
+  "u3 working": Arte_dibujo
+  "u4": Arte_dibujo
+  "u4 details": Arte_dibujo
+  "u4 exportación": Arte_dibujo
+  "u4 mi proyecto final": Arte_dibujo
+  "u4 train your imagination": Arte_dibujo
+  "udemy advanced product management": Gestion
+  "udemy advanced product management (1)": Gestion
+  "udemy aprende electronica basica": Electronica
+  "udemy become a product manager": Gestion
+  "udemy complete dbt bootcamp from zero to hero": Bases_datos
+  "udemy dbt core from scratch build your first project in 2 hours": Bases_datos
+  "udemy introduction to dbt data modeling for analysts": Bases_datos
+  "underpaint creative sketching jens claessens": Arte_dibujo
+  "unidad 4": Arte_dibujo
+  "up and running with arduino": Electronica
+  "varios": Sistemas
+  "video": Arte_dibujo
+  "w2 coloring the image": Pintura
+  "w4 final details": Pintura
+  "watercolor painting course with aaron blaise": Pintura
+  "watts atelier sketchbooking techniques jeff watts": Arte_dibujo
+  "week 2 the manuscript": Escritura
+  "week 5 spots pages & spreads": Arte_dibujo
+  "wes bos beginner javascript": Web
+  "wes bos css grid": Web
+  "wes bos es6": Web
+  "wesbos css grid": Web
+  "will terry visualize draw perspective": Arte_dibujo

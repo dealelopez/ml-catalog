@@ -11,13 +11,19 @@ Dentro del contenedor el working dir es `/app`.
 ```bash
 cp example.env .env          # editar: VIDEOS_PATH, DATA_PATH, PUID/PGID
 make build
-make health                  # valida config.yaml, BD y ffprobe
+make health                  # valida config.yaml + config-folder-dict.yaml, BD y ffprobe
 make dry-run                 # qué encontrará el escaneo, sin escribir
 make scan
 ```
 
 `make health` reporta config, nº de vídeos y ffprobe. Si ffprobe falta,
 metadata funciona en fail-soft (duración/resolución quedan a NULL).
+
+La configuración de clasificación se divide en dos ficheros:
+- `config.yaml`: keywords, threshold, carpetas a escanear
+- `config-folder-dict.yaml`: diccionario `folder_categories` generado
+  (Task 19), filtrado a profundidad ≤L2 y sin segmentos genéricos.
+  No editar a mano; regenerar con `scripts/generate_folder_candidates.py`.
 
 ## Escaneo
 

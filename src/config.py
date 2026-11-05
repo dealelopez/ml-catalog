@@ -14,6 +14,8 @@ import yaml
 # Se resuelve respecto a este fichero (src/config.py → .. → raíz)
 # para que funcione independientemente del CWD.
 CONFIG_PATH: Path = Path(__file__).parent.parent / "config.yaml"
+# Diccionario de carpetas generado (Task 19) — archivo separado
+FOLDER_DICT_PATH: Path = Path(__file__).parent.parent / "config-folder-dict.yaml"
 
 _REQUIRED_KEYS = [
     ("scan", "folders"),
@@ -23,16 +25,17 @@ _REQUIRED_KEYS = [
 
 
 def load(path: str | Path = CONFIG_PATH) -> dict:
-    """Carga y valida config.yaml.
+    """Carga y valida config.yaml (+ folder_categories opcional).
 
     Args:
-        path: Ruta al fichero YAML. Por defecto CONFIG_PATH.
+        path: Ruta al fichero YAML principal. Por defecto CONFIG_PATH.
 
     Returns:
-        Dict validado con la configuración del sistema.
+        Dict validado con la configuración del sistema, fusionado con
+        folder_categories si existe config-folder-dict.yaml.
 
     Raises:
-        FileNotFoundError: Si el fichero no existe.
+        FileNotFoundError: Si el fichero principal no existe.
         ValueError: Si falta alguna clave obligatoria o los valores
                     no cumplen las restricciones.
     """
@@ -43,6 +46,14 @@ def load(path: str | Path = CONFIG_PATH) -> dict:
 
     with path.open("r", encoding="utf-8") as fh:
         cfg = yaml.safe_load(fh) or {}
+
+    # Fusionar folder_categories desde archivo separado si existe
+    if FOLDER_DICT_PATH.exists():
+        with FOLDER_DICT_PATH.open("r", encoding="utf-8") as fh:
+            folder_dict = yaml.safe_load(fh) or {}
+        fc = folder_dict.get("folder_categories")
+        if fc:
+            cfg.setdefault("folder_categories", {}).update(fc)
 
     _validate(cfg)
     _normalize_extensions(cfg)

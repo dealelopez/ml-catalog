@@ -2,6 +2,26 @@
 
 > Última actualización: 2026-11-05
 
+## 2026-11-05 — P1: Ciclo ML cerrado + P2: Salud de config
+
+**P1 — Ciclo ML (Tasks 13+14)**:
+- Modelo ML integrado en `scanner.py` con fallback silencioso
+  (`classifier.try_load()`); guarda `model_category`/`model_confidence`.
+- Nuevo comando `ml-catalog apply-model`: re-clasifica BD →
+  `label_source='model'` (protege `manual`/`model+reviewed`).
+- `scripts/train_classifier.py` con ciclo Task 14: compara F1 con
+  versión activa, archiva en `model_history/`, no sobrescribe si
+  empeora (`--force` para forzar), `--dry-run`.
+
+**P2 — Salud de config**:
+- `classification.confidence_threshold` (0.2) ahora se aplica en
+  `rules.py` (corte real en score < threshold); docstring actualizado.
+- Generador `folder_categories` filtrado: cap profundidad L2,
+  excluye segmentos genéricos (`video`, `segments`, `basic`, `part 1`,
+  `js`…), dedup claves; salida en `config-folder-dict.yaml`.
+- `config.py` fusiona `config.yaml` + `config-folder-dict.yaml`;
+  `config.yaml` vuelve a legible.
+
 ## 2026-11-05 — Estandarización del repo (patrón rssume/tiron)
 
 - **AGENTS.md** nuevo: convenciones para agentes (repo público, reglas de

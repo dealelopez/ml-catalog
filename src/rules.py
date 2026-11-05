@@ -6,14 +6,9 @@ asignar categoría y confianza comparando tokens contra las keywords
 de cada categoría definida en config.yaml.
 No accede a disco ni a la BD.
 
-Nota sobre el umbral (confidence_threshold):
-  La especificación indica score = matches / total_keywords y aplicar el
-  umbral como corte. Con las listas de keywords reales (≥9 por categoría)
-  el umbral de 0.2 equivale a necesitar 2+ coincidencias, lo cual es
-  razonable. En el CONFIG de los tests las listas son más pequeñas (4-6
-  keywords) y 1 coincidencia puede quedar por debajo de 0.2. Para que los
-  tests sean coherentes, "Otros" se devuelve solo cuando el score ganador
-  es exactamente 0.0 (ninguna coincidencia). Un score > 0 siempre clasifica.
+El umbral ``classification.confidence_threshold`` (defecto 0.2) se aplica
+como corte: si el mejor score no alcanza el umbral → ``Otros`` (salvo
+override de ``folder_categories`` con pureza ≥95%, que gana con score 0.95).
 """
 
 import re
@@ -167,6 +162,7 @@ def classify(clean_title: str, path: str, config: dict, context=None) -> dict:
         ``"folder"`` o ``"rules"``.
     """
     categories = config.get("categories", {})
+    confidence_threshold = config.get("classification", {}).get("confidence_threshold", 0.2)
 
     search_title = _normalize_text(clean_title)
     search_path = extract_path_segments(path)
@@ -219,8 +215,9 @@ def classify(clean_title: str, path: str, config: dict, context=None) -> dict:
         best_effective = 0
         second_cat, second_score, second_effective = "Otros", 0.0, 0
 
-    # Sin ninguna coincidencia → "Otros" (salvo override de carpeta abajo)
-    if best_score == 0.0:
+    # Umbral de confianza: si el mejor score no alcanza el threshold → "Otros"
+    # (salvo override de carpeta abajo, que tiene prioridad por pureza ≥95%).
+    if best_score < confidence_threshold:
         folder_only = _folder_hit(path, config)
         if folder_only:
             return {

@@ -134,20 +134,22 @@ idempotentes (`PRAGMA table_info`). DDL siempre additive.
 
 ## Configuración
 
-Híbrida: `config.yaml` (conocimiento de dominio) + `.env` (rutas/secretos).
+Híbrida: `config.yaml` (clasificación base) + `config-folder-dict.yaml`
+(diccionario de carpetas generado) + `.env` (rutas/secretos).
 
 | Clave | Dónde | Papel |
 |---|---|---|
 | `scan.folders / extensions / ignore_folders` | `config.yaml` | Qué escanear |
-| `classification.confidence_threshold` | `config.yaml` | Confianza mínima del modelo para auto-etiquetar (`apply-model`) |
+| `classification.confidence_threshold` | `config.yaml` | Confianza mínima para auto-clasificar (reglas + `apply-model`) |
 | `categories.<Cat>.keywords` | `config.yaml` | Baseline de reglas |
-| `folder_categories.<carpeta>` | `config.yaml` | Override carpeta→categoría (generado, no editar a mano) |
+| `folder_categories.<carpeta>` | `config-folder-dict.yaml` | Override carpeta→categoría (generado, no editar a mano) |
 | `VIDEOS_PATH` | `.env` | Vídeos en el host (`:ro`) |
 | `DATA_PATH` | `.env` | Host ↔ `/app/data` (BD, modelo, CSVs) |
 | `DB_PATH` | `.env` | Ruta interna de BD (default `data/catalog.db`) |
 | `AI_GATEWAY_API_KEY` | `.env` | Solo `label_with_jev.py` (opcional) |
 | `PUID/PGID` | `.env` | Permisos de los volúmenes |
 
-Nota Task 17 `path_context.py`: la ruta aporta `platform/{course}/{teacher}`
-y tokens de directorio (`dir_tokens`) — es el motivo principal por el que la
-cobertura de `Otros` bajó de 87% a ~13%.
+`config.py` fusiona ambos YAMLs al cargar; el generador
+(`scripts/generate_folder_candidates.py`) escribe en
+`config-folder-dict.yaml` filtrando segmentos genéricos y limitando a
+profundidad L2.
