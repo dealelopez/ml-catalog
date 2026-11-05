@@ -13,11 +13,9 @@ El campo `label_source` rastrea la procedencia de cada etiqueta:
 
 import csv
 import os
-import sys
 
 from src.normalizer import tokenize
 from src.path_context import dir_tokens
-
 
 # ---------------------------------------------------------------------------
 # Helpers internos
@@ -476,6 +474,7 @@ def stats(conn) -> dict:
 if __name__ == "__main__":
     import argparse
     import os
+
     from src.config import load
     from src.db import init_db
 

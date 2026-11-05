@@ -41,12 +41,17 @@ TF-IDF (5000, 1-2 gramas) + Regresión Logística / Naive Bayes sobre
 
 ```
 ml-catalog/
-├── config.yaml          # keywords, folder_categories, scan
-├── src/                 # scanner → metadata → normalizer → rules → db
-├── tests/               # pytest (sin vídeos reales por defecto)
-├── scripts/             # check_db, train_classifier, label_with_jev, ...
-├── notebooks/           # 00_intro + 01-05 (exploración ML)
-└── data/                # catalog.db, model.joblib, labels.csv (no versionado)
+├── AGENTS.md              # convenciones para agentes (patrón rssume/tiron)
+├── Makefile               # make help: test, lint, scan, search, health…
+├── config.yaml            # keywords, folder_categories, scan
+├── src/                   # scanner → metadata → normalizer → rules → db
+├── tests/                 # pytest (sin vídeos reales por defecto)
+├── scripts/               # train_classifier, label_with_jev, check_db, hooks
+├── notebooks/             # 00_intro + 01-05 (exploración ML)
+├── docs/                  # architecture / operations / development / roadmap
+│   ├── task-10..16-*.md   # specs de tasks ML pendientes
+│   └── archive/           # historial (tasks 1-9, 17-20, specs)
+└── data/                  # catalog.db, model.joblib, labels.csv (no versionado)
 ```
 
 **Componentes:**
@@ -63,7 +68,8 @@ ml-catalog/
 | `search.py` | Búsqueda FTS5 `MATCH` con fallback `LIKE` |
 | `label.py` | Export/interactive/review/stats con `label_source` |
 | `classifier.py` | Carga `model.joblib` y `predict(clean_title+context)` |
-| `cli.py` | CLI unificada: `scan / search / label / health` |
+| `model_apply.py` | Re-clasifica la BD con el modelo → `label_source='model'` |
+| `cli.py` | CLI unificada: `scan / search / label / apply-model / health` |
 
 ## Requisitos previos
 
@@ -82,26 +88,32 @@ docker compose run ml-catalog health
 
 ## Uso
 
+Con `make help` lista todos los comandos (requiere `make build` antes).
+
 ```bash
 # Escanear (dry-run primero, sin escribir en BD)
-docker compose run ml-catalog scan --dry-run
-docker compose run ml-catalog scan
+make dry-run
+make scan
 
 # Buscar (FTS5; query vacío = últimos por last_seen)
-docker compose run ml-catalog search "python asyncio"
-docker compose run ml-catalog search "" -n 5
+make search Q="python asyncio"
+docker compose run --rm ml-catalog search "" -n 5
 
 # Etiquetado (dataset ML)
-docker compose run ml-catalog label --stats
-docker compose run ml-catalog label --export
-docker compose run ml-catalog label --interactive
-docker compose run ml-catalog label --review --threshold 0.3
+make label-stats
+docker compose run --rm ml-catalog label --export
+docker compose run --rm ml-catalog label --interactive
+docker compose run --rm ml-catalog label --review --threshold 0.3
+
+# Entrenar el modelo ML y re-clasificar la BD
+docker compose run --rm --entrypoint python ml-catalog scripts/train_classifier.py
+docker compose run --rm ml-catalog apply-model --dry-run
 
 # Salud del sistema
-docker compose run ml-catalog health
+make health
 
 # Shell en el contenedor
-docker compose exec ml-catalog bash
+make shell
 ```
 
 Pipeline de escaneo (por fichero):
@@ -123,9 +135,9 @@ Híbrida: `config.yaml` (clasificación) + `.env` (rutas/secretos).
 | `scan.folders` | `config.yaml` | Carpetas de vídeos a escanear (dentro del contenedor, ej. `/videos`) |
 | `scan.extensions` | `config.yaml` | Extensiones reconocidas como vídeo |
 | `scan.ignore_folders` | `config.yaml` | Carpetas a ignorar |
-| `classification.confidence_threshold` | `config.yaml` | Confianza mínima para auto-clasificación |
+| `classification.confidence_threshold` | `config.yaml` | Confianza mínima para auto-etiquetar con `apply-model` |
 | `categories.<Nombre>.keywords` | `config.yaml` | Keywords por categoría |
-| `folder_categories.<carpeta>` | `config.yaml` | Override carpeta→categoría (score 0.95) |
+| `folder_categories.<carpeta>` | `config.yaml` | Override carpeta→categoría (score 0.95; generado, no editar a mano) |
 | `VIDEOS_PATH` | `.env` | Directorio de vídeos en el host (`:ro`) |
 | `DATA_PATH` | `.env` | Directorio del host para `/app/data` |
 | `DB_PATH` | `.env` | Ruta interna a la BD (default `data/catalog.db`) |
@@ -135,14 +147,15 @@ Híbrida: `config.yaml` (clasificación) + `.env` (rutas/secretos).
 ## Desarrollo local
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
-python -m pytest -v -m "not integration"
+make test          # igual que python -m pytest -m "not integration"
 python -m src.cli --help
 ```
 
-Calidad: `ruff` (línea 100, E/F/W/I) + `mypy` (`disallow_untyped_defs`).
-Hook anti-PII: `scripts/install_hooks.sh` (una vez por clon).
+Calidad: `make lint` + `make typecheck` (ruff línea 100 E/F/W/I, mypy
+`disallow_untyped_defs`). Hook anti-PII: `scripts/install_hooks.sh` (una
+vez por clon). Checklist completo en [docs/development.md](docs/development.md).
 
 ## Troubleshooting
 
@@ -150,7 +163,12 @@ Hook anti-PII: `scripts/install_hooks.sh` (una vez por clon).
 - **BD vacía**: `health` primero; luego `scan --dry-run` para ver qué encuentra.
 - **ffprobe ausente**: `metadata` funciona en fail-soft (sin duración/resolución).
 - **Volumen de scripts roto**: ya no se monta `../scripts`; `scripts/` vive en la raíz.
-- **Docs**: índice en [docs/README.md](docs/README.md), guía diaria en [docs/guia-uso.md](docs/guia-uso.md).
+## Docs
+
+- Índice en [docs/README.md](docs/README.md) · arquitectura en
+  [docs/architecture.md](docs/architecture.md) · operaciones diarias en
+  [docs/operations.md](docs/operations.md) · tareas e ideas en
+  [docs/roadmap.md](docs/roadmap.md) · históricas en [docs/archive/](docs/archive/README.md).
 
 ## Licencia
 

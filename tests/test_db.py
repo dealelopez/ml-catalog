@@ -6,9 +6,9 @@ búsqueda FTS5 y filtros por campo.
 """
 
 import pytest
-from src.db import init_db, upsert_video, mark_missing, get_all_active_paths, get_stats
-from src.search import search, search_filters
 
+from src.db import get_all_active_paths, get_stats, init_db, mark_missing, upsert_video
+from src.search import search, search_filters
 
 # ---------------------------------------------------------------------------
 # Fixtures y datos de prueba

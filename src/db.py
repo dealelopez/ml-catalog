@@ -308,5 +308,5 @@ if __name__ == "__main__":
         stats = get_stats(conn)
         print(json.dumps(stats, indent=2, ensure_ascii=False))
     else:
-        print(f"Uso: python -m src.db stats", file=sys.stderr)
+        print("Uso: python -m src.db stats", file=sys.stderr)
         sys.exit(1)

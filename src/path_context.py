@@ -17,7 +17,6 @@ Ejemplo::
     #    "course": "creative puno", "teacher": None, ...}
 """
 
-import os
 import re
 import sys
 

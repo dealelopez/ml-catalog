@@ -2,8 +2,7 @@
 test_normalizer.py — Tests para src/normalizer.py (Task 05).
 """
 
-from src.normalizer import normalize, extract_channel, extract_yt_id, clean_title, tokenize
-
+from src.normalizer import clean_title, extract_channel, extract_yt_id, normalize, tokenize
 
 # ---------------------------------------------------------------------------
 # extract_channel

@@ -2,9 +2,8 @@
 test_rules.py — Tests para src/rules.py (Task 07).
 """
 
-import pytest
-from src.rules import classify, extract_path_segments
 
+from src.rules import classify, extract_path_segments
 
 # ---------------------------------------------------------------------------
 # CONFIG de prueba — intencionalmente pequeño para tests unitarios

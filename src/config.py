@@ -7,6 +7,7 @@ lee el fichero directamente.
 """
 
 from pathlib import Path
+
 import yaml
 
 # Ruta por defecto: raíz del proyecto / config.yaml

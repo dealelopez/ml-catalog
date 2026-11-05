@@ -252,13 +252,13 @@ def run():
     conn.commit()
     conn.close()
 
-    print(f"\nResumen:")
+    print("\nResumen:")
     print(f"  ✓ Etiquetados con confianza : {ok}")
     print(f"  ? Inciertos (revisar)       : {uncertain}")
     print(f"  ✗ Errores                   : {errors}")
-    print(f"\nSiguiente paso:")
-    print(f"  python -m src.label --review    # revisar los inciertos")
-    print(f"  python -m src.label --export    # exportar labels.csv")
+    print("\nSiguiente paso:")
+    print("  python -m src.label --review    # revisar los inciertos")
+    print("  python -m src.label --export    # exportar labels.csv")
 
 
 if __name__ == "__main__":

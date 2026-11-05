@@ -166,6 +166,7 @@ def format_results(results: list[dict]) -> str:
 if __name__ == "__main__":
     import os
     import sys
+
     from src.db import init_db
 
     query = " ".join(sys.argv[1:])

@@ -20,7 +20,7 @@ print("\n=== Directorio data/ ===")
 data_dir = os.path.dirname(DB_PATH) or "."
 if os.path.isdir(data_dir):
     stat = os.stat(data_dir)
-    print(f"  existe       : sí")
+    print("  existe       : sí")
     print(f"  permisos     : {oct(stat.st_mode)}")
     print(f"  propietario  : uid={stat.st_uid}  gid={stat.st_gid}")
     print(f"  proceso uid  : {os.getuid()}")
@@ -31,7 +31,7 @@ else:
 print("\n=== Fichero catalog.db ===")
 if os.path.isfile(DB_PATH):
     stat = os.stat(DB_PATH)
-    print(f"  existe       : sí")
+    print("  existe       : sí")
     print(f"  tamaño       : {stat.st_size} bytes")
     print(f"  permisos     : {oct(stat.st_mode)}")
 
@@ -39,14 +39,14 @@ if os.path.isfile(DB_PATH):
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         total = conn.execute("SELECT COUNT(*) FROM videos").fetchone()[0]
-        print(f"  conexión     : OK")
+        print("  conexión     : OK")
         print(f"  vídeos en BD : {total}")
         conn.close()
     except sqlite3.OperationalError as e:
         print(f"  conexión     : ERROR — {e}")
 else:
-    print(f"  existe       : NO")
-    print(f"  (se creará al primer uso de init_db)")
+    print("  existe       : NO")
+    print("  (se creará al primer uso de init_db)")
 
     # Intentar crear un fichero de prueba para verificar permisos de escritura
     test_path = os.path.join(data_dir, ".write_test")
