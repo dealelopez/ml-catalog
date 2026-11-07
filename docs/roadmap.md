@@ -1,61 +1,68 @@
 # Roadmap — ml-catalog
 
-> Índice centralizado de tareas e ideas (patrón rssume/tiron). Actualizado: 2026-11-05.
+> Índice centralizado de tareas e ideas (patrón rssume/tiron). Actualizado: 2026-11-07.
 > Análisis completo roadmap↔código: [`261105--revision-roadmap-versus-codigo.md`](261105--revision-roadmap-versus-codigo.md).
 
-**Estado v1**: pipeline de reglas + contexto de ruta en producción
-(~6K vídeos, cobertura `Otros` ~13%). `model.joblib` v1 entrenado con
-etiquetas Jev. **El ML aún no se usa en el pipeline** — ahí está la brecha.
+**Estado v1.1** (2026-11-07): pipeline ML cerrado y verificado end-to-end.
+- ~6K vídeos activos, `model.joblib` v1 (LR_balanced, F1=0.8472) aplicado.
+- **7.137 vídeos auto-etiquetados** (`label_source='model'`), 3 `manual` protegidos.
+- Ciclo completo operativo: scan → reglas+modelo → BD → apply-model → re-etiquetar.
+
+---
+
+## P0 — Etiquetado ground truth (requerido antes de P3) — **🔜 PRÓXIMO PASO**
+
+Los notebooks P3 comparan **reglas vs modelo** con ground truth real.
+Hoy hay 7.137 `model` + 3 `manual` + 4 `jev_uncertain` = **insuficiente**.
+
+### Acción requerida (15–30 min)
+```bash
+# 1. Revisar jev_uncertain (prioridad máxima — Jev pidió ayuda explícita)
+docker compose run --rm ml-catalog label --review
+
+# 2. Etiquetar muestra representativa (20–50 vídeos) para test set decente
+docker compose run --rm ml-catalog label --interactive
+# O por tandas temáticas:
+docker compose run --rm ml-catalog label --review --threshold 0.3
+```
+
+**Objetivo**: 30–50 labels `manual` confirmados antes de arrancar P3.
+Sin ground truth, los notebooks 04/05 (análisis errores, reglas vs modelo) no tienen sentido.
+
+---
 
 ## P1 — Cerrar el ciclo ML (Tasks 13+14) — **✅ COMPLETADO 2026-11-05**
 
-La cadena actual termina en `model.joblib` sin usarlo. Cerrar el bucle:
+- [x] Modelo en `scanner.py` con fallback silencioso (`try_load_model`)
+- [x] `apply-model` protege `manual`/`model+reviewed`
+- [x] `train_classifier.py` con ciclo Task 14 (F1, model_history, --force/--dry-run)
+- [x] Tests de invariantes + docs al día
 
-- [x] Integrar el modelo en `scanner.py` con fallback silencioso: carga
-  única con `classifier.try_load()`; sin modelo → solo reglas (criterio
-  de aceptación de Task 13). Guardar `model_category`/`model_confidence`
-  en columnas nuevas (migración idempotente); `rule_score` sigue siempre.
-- [x] Nuevo comando `ml-catalog apply-model` (`src/model_apply.py`):
-  re-clasifica la BD y escribe `label_source='model'` solo donde no haya
-  `label` o sea `rule`/`jev_*`; **nunca** toca `manual` ni `model+reviewed`.
-  `--threshold` toma `classification.confidence_threshold` del config.
-- [x] `scripts/train_classifier.py` → ciclo de Task 14: comparar F1 con
-  `model_metrics.json` activo, archivar en `data/model_history/`, no
-  sobreescribir si empeora (salvo `--force`), `--dry-run`.
-- [x] Tests de los dos invariantes: (a) scan sin modelo usa reglas sin
-  error, (b) `apply-model` no pisa labels manuales.
-- [x] Docs: `architecture.md`/`operations.md` al día + changelog.
+---
 
-## P2 — Salud de config (orden quirúrgico) — **✅ COMPLETADO 2026-11-05**
+## P2 — Salud de config — **✅ COMPLETADO 2026-11-05**
 
-- [x] `classification.confidence_threshold`: ahora se aplica en `rules.py`
-  (corte real en score < threshold). Docstring actualizado y
-  `docs/architecture.md` al día.
-- [x] Regenerar `folder_categories` filtrando el generador:
-  `n ≥ 5` (configurable), excluir segmentos genéricos (`video`, `segments`,
-  `basic`, `part 1`, `js`…), cap a profundidad ≤L2, dedup de claves.
-  Generador actualizado en `scripts/generate_folder_candidates.py`.
-- [x] Mover el diccionario (338 entradas) fuera de `config.yaml`
-  a `config-folder-dict.yaml` fusionado en `config.py` — config vuelve
-  a legible.
+- [x] `confidence_threshold` aplicado en `rules.py`
+- [x] `folder_categories` limpio: genéricos filtrados, cap L2, dedup
+- [x] `config-folder-dict.yaml` separado + `config.py` fusiona ambos
 
-## P3 — Notebooks pedagógicos (Tasks 10, 11, 12, 15, 16)
+---
 
-Specs activas en `docs/task-10..16-*.md`; el paso técnico de Task 12 ya
-vive en `scripts/train_classifier.py`, falta el cuaderno didáctico:
+## P3 — Notebooks pedagógicos (Tasks 10, 11, 12, 15, 16) — **⏳ BLOQUEADO por P0**
 
-- [ ] `01_explore_data.ipynb` (Task 10) — desbalance, longitud de títulos,
-  palabras discriminativas, canales por categoría.
-- [ ] `02_tfidf_basics.ipynb` (Task 11) — TF-IDF a mano vs sklearn.
-- [ ] `03_train_classifier.ipynb` (Task 12) — LR/NB/balanced, F1-macro.
-- [ ] `04_evaluate_improve.ipynb` (Task 15) — análisis de errores.
-- [ ] `05_rules_vs_model.ipynb` (Task 16) — **la pregunta central**: reglas
-  vs modelo en el mismo test set + curva de aprendizaje.
+Specs en `docs/task-10..16-*.md`; Task 12 técnico en `scripts/train_classifier.py`.
+
+- [ ] `01_explore_data.ipynb` (Task 10) — desbalance, longitud, palabras discriminativas, canales
+- [ ] `02_tfidf_basics.ipynb` (Task 11) — TF-IDF a mano vs sklearn
+- [ ] `03_train_classifier.ipynb` (Task 12) — LR/NB/balanced, F1-macro
+- [ ] `04_evaluate_improve.ipynb` (Task 15) — análisis errores (requiere ground truth P0)
+- [ ] `05_rules_vs_model.ipynb` (Task 16) — **pregunta central**: curva aprendizaje, ¿valió la pena ML?
+
+---
 
 ## Ideas (sin fecha)
 
-- [ ] Comando `stats` más rico en la CLI (evolución temporal de cobertura).
-- [ ] `chapters.py`: integrar detección de capítulos en el pipeline
-  (enriquecimiento del catálogo, no del clasificador).
-- [ ] Interfaz web de consulta (muy posterior; hoy todo via CLI).
-- [ ] Extrapolación a otros dominios (ROMs/juegos — ver `docs/archive/specs.md`).
+- [ ] Comando `stats` rico (evolución cobertura temporal)
+- [ ] `chapters.py` integrado en pipeline (enriquecimiento catálogo)
+- [ ] Interfaz web de consulta (posterior; hoy solo CLI)
+- [ ] Extrapolación a otros dominios (ROMs/juegos — ver `docs/archive/specs.md`)

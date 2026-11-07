@@ -93,8 +93,14 @@ def main() -> int:
     ap.add_argument("--min-purity", type=float, default=0.95)
     ap.add_argument("--min-n", type=int, default=5)
     ap.add_argument("--db", default=os.getenv("DB_PATH", "data/catalog.db"))
-    ap.add_argument("--out", default="data/folder_candidates.yaml")
+    ap.add_argument("--out", default=None, help="Ruta de salida (default: config-folder-dict.yaml en raíz)")
     args = ap.parse_args()
+
+    # Ruta de salida: --out o config-folder-dict.yaml en raíz del proyecto
+    if args.out:
+        folder_dict_path = Path(args.out)
+    else:
+        folder_dict_path = Path(__file__).parent.parent / "config-folder-dict.yaml"
 
     conn = sqlite3.connect(args.db)
     rows = conn.execute(
@@ -147,7 +153,6 @@ def main() -> int:
             print(f"  {c['n']:4d} {c['purity']:.2f} {c['category']:14s} L{c['depth']} {c['raw'][:70]}")
 
     # Escribir archivo completo listo para usar (fusionado por config.py)
-    folder_dict_path = Path(__file__).parent.parent / "config-folder-dict.yaml"
     with open(folder_dict_path, "w", encoding="utf-8") as fh:
         fh.write("# folder_categories (Task 19) — GENERADO AUTOMATICAMENTE, NO EDITAR A MANO.\n")
         fh.write("# Regenerar con: python scripts/generate_folder_candidates.py\n")
