@@ -60,6 +60,50 @@ Specs en `docs/task-10..16-*.md`; Task 12 técnico en `scripts/train_classifier.
 
 ---
 
+## P4 — Reorganización de taxonomía (12–14 categorías) — **📋 DOCUMENTADO, PENDIENTE**
+
+La taxonomía actual (22 cats, Task 20) tiene problemas:
+- **Demasiado granular**: `Pintura` separa acuarela/óleo/acrílico/gouache → todo va a `Arte_dibujo`
+- **Demasiado amplio**: `Web` agrupa JS, React, CSS, Astro, Node, TS, WordPress…
+- **Ambiguo**: Adobe tutorials → ¿`Diseno_UX`? ¿`Arte_dibujo`? ¿`Productividad`?
+- **Mal ubicados**: DBT/analytics → `Bases_datos` pero es ingeniería de datos/análisis
+- **Faltan**: Tipografía, diseño de fuentes, motion design, 3D para diseño, etc.
+
+### Propuesta (12–14 categorías)
+
+| Grupo | Categorías |
+|---|---|
+| **TECNOLOGÍA** | |
+| Programación | Python, JS/TS, Rust, Go, APIs, frameworks |
+| Web & Frontend | React, Vue, CSS, Astro, HTML, TS, motion, WordPress |
+| Datos & Analytics | SQL, DBT, Pandas, BI, ML clásico, ingeniería de datos |
+| DevOps & Cloud | Docker, K8s, AWS, CI/CD, Terraform, infra as code |
+| Infra & Sistemas | Linux, Bash, Redes, Servidores, Seguridad |
+| **DISEÑO & CREATIVO** | |
+| Diseño Gráfico & UI/UX | Figma, tipografía, branding, Adobe, motion design |
+| Ilustración & Dibujo | Bocetos, anatomía, character design, concept art |
+| Pintura Tradicional | Acuarela, óleo, acrílico, gouache, rotuladores |
+| Modelado 3D & Motion | Blender, C4D, SketchUp, arquitectura, VFX |
+| Fotografía & Video | Edición, Lightroom, composición, vídeo |
+| **OTROS** | |
+| Productividad & Herramientas | Git, Obsidian, Notion, workflows |
+| Electrónica & Hardware | Arduino, PCB, IoT, impresión 3D |
+| Escritura & Narrativa | Guion, novela, storytelling, copywriting |
+| Negocio & Gestión | Proyectos, estrategia, marketing, finanzas |
+| Otros | Lo que no encaje |
+
+### Plan de ejecución (cuando haya tiempo)
+
+- [ ] Validar lista final (12–14 cats) y keywords por categoría
+- [ ] Actualizar `config.yaml` + `config-folder-dict.yaml` (regenerar con generador)
+- [ ] Script de re-mapeo labels manuales existentes (~130, mayoría 1:1)
+- [ ] Re-entrenar modelo (`scripts/train_classifier.py --force`)
+- [ ] Re-ejecutar `apply-model` en BD completa
+- [ ] Actualizar notebooks P3 con nueva taxonomía
+- [ ] Documentar decisiones en `docs/26XXXX--taxonomia-reorg.md`
+
+---
+
 ## Ideas (sin fecha)
 
 - [ ] Comando `stats` rico (evolución cobertura temporal)

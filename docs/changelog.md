@@ -1,6 +1,23 @@
 # Changelog
 
-> Última actualización: 2026-11-05
+> Última actualización: 2026-11-07
+
+## 2026-11-07 — P0 etiquetado + label --review shuffle + taxonomía documentada
+
+**P0 — Etiquetado ground truth**:
+- Usuario etiquetó ~130 vídeos manuales (incluye corrección SketchUp → Modelado_3D)
+- Objetivo P3: 30–50 labels `manual` para test set decente → **CUMPLIDO**
+
+**label --review mejorado** (`src/label.py`, `src/cli.py`):
+- `--shuffle`: aleatoriza orden dentro de cada prioridad (jev_uncertain > margen > score)
+- `--limit N`: limita vídeos por sesión
+- Uso: `docker compose run --rm ml-catalog label --review --shuffle --limit 20`
+
+**Taxonomía reorganizada (P4) documentada**:
+- Problemas actuales: 22 cats (granulares `Pintura`, amplias `Web`, ambiguas Adobe/DBT)
+- Propuesta: 12–14 categorías en 3 grupos (Tecnología, Diseño & Creativo, Otros)
+- Doc completa: `docs/261107--propuesta-reorg-taxonomia.md`
+- Roadmap actualizado: P4 pendiente de ejecución (~60 min)
 
 ## 2026-11-05 — P1: Ciclo ML cerrado + P2: Salud de config
 
