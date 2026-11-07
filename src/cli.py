@@ -99,6 +99,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Si se indica, --review filtra por rule_margin (p. ej. 0.05).",
     )
     label_parser.add_argument(
+        "--shuffle",
+        action="store_true",
+        help="Aleatoriza el orden dentro de cada prioridad (jev_uncertain, margen, score).",
+    )
+    label_parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Máximo de vídeos a revisar en esta sesión.",
+    )
+    label_parser.add_argument(
         "--db",
         default=os.getenv("DB_PATH", "data/catalog.db"),
         help="Ruta al SQLite (default: $DB_PATH o data/catalog.db)",
@@ -191,7 +202,8 @@ def _cmd_label(args: argparse.Namespace) -> int:
         interactive_label(conn, cfg)
     elif args.review:
         review_low_confidence(
-            conn, cfg, threshold=args.threshold, margin_threshold=args.margin_threshold
+            conn, cfg, threshold=args.threshold, margin_threshold=args.margin_threshold,
+            shuffle=args.shuffle, limit=args.limit
         )
     elif args.stats:
         stats(conn)

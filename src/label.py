@@ -298,7 +298,8 @@ def _has_column(conn, column: str) -> bool:
 
 
 def review_low_confidence(
-    conn, config: dict, threshold: float = 0.3, margin_threshold: float | None = None
+    conn, config: dict, threshold: float = 0.3, margin_threshold: float | None = None,
+    shuffle: bool = False, limit: int | None = None
 ) -> None:
     """Sesión de revisión centrada en vídeos con baja confianza de reglas
     o marcados como inciertos por Jev (label_source = 'jev_uncertain').
@@ -318,11 +319,18 @@ def review_low_confidence(
         que se revisan por precaución). Así un claro
         ``Python 0.11 Δ0.11`` queda fuera con ``--margin-threshold 0.05``.
 
+    Aleatoriedad (``shuffle=True``):
+      - Dentro de cada grupo de prioridad (jev_uncertain / margin / score),
+        se baraja el orden usando ``ORDER BY RANDOM()``.
+      - Con ``limit`` se limita el total devuelto.
+
     Args:
         conn: Conexión SQLite activa.
         config: Dict validado por src.config.load().
         threshold: Score máximo de reglas para incluir un vídeo en la revisión.
         margin_threshold: Margen máximo para incluir (None = no filtrar por margen).
+        shuffle: Si True, aleatoriza el orden dentro de cada prioridad.
+        limit: Máximo de vídeos a devolver (None = sin límite).
     """
     categories = _get_categories(config)
     has_margin = _has_column(conn, "rule_margin")
@@ -346,45 +354,54 @@ def review_low_confidence(
         if _has_column(conn, "rule_source") else "NULL AS rule_source"
     )
 
+    # Cláusula de aleatorización dentro de cada prioridad
+    rand_clause = "RANDOM()" if shuffle else ""
+
     if margin_threshold is None:
+        limit_clause = f"LIMIT {limit}" if limit else ""
         rows = conn.execute(f"""
-            SELECT path, channel, clean_title, category, rule_score,
-                   {select_margin},
-                   {select_ctx},
-                   {select_src},
-                   label, label_source
-            FROM videos
-            WHERE status = 'active'
-              AND (
-                label_source = 'jev_uncertain'
-                OR rule_score IS NULL
-                OR rule_score < ?
-              )
-            ORDER BY
-              CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END,
-              {order_margin}
-              rule_score ASC NULLS FIRST
+            WITH cand AS (
+                SELECT path, channel, clean_title, category, rule_score,
+                       {select_margin},
+                       {select_ctx},
+                       {select_src},
+                       label, label_source,
+                       CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END AS prio
+                FROM videos
+                WHERE status = 'active'
+                  AND (
+                    label_source = 'jev_uncertain'
+                    OR rule_score IS NULL
+                    OR rule_score < ?
+                  )
+            )
+            SELECT * FROM cand
+            ORDER BY prio, {order_margin} rule_score ASC NULLS FIRST, {rand_clause}
+            {limit_clause}
         """, (threshold,)).fetchall()
         criteria = f"score < {threshold}"
     else:
+        limit_clause = f"LIMIT {limit}" if limit else ""
         rows = conn.execute(f"""
-            SELECT path, channel, clean_title, category, rule_score,
-                   {select_margin},
-                   {select_ctx},
-                   {select_src},
-                   label, label_source
-            FROM videos
-            WHERE status = 'active'
-              AND (
-                label_source = 'jev_uncertain'
-                OR rule_score IS NULL
-                OR rule_margin IS NULL
-                OR rule_margin < ?
-              )
-            ORDER BY
-              CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END,
-              {order_margin}
-              rule_score ASC NULLS FIRST
+            WITH cand AS (
+                SELECT path, channel, clean_title, category, rule_score,
+                       {select_margin},
+                       {select_ctx},
+                       {select_src},
+                       label, label_source,
+                       CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END AS prio
+                FROM videos
+                WHERE status = 'active'
+                  AND (
+                    label_source = 'jev_uncertain'
+                    OR rule_score IS NULL
+                    OR rule_margin IS NULL
+                    OR rule_margin < ?
+                  )
+            )
+            SELECT * FROM cand
+            ORDER BY prio, {order_margin} rule_score ASC NULLS FIRST, {rand_clause}
+            {limit_clause}
         """, (margin_threshold,)).fetchall()
         criteria = f"margen < {margin_threshold}"
 
