@@ -48,9 +48,12 @@ def enriched_text(df: pd.DataFrame) -> list:
     """Título + contexto de ruta (Task 17)."""
     return (
         df["clean_title"].fillna("")
-        + " " + df["platform"].fillna("")
-        + " " + df["course"].fillna("")
-        + " " + df["teacher"].fillna("")
+        + " "
+        + df["platform"].fillna("")
+        + " "
+        + df["course"].fillna("")
+        + " "
+        + df["teacher"].fillna("")
     ).tolist()
 
 
@@ -68,14 +71,15 @@ def build(algorithm: str) -> Pipeline:
     if algorithm == "nb":
         clf = MultinomialNB()
     elif algorithm == "lr_balanced":
-        clf = LogisticRegression(max_iter=1000, random_state=42,
-                                 class_weight="balanced")
+        clf = LogisticRegression(max_iter=1000, random_state=42, class_weight="balanced")
     else:
         clf = LogisticRegression(max_iter=1000, random_state=42)
-    return Pipeline([
-        ("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
-        ("clf", clf),
-    ])
+    return Pipeline(
+        [
+            ("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
+            ("clf", clf),
+        ]
+    )
 
 
 def evaluate(name: str, pipe: Pipeline, X_test, y_test) -> float:
@@ -125,44 +129,44 @@ def main() -> int:
 
     df = pd.read_csv(LABELS_CSV)
     df = df[df["label"].notna()].copy()
-    
+
     # Mapear taxonomía antigua → nueva
     old_to_new = {
-        'Arte_dibujo': 'Arte',
-        'Pintura': 'Arte',
-        'Gestion': 'Negocio_Gestion',
-        'Escritura': 'Escritura_Narrativa',
-        'Bases_datos': 'Datos_Analytics',
-        'Web': 'Web_Frontend',
-        'Creatividad': 'Arte',  # or Diseno_Grafico_UI_UX
-        'Datos_Analytics': 'Datos_Analytics',
-        'Electronica': 'Electronica_Hardware',
-        'Ciencia': 'Ciencia',
-        'Diseno_Grafico_UI_UX': 'Diseno_Grafico_UI_UX',
-        'Negocio_Gestion': 'Negocio_Gestion',
-        'Modelado_3D': 'Modelado_3D',
-        'Sistemas': 'Infra_Sistemas',
-        'Productividad': 'Productividad_Herramientas',
-        'Fotografia_Video': 'Fotografia_Video',
-        'IA_ML': 'Datos_Analytics',  # ML clásico va aquí
-        'Costura': 'Costura_Textil',
-        'Python': 'Programacion',
-        'Docker': 'DevOps_Cloud',
-        'Linux': 'Infra_Sistemas',
-        'Web_Frontend': 'Web_Frontend',
-        'Productividad_Herramientas': 'Productividad_Herramientas',
-        'Escritura_Narrativa': 'Escritura_Narrativa',
-        'Arte': 'Arte',
-        'Costura_Textil': 'Costura_Textil',
-        'Infra_Sistemas': 'Infra_Sistemas',
-        'DevOps_Cloud': 'DevOps_Cloud',
-        'Electronica_Hardware': 'Electronica_Hardware',
-        'Programacion': 'Programacion',
+        "Arte_dibujo": "Arte",
+        "Pintura": "Arte",
+        "Gestion": "Negocio_Gestion",
+        "Escritura": "Escritura_Narrativa",
+        "Bases_datos": "Datos_Analytics",
+        "Web": "Web_Frontend",
+        "Creatividad": "Arte",  # or Diseno_Grafico_UI_UX
+        "Datos_Analytics": "Datos_Analytics",
+        "Electronica": "Electronica_Hardware",
+        "Ciencia": "Ciencia",
+        "Diseno_Grafico_UI_UX": "Diseno_Grafico_UI_UX",
+        "Negocio_Gestion": "Negocio_Gestion",
+        "Modelado_3D": "Modelado_3D",
+        "Sistemas": "Infra_Sistemas",
+        "Productividad": "Productividad_Herramientas",
+        "IA_ML": "Datos_Analytics",  # ML clásico y GenAI van aquí
+        "Costura": "Costura_Textil",
+        "Python": "Programacion",
+        "Docker": "DevOps_Cloud",
+        "Linux": "Infra_Sistemas",
+        "Fotografia_Video": "Diseno_Grafico_UI_UX",  # v3.1: fusion en Diseño
+        "Web_Frontend": "Web_Frontend",
+        "Productividad_Herramientas": "Productividad_Herramientas",
+        "Escritura_Narrativa": "Escritura_Narrativa",
+        "Arte": "Arte",
+        "Costura_Textil": "Costura_Textil",
+        "Infra_Sistemas": "Infra_Sistemas",
+        "DevOps_Cloud": "DevOps_Cloud",
+        "Electronica_Hardware": "Electronica_Hardware",
+        "Programacion": "Programacion",
     }
-    
-    df['label'] = df['label'].map(old_to_new).fillna(df['label'])
+
+    df["label"] = df["label"].map(old_to_new).fillna(df["label"])
     print(f"  Mapeadas taxonomía: {df['label'].nunique()} clases únicas")
-    
+
     df["label"] = merge_rare(df["label"])
     print(f"Muestras: {len(df)} | Clases: {sorted(df['label'].unique())}")
 
@@ -170,30 +174,27 @@ def main() -> int:
     X_title = df["clean_title"].fillna("").tolist()
     y = df["label"].tolist()
 
-    idx_tr, idx_te = train_test_split(
-        range(len(y)), test_size=0.2, random_state=42, stratify=y)
+    idx_tr, idx_te = train_test_split(range(len(y)), test_size=0.2, random_state=42, stratify=y)
     print(f"Train: {len(idx_tr)} | Test: {len(idx_te)}")
 
     results: dict = {}
     pipes: dict = {}
-    for name, algo in [("LR", "lr"), ("NaiveBayes", "nb"),
-                       ("LR_balanced", "lr_balanced")]:
+    for name, algo in [("LR", "lr"), ("NaiveBayes", "nb"), ("LR_balanced", "lr_balanced")]:
         pipe = build(algo)
         pipe.fit([X_full[i] for i in idx_tr], [y[i] for i in idx_tr])
         pipes[name] = pipe
-        results[name] = evaluate(name + " (título+contexto)", pipe,
-                                 [X_full[i] for i in idx_te],
-                                 [y[i] for i in idx_te])
+        results[name] = evaluate(
+            name + " (título+contexto)", pipe, [X_full[i] for i in idx_te], [y[i] for i in idx_te]
+        )
 
     # Baseline título-solo con el mejor algoritmo
     base = build("lr_balanced")
     base.fit([X_title[i] for i in idx_tr], [y[i] for i in idx_tr])
     results["LR_balanced_titulo_solo"] = evaluate(
-        "LR_balanced (título solo)", base,
-        [X_title[i] for i in idx_te], [y[i] for i in idx_te])
+        "LR_balanced (título solo)", base, [X_title[i] for i in idx_te], [y[i] for i in idx_te]
+    )
 
-    best_name = max(["LR", "NaiveBayes", "LR_balanced"],
-                    key=lambda n: results[n])
+    best_name = max(["LR", "NaiveBayes", "LR_balanced"], key=lambda n: results[n])
     new_f1 = results[best_name]
 
     print("\nComparativa F1 macro:")

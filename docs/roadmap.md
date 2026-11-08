@@ -3,9 +3,11 @@
 > Índice centralizado de tareas e ideas (patrón rssume/tiron). Actualizado: 2026-11-08.
 > Análisis completo roadmap↔código: [`261105--revision-roadmap-versus-codigo.md`](261105--revision-roadmap-versus-codigo.md).
 
-**Estado v1.2** (2026-11-08): taxonomía v3 (15 cat + Otros) en config con
-keywords owner único; modelo reentrenado con mapeo v2→v3.
-**Pendiente**: consolidar los ~5.9K labels v2 en BD (sección P5) y ground truth (P0).
+**Estado v1.2** (2026-11-08): taxonomía **v3.1** (14 cat + Otros) con
+keywords owner único; foto/vídeo fusionada en `Diseno_Grafico_UI_UX`.
+BD y modelo consolidados en v3.1 (P5 ✅, F1=0.963).
+**Pendiente**: ground truth (P0) y labels para `Diseno_Grafico_UI_UX`
+y `Ciencia` (el modelo no las predice aún).
 
 ---
 
@@ -61,9 +63,11 @@ Specs en `docs/task-10..16-*.md`; Task 12 técnico en `scripts/train_classifier.
 
 ## P4 — Reorganización de taxonomía — **✅ COMPLETADO 2026-11-08**
 
-Resultado final: **15 categorías + Otros** (la propuesta de 12–14 se amplió
-con `Ciencia` y `Costura_Textil`, y `Ilustración`+`Pintura` quedaron
-fusionadas en una sola `Arte`).
+Resultado final: **14 categorías + Otros** (v3.1; la idea inicial era
+12–14 y había `Fotografia_Video`, fusionada en `Diseño` por decisión de
+usuario el mismo día). La propuesta de 12–14 se amplió con `Ciencia` y
+`Costura_Textil`, y `Ilustración`+`Pintura` quedaron fusionadas en una
+sola `Arte`.
 
 - [x] `config.yaml` taxonomía v3 + mapping v2→v3 documentado en cabecera
 - [x] `config-folder-dict.yaml` regenerado (204 carpetas mapeadas)
@@ -79,24 +83,25 @@ fusionadas en una sola `Arte`).
 
 La propuesta original (tabla y mapeo) queda abajo como referencia histórica.
 
-## P5 — Consolidar taxonomía v3 en BD — **🔜 PRÓXIMO PASO**
+## P5 — Consolidar taxonomía v3.1 en BD — **✅ COMPLETADO 2026-11-08**
 
-La BD está a medio camino: ~6.4K vídeos con labels v3 y **~5.9K aún con
-labels v2** (`Python`, `Web`, `Arte_dibujo`…), todos con
-`label_source='model'`. El mapeo v2→v3 solo se aplica al entrenar, no en BD.
+- [x] `train_classifier.py --dry-run` tras export fresco: F1-macro 0.963
+      (antes 0.923) → reentrenado y archivada la versión anterior
+- [x] `apply-model` re-etiquetó ~6.0K vídeos con el modelo nuevo
+- [x] `scripts/remap_labels_v3.py`: renombrado 1:1 v2→v3.1 de los ~5.9K
+      labels restantes en BD (incl. 3 manuales `Ilustracion_Dibujo`→`Arte`)
+- [x] BD consolidada: 12.3K vídeos, solo nombres v3.1 (13 de 14 categorías
+      con labels), `labels.csv` re-exportado, dry-run idempotente ✓
 
-- [ ] Re-ejecutar `apply-model --force` (protege `manual`/`model+reviewed`)
-      o añadir un pequeño script de re-mapeo de labels v2→v3 en BD
-- [ ] Validar predicciones del modelo famélico: el reentreno se hizo antes
-      de la purga de colisiones; conviene `train_classifier.py --dry-run`
-      tras un nuevo export de `labels.csv` y, si mejora, re-entrenar +
-      re-aplicar
-- [ ] `Diseno_Grafico_UI_UX`, `Ciencia` y `Fotografia_Video` nacieron con
-      **0 labels**: el modelo actual (13 clases) no puede predecirlas →
-      decisión: reentrenar con labels Chi/re-mapeados o dejar que las reglas
-      las cubran hasta el próximo ciclo
-- [ ] F1=0.92 es optimista (pseudo-labels): el real se verá cuando P0
-      aporte ground truth manual
+**Restante**:
+- [ ] `Diseno_Grafico_UI_UX` y `Ciencia` siguen con 0 labels: el modelo
+      actual (13 clases) no las predice y las reglas solo las cubren en
+      scan nuevos → enriquecer con etiquetado manual o la próxima tanda
+      de Jev antes de reentrenar
+- [ ] F1=0.963 sigue siendo optimista (pseudo-labels); el real se verá
+      cuando P0 aporte ground truth manual
+- [ ] Notebook P3 (curva aprendizaje reglas vs modelo) sale de compactar
+      este histórico: `docs/task-10..16-*.md`
 
 ---
 

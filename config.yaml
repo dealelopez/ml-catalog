@@ -1,16 +1,16 @@
 # =============================================================================
-# config.yaml — Configuración de clasificación (Taxonomía v3: 15 categorías + Otros)
+# config.yaml — Configuración de clasificación (Taxonomía v3.1: 14 categorías + Otros)
 # =============================================================================
+# v3.1 (2026-11-08): Fotografia_Video fusionada en Diseno_Grafico_UI_UX.
 # Basado en docs/261107--propuesta-reorg-taxonomia.md
 # Mapeo desde taxonomía v2 (Actual → Nueva):
 #   Python, Docker, Linux, IA_ML    → Programacion, DevOps_Cloud, Infra_Sistemas, Datos_Analytics
 #   Web                             → Web_Frontend
 #   Bases_datos                     → Datos_Analytics
 #   Redes, Seguridad, Sistemas      → Infra_Sistemas
-#   Diseno_UX                       → Diseno_Grafico_UI_UX
+#   Diseno_UX, Fotografia           → Diseno_Grafico_UI_UX
 #   Arte_dibujo + Pintura + Creatividad → Arte (fusiona ilustración + pintura)
 #   Modelado_3D                     → Modelado_3D
-#   Fotografia                      → Fotografia_Video
 #   Productividad                   → Productividad_Herramientas
 #   Electronica                     → Electronica_Hardware
 #   Escritura                       → Escritura_Narrativa
@@ -24,8 +24,7 @@
 # (owner único). Lo valida src/config.py::_validate al cargar. Mapeo de owners:
 #   - react/vue/svelte/nextjs/nuxt                    → Web_Frontend
 #   - pandas/numpy/sklearn/tensorflow/openai/jupyter  → Datos_Analytics
-#   - photoshop/premiere/davinci/color grading/video editing → Fotografia_Video
-#   - after effects/motion graphics                   → Diseno_Grafico_UI_UX
+#   - photo/photoshop/premiere/davinci/video editing  → Diseno_Grafico_UI_UX
 #   - sketch/composition/character/paper              → Arte
 #   - tmux/terminal/cli                               → Infra_Sistemas
 #   - poetry (gestor de paquetes de Python)           → Programacion
@@ -300,10 +299,10 @@ categories:
       - letsencrypt
 
 # -----------------------------------------------------------------------------
-# GRUPO 2: DISEÑO & CREATIVO (4 categorías)
+# GRUPO 2: DISEÑO & CREATIVO (3 categorías: Diseño Gráfico/UI/UX, Arte, Modelado 3D)
 # -----------------------------------------------------------------------------
 
-  # 6. DISENO_GRAFICO_UI_UX — Figma, tipografía, branding, Adobe, motion
+  # 6. DISENO_GRAFICO_UI_UX — Figma, tipografía, branding, Adobe, motion, foto y vídeo
   Diseno_Grafico_UI_UX:
     keywords:
       - ux design
@@ -345,6 +344,40 @@ categories:
       - page layout
       - desktop publishing
       - dtp
+      # Foto y vídeo (fusión de Fotografia_Video 2026-11-08)
+      - photography
+      - fotografia
+      - photo editing
+      - photo
+      - edicion de fotos
+      - lightroom
+      - photoshop
+      - capture one
+      - darkroom
+      - raw
+      - color grading
+      - color correction
+      - portrait photography
+      - retrato
+      - landscape photography
+      - paisaje
+      - street photography
+      - callejera
+      - exposure
+      - exposicion
+      - aperture
+      - apertura
+      - shutter speed
+      - iso
+      - video editing
+      - edicion de video
+      - premiere
+      - davinci resolve
+      - davinci
+      - final cut
+      - lut
+      - log
+      - rec709
 
   # 7. ARTE — Ilustración, dibujo, pintura (acuarela, óleo, acrílico, gouache, digital)
   # Fusiona: Ilustracion_Dibujo + Pintura_Tradicional
@@ -465,48 +498,11 @@ categories:
       - visual effects
       - motion capture
 
-  # 9. FOTOGRAFIA_VIDEO — Edición, Lightroom, composición, vídeo
-  Fotografia_Video:
-    keywords:
-      - photography
-      - fotografia
-      - photo editing
-      - photo
-      - edicion de fotos
-      - lightroom
-      - photoshop
-      - capture one
-      - darkroom
-      - raw
-      - color grading
-      - color correction
-      - portrait photography
-      - retrato
-      - landscape photography
-      - paisaje
-      - street photography
-      - callejera
-      - exposure
-      - exposicion
-      - aperture
-      - apertura
-      - shutter speed
-      - iso
-      - video editing
-      - edicion de video
-      - premiere
-      - davinci resolve
-      - davinci
-      - final cut
-      - lut
-      - log
-      - rec709
-
 # -----------------------------------------------------------------------------
-# GRUPO 3: OTROS (6 categorías)
+# GRUPO 3: OTROS (6 categorías + Otros)
 # -----------------------------------------------------------------------------
 
-  # 10. PRODUCTIVIDAD_HERRAMIENTAS — Git, Obsidian, Notion, workflows, IDEs
+  # 9. PRODUCTIVIDAD_HERRAMIENTAS — Git, Obsidian, Notion, workflows, IDEs
   Productividad_Herramientas:
     keywords:
       - productivity
@@ -538,7 +534,7 @@ categories:
       - makefile
       - task runner
 
-  # 11. ELECTRONICA_HARDWARE — Arduino, PCB, IoT, impresión 3D
+  # 10. ELECTRONICA_HARDWARE — Arduino, PCB, IoT, impresión 3D
   Electronica_Hardware:
     keywords:
       - electronica
@@ -580,7 +576,7 @@ categories:
       - oscilloscope
       - osciloscopio
 
-  # 12. ESCRITURA_NARRATIVA — Guion, novela, storytelling, copywriting
+  # 11. ESCRITURA_NARRATIVA — Guion, novela, storytelling, copywriting
   Escritura_Narrativa:
     keywords:
       - writing
@@ -616,7 +612,7 @@ categories:
       - creative writing
       - escritura creativa
 
-  # 13. NEGOCIO_GESTION — Proyectos, estrategia, marketing, finanzas
+  # 12. NEGOCIO_GESTION — Proyectos, estrategia, marketing, finanzas
   Negocio_Gestion:
     keywords:
       - management
@@ -662,7 +658,7 @@ categories:
       - product owner
       - product manager
 
-  # 14. CIENCIA — Física, matemáticas, biología, astronomía, método científico
+  # 13. CIENCIA — Física, matemáticas, biología, astronomía, método científico
   Ciencia:
     keywords:
       - math
@@ -704,7 +700,7 @@ categories:
       - science magazine
       - stem
 
-  # 15. COSTURA_TEXTIL — Patronaje, confección, tejidos, bordado
+  # 14. COSTURA_TEXTIL — Patronaje, confección, tejidos, bordado
   Costura_Textil:
     keywords:
       - costura
@@ -742,7 +738,7 @@ categories:
       - serger
       - overlock
 
-  # 16. OTROS — Lo que no encaje en las anteriores
+  # 15. OTROS — Lo que no encaje en las anteriores
   Otros:
     keywords: []
 

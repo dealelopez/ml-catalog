@@ -5,8 +5,8 @@
 Catálogo local de vídeos con clasificación automática por categorías.
 Escanea carpetas de vídeo (montadas `:ro`), extrae metadatos con ffprobe,
 normaliza nombres yt-dlp y clasifica cada vídeo en una categoría temática
-(taxonomía v3: 15 categorías + Otros en `config.yaml`). Todo persiste en
-SQLite + FTS5.
+(taxonomía v3.1: 14 categorías + Otros en `config.yaml`; la edición de
+foto y vídeo vive en `Diseno_Grafico_UI_UX`). Todo persiste en SQLite + FTS5.
 
 Dos motores de clasificación:
 
@@ -147,9 +147,10 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 
 ## Estado actual (2026-11-08)
 
-- **Taxonomía v3 aplicada** (15 categorías + Otros): keywords con owner
-  único, `folder_categories` regenerado y reentreno en curso. Pendiente
-  consolidar la BD: ~5.9K vídeos conservan labels de la taxonomía v2.
+- **Taxonomía v3.1 aplicada** (14 categorías + Otros; foto/vídeo fusionada
+  en `Diseno_Grafico_UI_UX`): keywords con owner único,
+  `folder_categories` regenerado. Pendiente consolidar la BD: ~5.9K vídeos
+  aún con labels de la taxonomía v2.
 - **v1 operativo en producción local**: ~12K vídeos catalogados con reglas
   + contexto de ruta.
 - Dataset ML con etiquetas Jev + revisión manual (~130 `manual`); el resto

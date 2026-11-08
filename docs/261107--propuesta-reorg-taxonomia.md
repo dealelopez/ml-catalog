@@ -1,11 +1,13 @@
 # 261107 — Propuesta de reorganización de taxonomía (12–14 categorías)
 
-> ⚠️ **EJECUTADA (2026-11-08) con desviaciones**: resultado final 15 cat + Otros
+> ⚠️ **EJECUTADA (2026-11-08) con desviaciones**: resultado final **14 cat + Otros**
 > (no 12–14): se añadieron `Ciencia` y `Costura_Textil` como categorías
-> propias y `Ilustración`+`Pintura` quedaron fusionadas en una sola `Arte`.
-> Las keywords tienen owner único desde 2026-11-08 (ver changelog y
-> cabecera de `config.yaml`). Lo pendiente actual está en
-> `docs/roadmap.md` → P5. Este doc queda como registro del análisis.
+> propias, `Ilustración`+`Pintura` quedaron fusionadas en una sola `Arte` y,
+> por decisión de usuario, la edición foto/vídeo (`Fotografia_Video`)
+> también vive en `Diseno_Grafico_UI_UX` (v3.1). Las keywords tienen owner
+> único desde 2026-11-08 (ver changelog y cabecera de `config.yaml`).
+> Lo pendiente actual está en `docs/roadmap.md` → P5. Este doc queda como
+> registro del análisis.
 
 > Análisis one-off del problema de categorías actual (22 cats, Task 20) y propuesta
 > de reorganización. Para ejecutar cuando haya tiempo (ver `docs/roadmap.md` → P4).

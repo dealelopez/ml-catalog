@@ -233,13 +233,13 @@ def _real_config():
 
 
 def test_config_real_v3_categorias_y_sin_colisiones():
-    """Taxonomía v3: categorías actuales e invariante una keyword = un owner."""
+    """Taxonomía v3.1 (14 cat + Otros) e invariante una keyword = un owner."""
     cfg = _real_config()
     cats = cfg["categories"]
+    assert "Fotografia_Video" not in cats  # fusionada en Diseño (v3.1)
     for cat in (
         "Ciencia",
         "Diseno_Grafico_UI_UX",
-        "Fotografia_Video",
         "Modelado_3D",
         "Costura_Textil",
     ):
@@ -318,15 +318,17 @@ def test_programacion_no_roba_modelado_3d():
     assert rsw["category"] == "Programacion"
 
 
-def test_diseno_ux_y_fotografia():
+def test_diseno_ux_y_foto_fusionadas():
+    """v3.1: UX y foto/vídeo clasifican como Diseno_Grafico_UI_UX."""
     from src.config import load
     from src.path_context import summarize
 
     cfg = load()
-    # Listas de keywords más grandes que en v2 → cobertura fraccional más baja;
-    # el umbral de tests baja acorde (config real usa 0.03)
+    # Listas grandes (Diseño v3.1: 72 keywords) → cobertura fraccional baja;
+    # tests usan el threshold real (0.03). El contexto de carpeta (course/
+    # teacher) suma 2× en el pipeline y es lo que en la práctica resuelve.
     cfg_test = dict(cfg)
-    cfg_test["classification"] = {"confidence_threshold": 0.05}
+    cfg_test["classification"] = {"confidence_threshold": 0.03}
 
     pathux = "/videos/packt-ux-design-process/x.mp4"
     ctxux = summarize(pathux)
@@ -335,7 +337,7 @@ def test_diseno_ux_y_fotografia():
     pathph = "/videos/51.000--buzon/curso-photo/x.mp4"
     ctxph = summarize(pathph)
     rph = classify("what is photo colorization", pathph, cfg_test, context=ctxph)
-    assert rph["category"] == "Fotografia_Video"
+    assert rph["category"] == "Diseno_Grafico_UI_UX"
 
 
 # ---------------------------------------------------------------------------

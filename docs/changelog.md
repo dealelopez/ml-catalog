@@ -2,7 +2,14 @@
 
 > Última actualización: 2026-11-08
 
-## 2026-11-08 — P4 completado: taxonomía v3 con keywords owner único
+## 2026-11-08 — P4 completado: taxonomía v3.1 con keywords owner único
+
+**Fusión Fotografía & Video → Diseno_Grafico_UI_UX (v3.1)**:
+- Decisión de usuario: la edición de foto y vídeo clasifica como diseño
+  gráfico. `Fotografia_Video` desaparece → 14 categorías + Otros.
+- 33 keywords de foto/vídeo migradas a la lista de Diseño (72 keywords;
+  sin colisiones tras la purga del mismo día).
+- `train_classifier.py` mapea `Fotografia_Video → Diseno_Grafico_UI_UX`.
 
 **Keywords owner único (anti-colisión)**:
 - 49 keywords duplicadas entre categorías reubicadas (30 colisiones → 0):
@@ -23,9 +30,19 @@
 - `tests/test_rules.py` actualizado a v3 (5 tests estaban rotos desde el
   cambio de taxonomía); 122/122 tests OK.
 
-**Pendiente (ver roadmap)**: P5 consolidar ~5.9K labels v2 en BD
-(`apply-model --force` o script de re-mapeo) y reentrenar tras el export
-post-purgado.
+**Ciclo relanzado y BD consolidada (P5 ✅)**:
+- `label --export` fresco (6.085 filas) → `train_classifier.py`: F1-macro
+  **0.963** (antes 0.923) → modelo archivado y reemplazado.
+- `apply-model` re-etiquetó ~6.0K vídeos con el modelo nuevo.
+- Nuevo `scripts/remap_labels_v3.py`: renombrado 1:1 v2→v3.1 en BD para
+  los ~5.9K labels que `apply-model` no toca (confianza baja), incluidos
+  3 manuales (`Ilustracion_Dibujo`→`Arte`); idempotente (dry-run ✓).
+- BD final: solo nombres v3.1 (13 de 14 categorías con labels —
+  `Diseno_Grafico_UI_UX` y `Ciencia` pendientes de etiquetado); 40 vídeos
+  sin label; `manual`/`model+reviewed` intactos.
+
+**Pendiente (ver roadmap)**: labels para Diseño y Ciencia (manual o Jev)
+y el ciclo P0 de ground truth; F1=0.963 sigue siendo pseudo-optimista.
 
 ## 2026-11-07 — P0 etiquetado + label --review shuffle + taxonomía documentada
 
