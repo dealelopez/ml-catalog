@@ -1,398 +1,202 @@
-# folder_categories (Task 19) — GENERADO AUTOMATICAMENTE, NO EDITAR A MANO.
-# Regenerar con: python scripts/generate_folder_candidates.py
-# Clave = segmento normalizado (strip Dewey, minusculas). Gana el nivel mas profundo.
 folder_categories:
-  # n=116 pureza=0.9914 L1 (ej: proko)
-  "proko": Arte_dibujo
-  # n=43 pureza=0.9535 L1 (ej: modernday-james)
-  "modernday james": Arte_dibujo
-  # n=40 pureza=1.0 L1 (ej: glenn-vilppu)
-  "glenn vilppu": Arte_dibujo
-  # n=21 pureza=1.0 L1 (ej: alex_hillkurtz-comprimidos)
-  "alex hillkurtz comprimidos": Arte_dibujo
-  # n=10 pureza=1.0 L1 (ej: craftsy--sketching-your-point-of-view-paul-heaston)
-  "craftsy sketching your point of view paul heaston": Arte_dibujo
-  # n=7 pureza=1.0 L1 (ej: victor-beuren)
-  "victor beuren": Arte_dibujo
-  # n=112 pureza=1.0 L2 (ej: learn-squared--sketching-everything-kleinerhai)
-  "learn squared sketching everything kleinerhai": Arte_dibujo
-  # n=109 pureza=1.0 L2 (ej: proko-drawing-basics)
-  "proko drawing basics": Arte_dibujo
-  # n=85 pureza=0.9647 L2 (ej: learn-squared--creative-illustration-amin-faramarzian)
-  "learn squared creative illustration amin faramarzian": Arte_dibujo
-  # n=58 pureza=1.0 L2 (ej: domestika-animated-illustration-procreate-martin-tognola)
-  "domestika animated illustration procreate martin tognola": Arte_dibujo
-  # n=53 pureza=1.0 L2 (ej: fundamentals-of-design-tyler-edlin)
-  "fundamentals of design tyler edlin": Arte_dibujo
-  # n=47 pureza=1.0 L2 (ej: ctrl-paint--digital-sketching-starting-kit)
-  "ctrl paint digital sketching starting kit": Arte_dibujo
-  # n=46 pureza=1.0 L2 (ej: proko-introduction-figure-michael-hampton)
-  "proko introduction figure michael hampton": Arte_dibujo
-  # n=42 pureza=0.9762 L2 (ej: intro-comic-george-pratt)
-  "intro comic george pratt": Arte_dibujo
-  # n=32 pureza=1.0 L2 (ej: domestika--character-design-dan-kelby)
-  "domestika character design dan kelby": Arte_dibujo
-  # n=30 pureza=1.0 L2 (ej: marco-bucci--drawing-for-experienced-beginners)
-  "marco bucci drawing for experienced beginners": Arte_dibujo
-  # n=29 pureza=1.0 L2 (ej: drawing-with-life-david-colman)
-  "drawing with life david colman": Arte_dibujo
-  # n=28 pureza=1.0 L2 (ej: marco-bucci-figure-drawing)
-  "marco bucci figure drawing": Arte_dibujo
-  # n=28 pureza=1.0 L2 (ej: 21-draw-learn-character-design-in-21-days-david-perez)
-  "21 draw learn character design in 21 days david perez": Arte_dibujo
-  # n=27 pureza=1.0 L2 (ej: domestika--lapin-botanical-sketchbooking)
-  "domestika lapin botanical sketchbooking": Arte_dibujo
-  # n=27 pureza=1.0 L2 (ej: learn-squared--sketching-the-right-way-zahir-aghakhani)
-  "learn squared sketching the right way zahir aghakhani": Arte_dibujo
-  # n=23 pureza=1.0 L2 (ej: marco-bucci--illustrating-childrens-books)
-  "marco bucci illustrating childrens books": Arte_dibujo
-  # n=22 pureza=1.0 L2 (ej: domestika--fantasy-character-design-in-procreate-nicholas-kole)
-  "domestika fantasy character design in procreate nicholas kole": Arte_dibujo
-  # n=22 pureza=1.0 L2 (ej: platzi--intro-pixel-art-josue-hernandez)
-  "platzi intro pixel art josue hernandez": Arte_dibujo
-  # n=22 pureza=1.0 L2 (ej: domestika--architectural-drawing-from-paper-to-photoshop-david-drazil)
-  "domestika architectural drawing from paper to photoshop david drazil": Arte_dibujo
-  # n=22 pureza=1.0 L2 (ej: skillshare--fun-drawing-improve-skills-robert-joyner)
-  "skillshare fun drawing improve skills robert joyner": Arte_dibujo
-  # n=22 pureza=1.0 L2 (ej: domestika--drawing-101-jean-fraisse)
-  "domestika drawing 101 jean fraisse": Arte_dibujo
-  # n=21 pureza=1.0 L2 (ej: domestika--drawing-animal-characters-florian-satzinger)
-  "domestika drawing animal characters florian satzinger": Arte_dibujo
-  # n=21 pureza=1.0 L2 (ej: domestika-lobon_leal-sketchbook_drawing_techniques)
-  "domestika lobon leal sketchbook drawing techniques": Arte_dibujo
-  # n=20 pureza=1.0 L2 (ej: domestika--intro-character-design-animation-jean-fraisse)
-  "domestika intro character design animation jean fraisse": Arte_dibujo
-  # n=19 pureza=1.0 L2 (ej: domestika-mattias-adolfsson-creative-sketching-fill)
-  "domestika mattias adolfsson creative sketching fill": Arte_dibujo
-  # n=19 pureza=1.0 L2 (ej: domestika--storytelling-comics-andre-lima-araujo)
-  "domestika storytelling comics andre lima araujo": Arte_dibujo
-  # n=19 pureza=1.0 L2 (ej: domestika--illustration-for-animation-jean-fraisse)
-  "domestika illustration for animation jean fraisse": Arte_dibujo
-  # n=18 pureza=1.0 L2 (ej: deciding-what-to-draw-irshad-karim-drawabox)
-  "deciding what to draw irshad karim drawabox": Arte_dibujo
-  # n=17 pureza=1.0 L2 (ej: domestika--tom-fox-drawing-people)
-  "domestika tom fox drawing people": Arte_dibujo
-  # n=17 pureza=1.0 L2 (ej: lyndon-ruddy-art-storyboard)
-  "lyndon ruddy art storyboard": Arte_dibujo
-  # n=17 pureza=1.0 L2 (ej: domestika--The Art of Sketching - Transform Your Doodles into Art by Mattias Adolfsson)
-  "domestika the art of sketching transform your doodles into art by mattias adolfsson": Arte_dibujo
-  # n=17 pureza=1.0 L2 (ej: domestika--search-and-find-victor-beuren)
-  "domestika search and find victor beuren": Arte_dibujo
-  # n=17 pureza=1.0 L2 (ej: domestika--paco_roca)
-  "domestika paco roca": Arte_dibujo
-  # n=16 pureza=1.0 L2 (ej: domestika-concept-art-design-titus-lunter)
-  "domestika concept art design titus lunter": Arte_dibujo
-  # n=16 pureza=1.0 L2 (ej: domestika--cartoon-style-character-portraits-with-procreate-by-cristina-gomez)
-  "domestika cartoon style character portraits with procreate by cristina gomez": Arte_dibujo
-  # n=16 pureza=1.0 L2 (ej: domestika--inking-for-comics-and-ilustrations-sergio-bleda)
-  "domestika inking for comics and ilustrations sergio bleda": Arte_dibujo
-  # n=16 pureza=1.0 L2 (ej: domestika--inking-comic-books-sam-hart)
-  "domestika inking comic books sam hart": Arte_dibujo
-  # n=16 pureza=1.0 L2 (ej: domestika--intro-character-design-pixel-daniel-benitez)
-  "domestika intro character design pixel daniel benitez": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: domestika-expressive-architectural-sketching-with-colored-markers-albert-kiefer)
-  "domestika expressive architectural sketching with colored markers albert kiefer": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: skillshare-fantasy-cities-in-photoshop-by-daniel-hasenbos)
-  "skillshare fantasy cities in photoshop by daniel hasenbos": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: Domestika - Basic Principles of Drawing People from Imagination)
-  "domestika basic principles of drawing people from imagination": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: domestika--superdibujante-puño)
-  "domestika superdibujante puño": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: domestika--illustration-and-character-design-for-childrens-stories-teresa-martinez)
-  "domestika illustration and character design for childrens stories teresa martinez": Arte_dibujo
-  # n=15 pureza=1.0 L2 (ej: julie-mellan-dynamic-animals)
-  "julie mellan dynamic animals": Arte_dibujo
-  # n=14 pureza=1.0 L2 (ej: domestika-sketchbook-creating-characters-based-real-people-ramirez-jacinto)
-  "domestika sketchbook creating characters based real people ramirez jacinto": Arte_dibujo
-  # n=14 pureza=1.0 L2 (ej: animal-character-design-david-colman)
-  "animal character design david colman": Arte_dibujo
-  # n=14 pureza=1.0 L2 (ej: domestika--guille-rancel)
-  "domestika guille rancel": Arte_dibujo
-  # n=14 pureza=1.0 L2 (ej: domestika--original-illustration-tablet-puño)
-  "domestika original illustration tablet puño": Arte_dibujo
-  # n=14 pureza=1.0 L2 (ej: domestika--isometric-map-jess-wilson)
-  "domestika isometric map jess wilson": Arte_dibujo
-  # n=13 pureza=1.0 L2 (ej: drawing-clear-expressions-with-aaron-blaise)
-  "drawing clear expressions with aaron blaise": Arte_dibujo
-  # n=12 pureza=1.0 L2 (ej: advanced-composition-francis-vallejo)
-  "advanced composition francis vallejo": Arte_dibujo
-  # n=12 pureza=1.0 L2 (ej: fantasy-procreate-rafael-sarmento)
-  "fantasy procreate rafael sarmento": Arte_dibujo
-  # n=12 pureza=1.0 L2 (ej: bancroft-drawing-character-poses)
-  "bancroft drawing character poses": Arte_dibujo
-  # n=11 pureza=1.0 L2 (ej: domestika--architectural-drawing-saleh-alenzawe)
-  "domestika architectural drawing saleh alenzawe": Arte_dibujo
-  # n=11 pureza=1.0 L2 (ej: will-terry-visualize-draw-perspective)
-  "will terry visualize draw perspective": Arte_dibujo
-  # n=10 pureza=1.0 L2 (ej: watts-atelier--sketchbooking-techniques-jeff-watts)
-  "watts atelier sketchbooking techniques jeff watts": Arte_dibujo
-  # n=10 pureza=1.0 L2 (ej: gumroad--academic-drawing-made-easy-jake-taplin-jakedontdraw)
-  "gumroad academic drawing made easy jake taplin jakedontdraw": Arte_dibujo
-  # n=10 pureza=1.0 L2 (ej: dynamic-sketching-1-with-peter-han)
-  "dynamic sketching 1 with peter han": Arte_dibujo
-  # n=9 pureza=1.0 L2 (ej: kim-jung-gi-how-to-draw-figures-in-perspective)
-  "kim jung gi how to draw figures in perspective": Arte_dibujo
-  # n=9 pureza=1.0 L2 (ej: underpaint-creative-sketching-jens-claessens)
-  "underpaint creative sketching jens claessens": Arte_dibujo
-  # n=9 pureza=1.0 L2 (ej: ctrl-paint--perspective-sketching-1)
-  "ctrl paint perspective sketching 1": Arte_dibujo
-  # n=9 pureza=1.0 L2 (ej: artwod-illustration-course)
-  "artwod illustration course": Arte_dibujo
-  # n=8 pureza=1.0 L2 (ej: dynamic-sketching-2-with-peter-han)
-  "dynamic sketching 2 with peter han": Arte_dibujo
-  # n=8 pureza=1.0 L2 (ej: craftsy--perspective_for_sketchers_steffany_bower)
-  "craftsy perspective for sketchers steffany bower": Arte_dibujo
-  # n=8 pureza=1.0 L2 (ej: artwod-character-design)
-  "artwod character design": Arte_dibujo
-  # n=7 pureza=1.0 L2 (ej: ctrl-paint--perspective-sketching-2)
-  "ctrl paint perspective sketching 2": Arte_dibujo
-  # n=7 pureza=1.0 L2 (ej: marco-bucci--digital-brushwork)
-  "marco bucci digital brushwork": Arte_dibujo
-  # n=7 pureza=1.0 L2 (ej: artwod-prop-design)
-  "artwod prop design": Arte_dibujo
-  # n=7 pureza=1.0 L2 (ej: artwod-beginner-design-course)
-  "artwod beginner design course": Arte_dibujo
-  # n=7 pureza=1.0 L2 (ej: drawing-the-everyday-paul-heaston)
-  "drawing the everyday paul heaston": Arte_dibujo
-  # n=6 pureza=1.0 L2 (ej: coloso--human-body-croquis-master-from-hobby-to-practice)
-  "coloso human body croquis master from hobby to practice": Arte_dibujo
-  # n=155 pureza=1.0 L1 (ej: complete-sql-mastery)
-  "complete sql mastery": Bases_datos
-  # n=75 pureza=1.0 L2 (ej: udemy-complete_dbt_bootcamp_from_zero_to_hero)
-  "udemy complete dbt bootcamp from zero to hero": Bases_datos
-  # n=36 pureza=1.0 L2 (ej: 6. Data Engineering dbt for SQL)
-  "6 data engineering dbt for sql": Bases_datos
-  # n=32 pureza=1.0 L2 (ej: 7. Advanced Snowflake Deep Dive Cloud Data Warehousing and Analytics)
-  "7 advanced snowflake deep dive cloud data warehousing and analytics": Bases_datos
-  # n=203 pureza=1.0 L0 (ej: 36--costura)
-  "costura": Costura
-  # n=203 pureza=1.0 L1 (ej: lulu_ferris-optim)
-  "lulu ferris optim": Costura
-  # n=21 pureza=1.0 L1 (ej: masterclass-will-wright-teaches-game-design-and-theory)
-  "masterclass will wright teaches game design and theory": Creatividad
-  # n=17 pureza=1.0 L1 (ej: masterclass-frank-gehry-teaches-design-and-architecture)
-  "masterclass frank gehry teaches design and architecture": Creatividad
-  # n=13 pureza=1.0 L1 (ej: masterclass-david-carson-teaches-graphic-design)
-  "masterclass david carson teaches graphic design": Creatividad
-  # n=34 pureza=1.0 L2 (ej: class101--ink-your-day-and-make-it-special-by-andrea-deng)
-  "class101 ink your day and make it special by andrea deng": Creatividad
-  # n=17 pureza=1.0 L2 (ej: learn-squared--visual-storytelling-romain-jouandeau)
-  "learn squared visual storytelling romain jouandeau": Creatividad
-  # n=15 pureza=1.0 L2 (ej: domestika--digital-collage-photoshop-nick-pedersen)
-  "domestika digital collage photoshop nick pedersen": Creatividad
-  # n=14 pureza=1.0 L2 (ej: domestika--from-idea-to-vignette-ale-lunik)
-  "domestika from idea to vignette ale lunik": Creatividad
-  # n=12 pureza=1.0 L2 (ej: skillshare-find-your-style-by-andy-j-pizza)
-  "skillshare find your style by andy j pizza": Creatividad
-  # n=10 pureza=1.0 L2 (ej: domestika--design-own-creative-process-alejandro-masferrer)
-  "domestika design own creative process alejandro masferrer": Creatividad
-  # n=91 pureza=1.0 L0 (ej: 34--electronica)
-  "electronica": Electronica
-  # n=39 pureza=1.0 L1 (ej: elegoo)
-  "elegoo": Electronica
-  # n=31 pureza=1.0 L1 (ej: Up and Running with Arduino)
-  "up and running with arduino": Electronica
-  # n=13 pureza=1.0 L1 (ej: Udemy - Aprende electronica basica)
-  "udemy aprende electronica basica": Electronica
-  # n=8 pureza=1.0 L1 (ej: electronica21)
-  "electronica21": Electronica
-  # n=7 pureza=1.0 L2 (ej: 2. Getting and Setting Up Your Arduino)
-  "2 getting and setting up your arduino": Electronica
-  # n=5 pureza=1.0 L2 (ej: 03 Entendiendo los circuitos electricos)
-  "03 entendiendo los circuitos electricos": Electronica
-  # n=5 pureza=1.0 L2 (ej: 3. Adding Components to the Arduino)
-  "3 adding components to the arduino": Electronica
-  # n=35 pureza=1.0 L1 (ej: masterclass-aaron-sorkin-teaches-screenwritting)
-  "masterclass aaron sorkin teaches screenwritting": Escritura
-  # n=33 pureza=1.0 L1 (ej: maestro-alan-moore-storytelling-course)
-  "maestro alan moore storytelling course": Escritura
-  # n=28 pureza=1.0 L1 (ej: masterclass-rl_stine_teaches_writing_for_young_audiences)
-  "masterclass rl stine teaches writing for young audiences": Escritura
-  # n=26 pureza=1.0 L1 (ej: masterclass-david_mamet_teaches_dramatic_writing)
-  "masterclass david mamet teaches dramatic writing": Escritura
-  # n=25 pureza=1.0 L1 (ej: masterclass-malcolm_gladwell_teaches_writing)
-  "masterclass malcolm gladwell teaches writing": Escritura
-  # n=23 pureza=1.0 L1 (ej: masterclass-margaret_atwood_teaches_creative_writing)
-  "masterclass margaret atwood teaches creative writing": Escritura
-  # n=22 pureza=1.0 L1 (ej: masterclass-james_patterson_teaches_writing)
-  "masterclass james patterson teaches writing": Escritura
-  # n=19 pureza=1.0 L1 (ej: masterclass-dan-brown-teaches-writing-thrillers)
-  "masterclass dan brown teaches writing thrillers": Escritura
-  # n=19 pureza=1.0 L1 (ej: masterclass-salman_rushdie_teaches_storytelling_and_writing)
-  "masterclass salman rushdie teaches storytelling and writing": Escritura
-  # n=18 pureza=1.0 L1 (ej: masterclass-david_baldacci_teaches_mystery_and_thriller_writing)
-  "masterclass david baldacci teaches mystery and thriller writing": Escritura
-  # n=18 pureza=1.0 L1 (ej: masterclass-the-duffer-brothers-teach-developing-an-original-tv-series)
-  "masterclass the duffer brothers teach developing an original tv series": Escritura
-  # n=16 pureza=1.0 L1 (ej: masterclass-nk-jemisin-teaches-fantasy-and-science-fiction-writing)
-  "masterclass nk jemisin teaches fantasy and science fiction writing": Escritura
-  # n=15 pureza=1.0 L1 (ej: masterclass-amy_tan_teaches_fiction_memory_and_imagination)
-  "masterclass amy tan teaches fiction memory and imagination": Escritura
-  # n=14 pureza=1.0 L1 (ej: masterclass-david_sedaris_teaches_storytelling_and_humor)
-  "masterclass david sedaris teaches storytelling and humor": Escritura
-  # n=14 pureza=1.0 L1 (ej: masterclass-joyce_carol_oates_teaches_the_art_of_the_short_story)
-  "masterclass joyce carol oates teaches the art of the short story": Escritura
-  # n=14 pureza=1.0 L1 (ej: masterclass-neil-gaiman-teaches-the-art-of-storytelling)
-  "masterclass neil gaiman teaches the art of storytelling": Escritura
-  # n=13 pureza=1.0 L1 (ej: masterclass-levar_burton_teaches_the_power_of_storytelling)
-  "masterclass levar burton teaches the power of storytelling": Escritura
-  # n=13 pureza=1.0 L1 (ej: masterclass-walter_mosley_teaches_fiction_and_storytelling)
-  "masterclass walter mosley teaches fiction and storytelling": Escritura
-  # n=16 pureza=1.0 L2 (ej: domestika-childrens-fiction-write-compelling-adventure-stories-ross-montgomery)
-  "domestika childrens fiction write compelling adventure stories ross montgomery": Escritura
-  # n=5 pureza=1.0 L2 (ej: hue_teo-storytelling)
-  "hue teo storytelling": Escritura
-  # n=34 pureza=1.0 L1 (ej: Linkedin - Learning_Pricing_Strategy_Explained)
-  "linkedin learning pricing strategy explained": Gestion
-  # n=32 pureza=1.0 L1 (ej: Lynda.Project.Management.Simplified-APoLLo)
-  "lynda project management simplified apollo": Gestion
-  # n=29 pureza=1.0 L1 (ej: Linkedin.Learning.Growth.Hacking.Tips-ZH)
-  "linkedin learning growth hacking tips zh": Gestion
-  # n=18 pureza=1.0 L1 (ej: masterclass-chris_voss_teaches_the_art_of_negotiation)
-  "masterclass chris voss teaches the art of negotiation": Gestion
-  # n=15 pureza=1.0 L1 (ej: Linkedin - Learning_Transitioning_from_Waterfall_to_Agile_Project_Management)
-  "linkedin learning transitioning from waterfall to agile project management": Gestion
-  # n=13 pureza=1.0 L1 (ej: masterclass-bob_iger_teaches_business_strategy_and_leadership)
-  "masterclass bob iger teaches business strategy and leadership": Gestion
-  # n=12 pureza=1.0 L1 (ej: Lynda.Writing.White.Papers-APoLLo.bitdownload.ir)
-  "lynda writing white papers apollo bitdownload ir": Gestion
-  # n=11 pureza=1.0 L1 (ej: Linkedin.Learning.Overcoming.Imposter.Syndrome-ZH)
-  "linkedin learning overcoming imposter syndrome zh": Gestion
-  # n=11 pureza=1.0 L1 (ej: Lynda.Business.Intelligence.for.Consultants-APoLLo.bitdownload.ir)
-  "lynda business intelligence for consultants apollo bitdownload ir": Gestion
-  # n=5 pureza=1.0 L1 (ej: LinkedIn - Learning_Job_Searching_Interviewing_and_Negotiating_Salary)
-  "linkedin learning job searching interviewing and negotiating salary": Gestion
-  # n=119 pureza=1.0 L2 (ej: udemy-become_a_product_manager)
-  "udemy become a product manager": Gestion
-  # n=40 pureza=1.0 L2 (ej: thefutur--practical-project-management-by-matthew-encina)
-  "thefutur practical project management by matthew encina": Gestion
-  # n=34 pureza=1.0 L2 (ej: Pricing Strategy Explained)
-  "pricing strategy explained": Gestion
-  # n=33 pureza=1.0 L2 (ej: PLURALSIGHT.BUSINESS.ANALYSIS.MANAGING.REQUIREMENTS-JGTiSO.bitdownload.ir)
-  "pluralsight business analysis managing requirements jgtiso bitdownload ir": Gestion
-  # n=32 pureza=1.0 L2 (ej: Pluralsight.Business.Analysis.Assessing.and.Improving.Solutions-ViGOROUS.bitdownload.ir)
-  "pluralsight business analysis assessing and improving solutions vigorous bitdownload ir": Gestion
-  # n=31 pureza=1.0 L2 (ej: PLURALSIGHT.BUSINESS.ANALYSIS.WORKING.WITH.STAKEHOLDERS.USING.ELICITATION.AND.COLLABORATION-JGTiSO.bitdownload.ir)
-  "pluralsight business analysis working with stakeholders using elicitation and collaboration jgtiso bitdownload ir": Gestion
-  # n=29 pureza=0.9655 L2 (ej: 2-advanced_product_management-leadership_and_communication)
-  "2 advanced product management leadership and communication": Gestion
-  # n=29 pureza=1.0 L2 (ej: Growth Hacking Tips)
-  "growth hacking tips": Gestion
-  # n=17 pureza=1.0 L2 (ej: domestika-business-plan-for-creatives-build-your-brand-and-career-by-lizzie-snow)
-  "domestika business plan for creatives build your brand and career by lizzie snow": Gestion
-  # n=15 pureza=1.0 L2 (ej: Lynda.Writing.a.Business.Case-APoLLo.bitdownload.ir)
-  "lynda writing a business case apollo bitdownload ir": Gestion
-  # n=12 pureza=1.0 L2 (ej: udemy-advanced_product_management)
-  "udemy advanced product management": Gestion
-  # n=12 pureza=1.0 L2 (ej: 02. Become the Most Trusted Person at Work)
-  "02 become the most trusted person at work": Gestion
-  # n=11 pureza=1.0 L2 (ej: Overcoming Imposter Syndrome)
-  "overcoming imposter syndrome": Gestion
-  # n=11 pureza=1.0 L2 (ej: 03. Strengthen Your Workplace Influence)
-  "03 strengthen your workplace influence": Gestion
-  # n=10 pureza=1.0 L2 (ej: 1-advanced_product_management-vision_strategy_and_metrics)
-  "1 advanced product management vision strategy and metrics": Gestion
-  # n=7 pureza=1.0 L2 (ej: 01. Introduction)
-  "01 introduction": Gestion
-  # n=7 pureza=1.0 L2 (ej: 05. Getting to the Agreement)
-  "05 getting to the agreement": Gestion
-  # n=5 pureza=1.0 L2 (ej: 01.Job Searching, Interviewing, and Negotiating Salary)
-  "01 job searching interviewing and negotiating salary": Gestion
-  # n=5 pureza=1.0 L2 (ej: 02 Define Your Project)
-  "02 define your project": Gestion
-  # n=5 pureza=1.0 L2 (ej: 07 Gantt Chart)
-  "07 gantt chart": Gestion
-  # n=5 pureza=1.0 L2 (ej: 06. Negotiating Your Future)
-  "06 negotiating your future": Gestion
-  # n=7 pureza=1.0 L1 (ej: ai-technical)
-  "ai technical": IA_ML
-  # n=6 pureza=1.0 L1 (ej: moure_dev)
-  "moure dev": IA_ML
-  # n=21 pureza=1.0 L2 (ej: coloso--creating-characters-jonatan-cantero)
-  "coloso creating characters jonatan cantero": Ilustracion_Dibujo
-  # n=20 pureza=1.0 L2 (ej: gumroad--bundle-mitch-leeuwe)
-  "gumroad bundle mitch leeuwe": Ilustracion_Dibujo
-  # n=12 pureza=1.0 L2 (ej: skillshare-cityscapes-made-easy-how-to-digitally-illustrate-your-favorite-city-in-procreate)
-  "skillshare cityscapes made easy how to digitally illustrate your favorite city in procreate": Ilustracion_Dibujo
-  # n=40 pureza=0.975 L1 (ej: stan_miller)
-  "stan miller": Pintura
-  # n=7 pureza=1.0 L1 (ej: simon-stalenhag)
-  "simon stalenhag": Pintura
-  # n=104 pureza=1.0 L2 (ej: learn-squared--painting-everything-kleinerhai)
-  "learn squared painting everything kleinerhai": Pintura
-  # n=86 pureza=0.9651 L2 (ej: learn-squared--paint-like-the-masters-greg-rutkowski)
-  "learn squared paint like the masters greg rutkowski": Pintura
-  # n=38 pureza=0.9737 L2 (ej: class101--capture-travel-sceneries-watercolor-wade-tang)
-  "class101 capture travel sceneries watercolor wade tang": Pintura
-  # n=34 pureza=1.0 L2 (ej: ctrl-paint--rendering)
-  "ctrl paint rendering": Pintura
-  # n=33 pureza=1.0 L2 (ej: lessons)
-  "lessons": Pintura
-  # n=28 pureza=1.0 L2 (ej: ctrl-paint--digital-color-starting-kit)
-  "ctrl paint digital color starting kit": Pintura
-  # n=22 pureza=1.0 L2 (ej: domestika--Illustrated Portrait in Watercolor by Ana Santos)
-  "domestika illustrated portrait in watercolor by ana santos": Pintura
-  # n=21 pureza=0.9524 L2 (ej: domestika--intro-digital-painting-jean-fraisse)
-  "domestika intro digital painting jean fraisse": Pintura
-  # n=20 pureza=1.0 L2 (ej: marco-bucci--painting-the-head)
-  "marco bucci painting the head": Pintura
-  # n=19 pureza=1.0 L2 (ej: domestika--figura-humana-acuarela-alejandro-casanova)
-  "domestika figura humana acuarela alejandro casanova": Pintura
-  # n=19 pureza=1.0 L2 (ej: domestika--teoria-color-jean-fraisse)
-  "domestika teoria color jean fraisse": Pintura
-  # n=19 pureza=1.0 L2 (ej: domestika--digital-painting-characters-color-joel-santana)
-  "domestika digital painting characters color joel santana": Pintura
-  # n=17 pureza=1.0 L2 (ej: watercolor-painting-course-with-aaron-blaise)
-  "watercolor painting course with aaron blaise": Pintura
-  # n=17 pureza=1.0 L2 (ej: marco-bucci--color-survival-guide)
-  "marco bucci color survival guide": Pintura
-  # n=14 pureza=1.0 L2 (ej: domestika--watercolor-coloring-for-comics-and-ilustrations-sergio-bleda)
-  "domestika watercolor coloring for comics and ilustrations sergio bleda": Pintura
-  # n=8 pureza=1.0 L2 (ej: marco-bucci--sketchbook-painting)
-  "marco bucci sketchbook painting": Pintura
-  # n=7 pureza=1.0 L2 (ej: dynamic-detail-pen-ink-watercolor-steven-reddy)
-  "dynamic detail pen ink watercolor steven reddy": Pintura
-  # n=6 pureza=1.0 L2 (ej: paint-loose)
-  "paint loose": Pintura
-  # n=5 pureza=1.0 L2 (ej: sketching-the-city-pen-ink-watercolor-shari-blaukopf)
-  "sketching the city pen ink watercolor shari blaukopf": Pintura
-  # n=16 pureza=1.0 L1 (ej: Lynda.Boosting.Your.Teams.Productivity-APoLLo.bitdownload.ir)
-  "lynda boosting your teams productivity apollo bitdownload ir": Productividad
-  # n=7 pureza=1.0 L2 (ej: microsoft-power_bi)
-  "microsoft power bi": Productividad
-  # n=7 pureza=1.0 L2 (ej: PLURALSIGHT.LEARNER.GETTING.STARTED-JGTiSO.bitdownload.ir)
-  "pluralsight learner getting started jgtiso bitdownload ir": Productividad
-  # n=51 pureza=0.9804 L1 (ej: automate_the_boring_stuff_with_python_programming)
-  "automate the boring stuff with python programming": Python
-  # n=57 pureza=1.0 L2 (ej: Learn Python the Hard Way 3rd Edition)
-  "learn python the hard way 3rd edition": Python
-  # n=51 pureza=1.0 L2 (ej: 5. Python for Data Engineering from Beginner to Advanced)
-  "5 python for data engineering from beginner to advanced": Python
-  # n=7 pureza=1.0 L2 (ej: 10 Regular Expressions)
-  "10 regular expressions": Python
-  # n=5 pureza=1.0 L2 (ej: 11 Files)
-  "11 files": Python
-  # n=15 pureza=1.0 L1 (ej: varios)
-  "varios": Sistemas
-  # n=19 pureza=1.0 L2 (ej: PLURALSIGHT.DEPLOYING.BASIC.INFRASTRUCTURE.SERVICES.ON.AWS-JGTiSO.bitdownload.ir)
-  "pluralsight deploying basic infrastructure services on aws jgtiso bitdownload ir": Sistemas
-  # n=15 pureza=1.0 L2 (ej: Lynda.DevOps.Foundations.Going.Cloud.Native-XQZT.bitdownload.ir)
-  "lynda devops foundations going cloud native xqzt bitdownload ir": Sistemas
-  # n=12 pureza=1.0 L2 (ej: Linkedin.Learning.Succeeding.in.DevOps-XQZT)
-  "linkedin learning succeeding in devops xqzt": Sistemas
-  # n=85 pureza=1.0 L1 (ej: wes_bos-beginner_javascript)
-  "wes bos beginner javascript": Web
-  # n=25 pureza=1.0 L1 (ej: wes_bos-css_grid)
-  "wes bos css grid": Web
-  # n=23 pureza=1.0 L1 (ej: Wes Bos - ES6)
-  "wes bos es6": Web
-  # n=42 pureza=1.0 L2 (ej: The Javascript Advanced Course)
-  "the javascript advanced course": Web
-  # n=25 pureza=1.0 L2 (ej: wesbos-css-grid)
-  "wesbos css grid": Web
-  # n=22 pureza=1.0 L2 (ej: Linkedin.Learning.WordPress.Backing.Up.Your.Site-ZH)
-  "linkedin learning wordpress backing up your site zh": Web
-  # n=20 pureza=1.0 L2 (ej: midudev-astro_headless)
-  "midudev astro headless": Web
-  # n=7 pureza=1.0 L2 (ej: sketching-people-in-motion-marc-taro-holmes)
-  "sketching people in motion marc taro holmes": Web
+  01 introduction: Negocio_Gestion
+  01 job searching interviewing and negotiating salary: Negocio_Gestion
+  02 become the most trusted person at work: Negocio_Gestion
+  02 define your project: Negocio_Gestion
+  03 entendiendo los circuitos electricos: Electronica_Hardware
+  03 strengthen your workplace influence: Negocio_Gestion
+  05 getting to the agreement: Negocio_Gestion
+  06 negotiating your future: Negocio_Gestion
+  07 gantt chart: Negocio_Gestion
+  1 advanced product management vision strategy and metrics: Negocio_Gestion
+  10 regular expressions: Programacion
+  11 files: Programacion
+  2 advanced product management leadership and communication: Negocio_Gestion
+  2 getting and setting up your arduino: Electronica_Hardware
+  21 draw learn character design in 21 days david perez: Arte
+  3 adding components to the arduino: Electronica_Hardware
+  5 python for data engineering from beginner to advanced: Programacion
+  6 data engineering dbt for sql: Datos_Analytics
+  7 advanced snowflake deep dive cloud data warehousing and analytics: Datos_Analytics
+  aaron blaise creating with procreate: Arte
+  advanced composition francis vallejo: Arte
+  ai technical: Datos_Analytics
+  alex hillkurtz comprimidos: Arte
+  animal character design david colman: Arte
+  artwod beginner design course: Arte
+  artwod character design: Arte
+  artwod illustration course: Arte
+  artwod prop design: Arte
+  automate the boring stuff with python programming: Programacion
+  bancroft drawing character poses: Arte
+  class101 capture travel sceneries watercolor wade tang: Arte
+  class101 ink your day and make it special by andrea deng: Arte
+  coloso creating characters jonatan cantero: Arte
+  coloso human body croquis master from hobby to practice: Arte
+  complete sql mastery: Datos_Analytics
+  costura: Costura_Textil
+  craftsy perspective for sketchers steffany bower: Arte
+  craftsy sketching your point of view paul heaston: Arte
+  ctrl paint digital color starting kit: Arte
+  ctrl paint digital sketching starting kit: Arte
+  ctrl paint perspective sketching 1: Arte
+  ctrl paint perspective sketching 2: Arte
+  ctrl paint rendering: Arte
+  deciding what to draw irshad karim drawabox: Arte
+  domestika animated illustration procreate martin tognola: Arte
+  domestika architectural drawing from paper to photoshop david drazil: Arte
+  domestika architectural drawing saleh alenzawe: Arte
+  domestika basic principles of drawing people from imagination: Arte
+  domestika business plan for creatives build your brand and career by lizzie snow: Negocio_Gestion
+  domestika cartoon style character portraits with procreate by cristina gomez: Arte
+  domestika character design dan kelby: Arte
+  domestika childrens fiction write compelling adventure stories ross montgomery: Escritura_Narrativa
+  domestika concept art design titus lunter: Arte
+  domestika design own creative process alejandro masferrer: Arte
+  domestika digital collage photoshop nick pedersen: Arte
+  domestika digital painting characters color joel santana: Arte
+  domestika drawing 101 jean fraisse: Arte
+  domestika drawing animal characters florian satzinger: Arte
+  domestika expressive architectural sketching with colored markers albert kiefer: Arte
+  domestika fantasy character design in procreate nicholas kole: Arte
+  domestika figura humana acuarela alejandro casanova: Arte
+  domestika from idea to vignette ale lunik: Arte
+  domestika guille rancel: Arte
+  domestika illustrated portrait in watercolor by ana santos: Arte
+  domestika illustration and character design for childrens stories teresa martinez: Arte
+  domestika illustration for animation jean fraisse: Arte
+  domestika inking comic books sam hart: Arte
+  domestika inking for comics and ilustrations sergio bleda: Arte
+  domestika intro character design animation jean fraisse: Arte
+  domestika intro character design pixel daniel benitez: Arte
+  domestika intro digital painting jean fraisse: Arte
+  domestika isometric map jess wilson: Arte
+  domestika lapin botanical sketchbooking: Arte
+  domestika lobon leal sketchbook drawing techniques: Arte
+  domestika mattias adolfsson creative sketching fill: Arte
+  domestika original illustration tablet puño: Arte
+  domestika paco roca: Arte
+  domestika search and find victor beuren: Arte
+  domestika sketchbook creating characters based real people ramirez jacinto: Arte
+  domestika storytelling comics andre lima araujo: Arte
+  domestika superdibujante puño: Arte
+  domestika teoria color jean fraisse: Arte
+  domestika the art of sketching transform your doodles into art by mattias adolfsson: Arte
+  domestika tom fox drawing people: Arte
+  domestika watercolor coloring for comics and ilustrations sergio bleda: Arte
+  drawing clear expressions with aaron blaise: Arte
+  drawing the everyday paul heaston: Arte
+  drawing with life david colman: Arte
+  dynamic detail pen ink watercolor steven reddy: Arte
+  dynamic sketching 1 with peter han: Arte
+  dynamic sketching 2 with peter han: Arte
+  electronica: Electronica_Hardware
+  electronica21: Electronica_Hardware
+  elegoo: Electronica_Hardware
+  fantasy procreate rafael sarmento: Arte
+  fundamentals of design tyler edlin: Arte
+  games workshop warhammer: Arte
+  glenn vilppu: Arte
+  growth hacking tips: Negocio_Gestion
+  gumroad academic drawing made easy jake taplin jakedontdraw: Arte
+  gumroad bundle mitch leeuwe: Arte
+  hue teo storytelling: Escritura_Narrativa
+  intro comic george pratt: Arte
+  julie mellan dynamic animals: Arte
+  kim jung gi how to draw figures in perspective: Arte
+  learn python the hard way 3rd edition: Programacion
+  learn squared creative illustration amin faramarzian: Arte
+  learn squared paint like the masters greg rutkowski: Arte
+  learn squared painting everything kleinerhai: Arte
+  learn squared sketching everything kleinerhai: Arte
+  learn squared sketching the right way zahir aghakhani: Arte
+  learn squared visual storytelling romain jouandeau: Arte
+  lessons: Arte
+  linkedin learning growth hacking tips zh: Negocio_Gestion
+  linkedin learning job searching interviewing and negotiating salary: Negocio_Gestion
+  linkedin learning overcoming imposter syndrome zh: Negocio_Gestion
+  linkedin learning pricing strategy explained: Negocio_Gestion
+  linkedin learning succeeding in devops xqzt: Infra_Sistemas
+  linkedin learning transitioning from waterfall to agile project management: Negocio_Gestion
+  linkedin learning wordpress backing up your site zh: Web_Frontend
+  lulu ferris optim: Costura_Textil
+  lynda boosting your teams productivity apollo bitdownload ir: Productividad_Herramientas
+  lynda business intelligence for consultants apollo bitdownload ir: Negocio_Gestion
+  lynda devops foundations going cloud native xqzt bitdownload ir: Infra_Sistemas
+  lynda project management simplified apollo: Negocio_Gestion
+  lynda writing a business case apollo bitdownload ir: Negocio_Gestion
+  lynda writing white papers apollo bitdownload ir: Negocio_Gestion
+  lyndon ruddy art storyboard: Arte
+  maestro alan moore storytelling course: Escritura_Narrativa
+  marco bucci color survival guide: Arte
+  marco bucci digital brushwork: Arte
+  marco bucci drawing for experienced beginners: Arte
+  marco bucci figure drawing: Arte
+  marco bucci illustrating childrens books: Arte
+  marco bucci painting the head: Arte
+  marco bucci sketchbook painting: Arte
+  masterclass aaron sorkin teaches screenwritting: Escritura_Narrativa
+  masterclass amy tan teaches fiction memory and imagination: Escritura_Narrativa
+  masterclass bob iger teaches business strategy and leadership: Negocio_Gestion
+  masterclass chris voss teaches the art of negotiation: Negocio_Gestion
+  masterclass dan brown teaches writing thrillers: Escritura_Narrativa
+  masterclass david baldacci teaches mystery and thriller writing: Escritura_Narrativa
+  masterclass david carson teaches graphic design: Arte
+  masterclass david mamet teaches dramatic writing: Escritura_Narrativa
+  masterclass david sedaris teaches storytelling and humor: Escritura_Narrativa
+  masterclass frank gehry teaches design and architecture: Arte
+  masterclass james patterson teaches writing: Escritura_Narrativa
+  masterclass joyce carol oates teaches the art of the short story: Escritura_Narrativa
+  masterclass levar burton teaches the power of storytelling: Escritura_Narrativa
+  masterclass malcolm gladwell teaches writing: Escritura_Narrativa
+  masterclass margaret atwood teaches creative writing: Escritura_Narrativa
+  masterclass neil gaiman teaches the art of storytelling: Escritura_Narrativa
+  masterclass nk jemisin teaches fantasy and science fiction writing: Escritura_Narrativa
+  masterclass rl stine teaches writing for young audiences: Escritura_Narrativa
+  masterclass salman rushdie teaches storytelling and writing: Escritura_Narrativa
+  masterclass the duffer brothers teach developing an original tv series: Escritura_Narrativa
+  masterclass walter mosley teaches fiction and storytelling: Escritura_Narrativa
+  masterclass will wright teaches game design and theory: Arte
+  microsoft power bi: Productividad_Herramientas
+  midudev astro headless: Web_Frontend
+  midudev desarrollo: Web_Frontend
+  modernday james: Arte
+  moure dev: Datos_Analytics
+  overcoming imposter syndrome: Negocio_Gestion
+  paint loose: Arte
+  platzi intro pixel art josue hernandez: Arte
+  pluralsight business analysis assessing and improving solutions vigorous bitdownload ir: Negocio_Gestion
+  pluralsight business analysis managing requirements jgtiso bitdownload ir: Negocio_Gestion
+  pluralsight business analysis working with stakeholders using elicitation and collaboration jgtiso bitdownload ir: Negocio_Gestion
+  pluralsight deploying basic infrastructure services on aws jgtiso bitdownload ir: Infra_Sistemas
+  pluralsight learner getting started jgtiso bitdownload ir: Productividad_Herramientas
+  pricing strategy explained: Negocio_Gestion
+  proko: Arte
+  proko drawing basics: Arte
+  proko introduction figure michael hampton: Arte
+  simon stalenhag: Arte
+  sketching people in motion marc taro holmes: Web_Frontend
+  sketching the city pen ink watercolor shari blaukopf: Arte
+  skillshare cityscapes made easy how to digitally illustrate your favorite city in procreate: Arte
+  skillshare fantasy cities in photoshop by daniel hasenbos: Arte
+  skillshare find your style by andy j pizza: Arte
+  skillshare fun drawing improve skills robert joyner: Arte
+  stan miller: Arte
+  storefront illustration by angela hao: Arte
+  the javascript advanced course: Web_Frontend
+  thefutur practical project management by matthew encina: Negocio_Gestion
+  udemy advanced product management: Negocio_Gestion
+  udemy aprende electronica basica: Electronica_Hardware
+  udemy become a product manager: Negocio_Gestion
+  udemy complete dbt bootcamp from zero to hero: Datos_Analytics
+  underpaint creative sketching jens claessens: Arte
+  up and running with arduino: Electronica_Hardware
+  varios: Infra_Sistemas
+  victor beuren: Arte
+  watercolor painting course with aaron blaise: Arte
+  watts atelier sketchbooking techniques jeff watts: Arte
+  wes bos beginner javascript: Web_Frontend
+  wes bos css grid: Web_Frontend
+  wes bos es6: Web_Frontend
+  wesbos css grid: Web_Frontend
+  will terry visualize draw perspective: Arte
