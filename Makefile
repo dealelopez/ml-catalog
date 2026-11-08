@@ -1,4 +1,4 @@
-.PHONY: help build up up-build down restart logs shell test lint format typecheck scan dry-run search label-stats label-review label-interactive health db-stats
+.PHONY: help build up up-build down restart logs shell test lint format typecheck scan dry-run search label-stats label-review label-interactive label-category label-category-review health db-stats
 
 help: ## Muestra ayuda auto-documentada
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -72,6 +72,12 @@ label-otros: ## revisar/validar categoría "Otros" (interactive, filtro)
 
 label-otros-review: ## revisar "Otros" con score bajo
 	docker compose run --rm ml-catalog label --review --category Otros --shuffle --limit 50
+
+label-category: ## revisar/validar una categoría (interactive, filtro): make label-category CAT=Ejercicio
+	docker compose run --rm ml-catalog label --interactive --category $(CAT)
+
+label-category-review: ## revisar una categoría con score bajo: make label-category-review CAT=Ejercicio
+	docker compose run --rm ml-catalog label --review --category $(CAT) --shuffle --limit 50
 
 health: ## diagnóstico de entorno: config, BD, ffprobe
 	docker compose run --rm ml-catalog health

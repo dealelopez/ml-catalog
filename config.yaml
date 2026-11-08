@@ -738,7 +738,47 @@ categories:
       - serger
       - overlock
 
-  # 15. OTROS — Lo que no encaje en las anteriores
+  # 15. EJERCICIO — Fitness, entrenamiento, gym, yoga, pilates, deportes
+  Ejercicio:
+    keywords:
+      - workout
+      - workouts
+      - fitness
+      - training
+      - exercise
+      - exercises
+      - gym
+      - cardio
+      - strength
+      - strength training
+      - weightlifting
+      - powerlifting
+      - bodybuilding
+      - crossfit
+      - calisthenics
+      - bodyweight
+      - yoga
+      - pilates
+      - hiit
+      - interval training
+      - stretching
+      - mobility
+      - flexibility
+      - warm up
+      - cool down
+      - reps
+      - sets
+      - progressive overload
+      - hypertrophy
+      - endurance
+      - athletic
+      - sport
+      - sports
+      - running
+      - cycling
+      - swimming
+
+  # 16. OTROS — Lo que no encaje en las anteriores
   Otros:
     keywords: []
 
