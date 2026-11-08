@@ -1,320 +1,760 @@
+# =============================================================================
+# config.yaml — Configuración de clasificación (Taxonomía v3: 15 categorías)
+# =============================================================================
+# Basado en docs/261107--propuesta-reorg-taxonomia.md
+# Mapeo desde modelo actual (Actual → Nueva):
+#   Python, Docker, Linux, IA_ML    → Programacion, DevOps_Cloud, Infra_Sistemas, Datos_Analytics
+#   Web                             → Web_Frontend
+#   Bases_datos                     → Datos_Analytics
+#   Redes, Seguridad, Sistemas      → Infra_Sistemas
+#   Diseno_UX                       → Diseno_Grafico_UI_UX
+#   Arte_dibujo                     → Arte_Tradicional (fusiona Ilustracion_Dibujo + Pintura_Tradicional)
+#   Pintura                         → Arte_Tradicional
+#   Modelado_3D                     → Modelado_3D
+#   Fotografia                      → Fotografia_Video
+#   Productividad                   → Productividad_Herramientas
+#   Electronica                     → Electronica_Hardware
+#   Escritura                       → Escritura_Narrativa
+#   Gestion                         → Negocio_Gestion
+#   Ciencia                         → Ciencia (nueva)
+#   Costura                         → Costura_Textil (nueva)
+#   Creatividad                     → Arte_Tradicional o Diseno_Grafico_UI_UX (se fusiona)
+# =============================================================================
+
 scan:
   folders:
-  - /videos
-  extensions:
-  - mp4
-  - mkv
-  - avi
-  - mov
-  - webm
-  - m4v
-  - ts
-  - wmv
-  ignore_folders:
-  - .trash
-  - temp
-  - .tmp
-  - '@eaDir'
+    - /videos
+  extensions: [mp4, mkv, avi, mov, webm, m4v, ts, wmv]
+  ignore_folders: [.trash, temp, .tmp, "@eaDir"]
+
 classification:
-  confidence_threshold: 0.2
+  confidence_threshold: 0.03
+
+# -----------------------------------------------------------------------------
+# GRUPO 1: TECNOLOGÍA (5 categorías)
+# -----------------------------------------------------------------------------
+
 categories:
-  Python:
+
+  # 1. PROGRAMACIÓN — Lenguajes, frameworks, APIs, patrones, librerías
+  Programacion:
     keywords:
-    - python
-    - py
-    - pandas
-    - numpy
-    - django
-    - flask
-    - fastapi
-    - asyncio
-    - pydantic
-  Docker:
+      - python
+      - py
+      - pandas
+      - numpy
+      - django
+      - flask
+      - fastapi
+      - asyncio
+      - pydantic
+      - pytest
+      - poetry
+      - pip
+      - venv
+      - jupyter
+      - ipython
+      - matplotlib
+      - seaborn
+      - scipy
+      - scikit-learn
+      - sklearn
+      - tensorflow
+      - pytorch
+      - keras
+      - huggingface
+      - transformers
+      - langchain
+      - openai
+      - anthropic
+      - javascript
+      - js
+      - typescript
+      - ts
+      - rust
+      - go
+      - golang
+      - java
+      - kotlin
+      - csharp
+      - c#
+      - cpp
+      - c++
+      - php
+      - laravel
+      - symfony
+      - ruby
+      - rails
+      - elixir
+      - scala
+      - swift
+      - dart
+      - flutter
+      - react
+      - vue
+      - svelte
+      - nextjs
+      - nuxt
+      - angular
+      - node
+      - nodejs
+      - deno
+      - bun
+      - api
+      - rest
+      - graphql
+      - grpc
+      - microservices
+      - design patterns
+      - clean code
+      - testing
+      - tdd
+      - bdd
+      - jest
+      - vitest
+
+  # 2. WEB_FRONTEND — Frameworks, CSS, build tools, CMS, motion
+  Web_Frontend:
     keywords:
-    - docker
-    - container
-    - contenedor
-    - compose
-    - dockerfile
-    - kubernetes
-    - k8s
-    - podman
-  Linux:
+      - react
+      - vue
+      - astro
+      - svelte
+      - nextjs
+      - nuxt
+      - remix
+      - gatsby
+      - css
+      - scss
+      - sass
+      - tailwind
+      - bootstrap
+      - html
+      - html5
+      - svg
+      - animation
+      - motion
+      - framer
+      - gsap
+      - lottie
+      - wordpress
+      - woocommerce
+      - shopify
+      - webflow
+      - frontend
+      - ui
+      - ux
+      - responsive
+      - accessibility
+      - a11y
+      - performance
+      - core web vitals
+      - vite
+      - webpack
+      - turbopack
+      - esbuild
+      - pnpm
+      - yarn
+      - npm
+
+  # 3. DATOS_ANALYTICS — SQL, DBT, Pandas, BI, ML clásico, data engineering
+  Datos_Analytics:
     keywords:
-    - linux
-    - bash
-    - shell
-    - terminal
-    - ubuntu
-    - debian
-    - sysadmin
-    - cli
-    - zsh
-    - grep
-    - awk
-    - sed
-  IA_ML:
+      - sql
+      - database
+      - db
+      - bases de datos
+      - mongodb
+      - postgres
+      - postgresql
+      - mysql
+      - sqlite
+      - redis
+      - elasticsearch
+      - clickhouse
+      - duckdb
+      - dbt
+      - pandas
+      - numpy
+      - polars
+      - analytics
+      - bi
+      - business intelligence
+      - tableau
+      - powerbi
+      - looker
+      - metabase
+      - data warehouse
+      - data lake
+      - etl
+      - elt
+      - pipeline
+      - airflow
+      - dagster
+      - prefect
+      - machine learning
+      - ml
+      - scikit
+      - scikit-learn
+      - xgboost
+      - lightgbm
+      - regression
+      - classification
+      - clustering
+      - feature engineering
+      - bigquery
+      - snowflake
+      - redshift
+
+  # 4. DEVOPS_CLOUD — Contenedores, K8s, CI/CD, IaC, cloud providers
+  DevOps_Cloud:
     keywords:
-    - machine learning
-    - ml
-    - inteligencia artificial
-    - ia
-    - ai
-    - neural
-    - llm
-    - gpt
-    - deeplearning
-    - scikit
-    - tensorflow
-    - pytorch
-  Web:
+      - docker
+      - container
+      - contenedor
+      - compose
+      - dockerfile
+      - kubernetes
+      - k8s
+      - k3s
+      - helm
+      - kubectl
+      - podman
+      - buildah
+      - ci
+      - cd
+      - cicd
+      - github actions
+      - gitlab ci
+      - jenkins
+      - circleci
+      - terraform
+      - terragrunt
+      - ansible
+      - pulumi
+      - crossplane
+      - aws
+      - azure
+      - gcp
+      - google cloud
+      - cloudformation
+      - serverless
+      - lambda
+      - cloud run
+      - fargate
+      - ecs
+      - eks
+      - gke
+      - aks
+      - prometheus
+      - grafana
+      - loki
+      - tempo
+      - observability
+      - monitoring
+      - logging
+      - tracing
+      - opentelemetry
+
+  # 5. INFRA_SISTEMAS — Linux, Bash, redes, servidores, seguridad
+  Infra_Sistemas:
     keywords:
-    - javascript
-    - js
-    - react
-    - vue
-    - astro
-    - css
-    - html
-    - node
-    - typescript
-    - ts
-    - frontend
-    - backend
-    - nextjs
-    - svelte
-    - wordpress
-  Bases_datos:
+      - linux
+      - bash
+      - shell
+      - terminal
+      - ubuntu
+      - debian
+      - arch
+      - fedora
+      - nixos
+      - sysadmin
+      - cli
+      - zsh
+      - fish
+      - tmux
+      - grep
+      - awk
+      - sed
+      - find
+      - ssh
+      - networking
+      - network
+      - redes
+      - tcp
+      - ip
+      - dns
+      - http
+      - https
+      - vpn
+      - firewall
+      - wireshark
+      - proxy
+      - nginx
+      - apache
+      - caddy
+      - traefik
+      - haproxy
+      - load balancer
+      - security
+      - seguridad
+      - hardening
+      - selinux
+      - apparmor
+      - fail2ban
+      - certificates
+      - ssl
+      - tls
+      - letsencrypt
+
+# -----------------------------------------------------------------------------
+# GRUPO 2: DISEÑO & CREATIVO (4 categorías)
+# -----------------------------------------------------------------------------
+
+  # 6. DISENO_GRAFICO_UI_UX — Figma, tipografía, branding, Adobe, motion
+  Diseno_Grafico_UI_UX:
     keywords:
-    - sql
-    - database
-    - db
-    - bases de datos
-    - mongodb
-    - postgres
-    - mysql
-    - sqlite
-    - redis
-    - elasticsearch
-    - dbt
-  Redes:
+      - ux design
+      - ui design
+      - user experience
+      - user interface
+      - usability
+      - user research
+      - prototyping
+      - prototipado
+      - wireframe
+      - figma
+      - sketch
+      - adobe xd
+      - typography
+      - tipografia
+      - font
+      - fuente
+      - lettering
+      - calligraphy
+      - branding
+      - logo
+      - logotipo
+      - brand identity
+      - design system
+      - design thinking
+      - interaction design
+      - motion design
+      - motion graphics
+      - after effects
+      - lottie
+      - framer
+      - adobe
+      - photoshop
+      - indesign
+      - premiere
+      - davinci
+      - davinci resolve
+      - color grading
+      - video editing
+
+  # 7. ARTE — Ilustración, dibujo, pintura (acuarela, óleo, acrílico, gouache, digital)
+  # Fusiona: Ilustracion_Dibujo + Pintura_Tradicional
+  Arte:
     keywords:
-    - redes
-    - network
-    - networking
-    - tcp
-    - ip
-    - dns
-    - http
-    - vpn
-    - firewall
-    - wireshark
-    - proxy
-  Seguridad:
-    keywords:
-    - seguridad
-    - security
-    - hacking
-    - pentest
-    - ciberseguridad
-    - ctf
-    - exploit
-    - vulnerabilidad
-    - owasp
-  Sistemas:
-    keywords:
-    - sistemas
-    - devops
-    - cloud
-    - aws
-    - azure
-    - gcp
-    - infrastructure
-    - servidor
-    - nginx
-    - apache
-    - ansible
-    - software architecture
-  Ciencia:
-    keywords:
-    - science
-    - scientific thinking
-    - physics
-    - mathematical
-    - mathematics
-    - chemistry
-    - biology
-    - astronomy
-  Diseno_UX:
-    keywords:
-    - ux design
-    - user experience
-    - usability
-    - user research
-    - prototyping
-    - wireframe
-    - figma
-    - typography
-    - tipografia
-    - interaction design
-    - design thinking
-    - adobe indesign
-    - graphic design
-    - logo
-    - branding
-    - david carson
-  Fotografia:
-    keywords:
-    - photography
-    - photo editing
-    - lightroom
-    - colorization
-    - portrait photography
-    - camera basics
+      - illustration
+      - ilustracion
+      - drawing
+      - dibujo
+      - sketch
+      - boceto
+      - sketchbook
+      - procreate
+      - anatomy
+      - anatomia
+      - figure
+      - figura
+      - gesture
+      - character
+      - personaje
+      - character design
+      - concept art
+      - environment design
+      - creature design
+      - prop design
+      - ink
+      - tinta
+      - lineart
+      - line art
+      - hatching
+      - crosshatching
+      - composition
+      - composicion
+      - perspective
+      - perspectiva
+      - foreshortening
+      - light and shadow
+      - values
+      - color theory
+      - teoria del color
+      - digital painting
+      - traditional drawing
+      - watercolor
+      - acuarela
+      - oil painting
+      - oleo
+      - acrylic
+      - acrilico
+      - gouache
+      - marker
+      - rotulador
+      - copic
+      - posca
+      - canvas
+      - lienzo
+      - paper
+      - papel
+      - brush
+      - pincel
+      - palette
+      - paleta
+      - color mixing
+      - mezcla de color
+      - wet on wet
+      - wet on dry
+      - glazing
+      - veladuras
+      - impasto
+      - plein air
+      - landscape painting
+      - portrait painting
+      - still life
+      - bodegon
+      - illustrator
+      - adobe illustrator
+      - vector
+      - vectorial
+
+  # 8. MODELADO_3D — Blender, C4D, SketchUp, archviz, CAD, rendering
   Modelado_3D:
     keywords:
-    - sketchup
-    - sketchups
-    - woodworking
-    - 3d modeling
-    - 3d warehouse
-    - autocad
-    - revit
-    - blender
-    - architecture
-    - design and architecture
-    - frank gehry
-    - blueprint
-    - cad
-    - floor plan
-  Electronica:
+      - blender
+      - cinema4d
+      - c4d
+      - sketchup
+      - 3d modeling
+      - modelado 3d
+      - 3d warehouse
+      - autocad
+      - revit
+      - rhino
+      - zbrush
+      - substance
+      - substance painter
+      - substance designer
+      - houdini
+      - maya
+      - 3ds max
+      - rendering
+      - render
+      - cycles
+      - eevee
+      - octane
+      - redshift
+      - vray
+      - corona
+      - archviz
+      - architectural visualization
+      - cad
+      - geometry nodes
+      - simulation
+      - particles
+      - fluid simulation
+      - rigging
+      - animation
+      - animacion
+      - vfx
+      - visual effects
+      - motion capture
+
+  # 9. FOTOGRAFIA_VIDEO — Edición, Lightroom, composición, vídeo
+  Fotografia_Video:
     keywords:
-    - electronica
-    - arduino
-    - raspberry
-    - esp32
-    - iot
-    - circuito
-    - hardware
-    - micropython
-    - gpio
-  Productividad:
+      - photography
+      - fotografia
+      - photo editing
+      - edicion de fotos
+      - lightroom
+      - photoshop
+      - capture one
+      - darkroom
+      - raw
+      - color grading
+      - color correction
+      - portrait photography
+      - retrato
+      - landscape photography
+      - paisaje
+      - street photography
+      - callejera
+      - composition
+      - composicion
+      - exposure
+      - exposicion
+      - aperture
+      - apertura
+      - shutter speed
+      - iso
+      - video editing
+      - edicion de video
+      - premiere
+      - davinci resolve
+      - davinci
+      - final cut
+      - after effects
+      - motion graphics
+      - lut
+      - log
+      - rec709
+
+# -----------------------------------------------------------------------------
+# GRUPO 3: OTROS (6 categorías)
+# -----------------------------------------------------------------------------
+
+  # 10. PRODUCTIVIDAD_HERRAMIENTAS — Git, Obsidian, Notion, workflows, IDEs
+  Productividad_Herramientas:
     keywords:
-    - productividad
-    - git
-    - vim
-    - neovim
-    - obsidian
-    - notion
-    - workflow
-    - tmux
-    - makefile
-  Arte_dibujo:
+      - productivity
+      - productividad
+      - git
+      - github
+      - gitlab
+      - bitbucket
+      - version control
+      - control de versiones
+      - obsidian
+      - notion
+      - roam
+      - logseq
+      - workflow
+      - flujo de trabajo
+      - vim
+      - neovim
+      - vscode
+      - visual studio code
+      - intellij
+      - jetbrains
+      - tmux
+      - screen
+      - terminal
+      - cli
+      - command line
+      - automation
+      - automatizacion
+      - scripting
+      - shortcuts
+      - atajos
+      - dotfiles
+      - makefile
+      - task runner
+
+  # 11. ELECTRONICA_HARDWARE — Arduino, PCB, IoT, impresión 3D
+  Electronica_Hardware:
     keywords:
-    - arte
-    - art
-    - dibujo
-    - boceto
-    - sketch
-    - drawing
-    - anatomia
-    - anatomy
-    - figure
-    - gesture
-    - composition
-    - composicion
-    - perspective
-    - perspectiva
-    - character
-    - personaje
-    - procreate
-    - photoshop
-    - warhammer
-    - miniature
-    - ilustracion
-    - illustration
-  Pintura:
+      - electronica
+      - electronics
+      - arduino
+      - esp32
+      - esp8266
+      - raspberry pi
+      - raspberry
+      - pcb
+      - printed circuit board
+      - circuit
+      - circuito
+      - iot
+      - internet of things
+      - mqtt
+      - home assistant
+      - home automation
+      - domotica
+      - sensors
+      - sensores
+      - actuator
+      - actuador
+      - 3d printing
+      - impresion 3d
+      - slicer
+      - fdm
+      - sla
+      - resin
+      - filament
+      - prusa
+      - bambu lab
+      - ender
+      - klipper
+      - marlin
+      - soldering
+      - soldadura
+      - multimeter
+      - oscilloscope
+      - osciloscopio
+
+  # 12. ESCRITURA_NARRATIVA — Guion, novela, storytelling, copywriting
+  Escritura_Narrativa:
     keywords:
-    - pintura
-    - painting
-    - acuarela
-    - watercolor
-    - oleo
-    - oil
-    - acrilico
-    - acrylic
-    - gouache
-    - lienzo
-    - canvas
-    - paleta
-    - palette
-    - pincel
-    - brush
-    - color
-    - colour
-  Escritura:
+      - writing
+      - escritura
+      - writer
+      - escritor
+      - novel
+      - novela
+      - fiction
+      - ficcion
+      - narrative
+      - narrativa
+      - storytelling
+      - story
+      - historia
+      - plot
+      - trama
+      - character
+      - personaje
+      - worldbuilding
+      - construccion de mundos
+      - screenwriting
+      - guion
+      - screenplay
+      - copywriting
+      - copy
+      - content writing
+      - blogging
+      - blog
+      - article
+      - articulo
+      - essay
+      - ensayo
+      - poetry
+      - poesia
+      - creative writing
+      - escritura creativa
+
+  # 13. NEGOCIO_GESTION — Proyectos, estrategia, marketing, finanzas
+  Negocio_Gestion:
     keywords:
-    - writing
-    - escritura
-    - writer
-    - novel
-    - novela
-    - fiction
-    - ficcion
-    - narrative
-    - narrativa
-    - synopsis
-    - sinopsis
-    - relato
-    - storytelling
-    - screenwriting
-    - guion
-  Creatividad:
+      - management
+      - gestion
+      - business
+      - negocio
+      - project
+      - proyecto
+      - project management
+      - gestion de proyectos
+      - agile
+      - scrum
+      - kanban
+      - sprint
+      - backlog
+      - leadership
+      - liderazgo
+      - marketing
+      - digital marketing
+      - seo
+      - sem
+      - content marketing
+      - email marketing
+      - growth
+      - growth hacking
+      - finance
+      - finanzas
+      - pricing
+      - precios
+      - stakeholder
+      - interesados
+      - requirements
+      - requisitos
+      - strategy
+      - estrategia
+      - negotiation
+      - negociacion
+      - sales
+      - ventas
+      - crm
+      - product management
+      - product owner
+      - product manager
+
+  # 14. CIENCIA — Física, matemáticas, biología, astronomía, método científico
+  Ciencia:
     keywords:
-    - creatividad
-    - creativity
-    - creative
-    - creativo
-    - inspiracion
-    - inspiration
-    - ideas
-    - journal
-    - sketchbook
-  Costura:
+      - science
+      - ciencia
+      - scientific thinking
+      - pensamiento cientifico
+      - physics
+      - fisica
+      - mathematics
+      - matematicas
+      - mathematical
+      - chemistry
+      - quimica
+      - biology
+      - biologia
+      - astronomy
+      - astronomia
+      - scientific method
+      - metodo cientifico
+      - research
+      - investigacion
+      - experiment
+      - experimento
+      - hypothesis
+      - hipotesis
+      - peer review
+      - publication
+      - paper
+      - journal
+      - nature
+      - science magazine
+      - stem
+
+  # 15. COSTURA_TEXTIL — Patronaje, confección, tejidos, bordado
+  Costura_Textil:
     keywords:
-    - costura
-    - sewing
-    - coser
-    - patronaje
-    - tela
-    - fabric
-    - hilo
-    - thread
-    - aguja
-    - needle
-    - bordado
-    - embroidery
-    - crochet
-    - patchwork
-  Gestion:
-    keywords:
-    - management
-    - gestion
-    - negocio
-    - business
-    - proyecto
-    - project
-    - liderazgo
-    - leadership
-    - marketing
-    - finanzas
-    - finance
-    - pricing
-    - stakeholder
-    - requirements
-    - estrategia
-    - strategy
-    - negotiation
-    - negociacion
+      - costura
+      - sewing
+      - coser
+      - patronaje
+      - patrones
+      - tela
+      - fabric
+      - tejido
+      - hilo
+      - thread
+      - aguja
+      - needle
+      - bordado
+      - embroidery
+      - crochet
+      - knitting
+      - tricot
+      - patchwork
+      - quilting
+      - acolchado
+      - dressmaking
+      - confeccion
+      - fashion design
+      - diseño de moda
+      - textile
+      - textil
+      - loom
+      - telar
+      - spinning
+      - hilado
+      - dyeing
+      - teñido
+      - serger
+      - overlock
+
+  # 16. OTROS — Lo que no encaje en las anteriores
   Otros:
     keywords: []
+
+# -----------------------------------------------------------------------------
+# folder_categories se carga desde config-folder-dict.yaml (fusionado en config.py)
+# =============================================================================
