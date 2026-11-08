@@ -29,12 +29,12 @@ from typing import Iterator
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
+from src import classifier as _classifier
 from src import db as _db
 from src import metadata as _metadata
 from src import normalizer as _normalizer
 from src import path_context as _path_context
 from src import rules as _rules
-from src import classifier as _classifier
 
 console = Console()
 

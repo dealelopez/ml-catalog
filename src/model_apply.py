@@ -10,7 +10,7 @@ import argparse
 import os
 import sys
 
-from src.classifier import try_load_model, predict, get_model_info
+from src.classifier import predict, try_load_model
 from src.config import load
 from src.db import init_db
 from src.path_context import summarize

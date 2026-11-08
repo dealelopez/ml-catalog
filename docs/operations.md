@@ -98,7 +98,29 @@ Las correcciones se guardan con `label_source='manual'`; confirmar una
 etiqueta del modelo → `model+reviewed`. **Ningún proceso automático pisa
 labels `manual`/`model+reviewed`**.
 
+```bash
+# Re-clasificar la BD con las reglas del config (sin depender del modelo)
+docker compose run --rm ml-catalog apply-rules --dry-run
+docker compose run --rm ml-catalog apply-rules
+```
+
+- **`apply-rules`** (`src/rules_apply.py`): aplica `rules.classify` a los
+  activos con `label_source` no protegido. Precedencia: protege
+  `manual`/`model+reviewed`; las reglas quedan por encima de
+  `model`/`rule`/`jev_uncertain` SOLO si hay hit competente (score ≥
+  `confidence_threshold`); sin hit, la fila no se toca. Espejo del
+  `apply-model`, pero con el baseline de keywords + carpetas.
+- Cuándo usar: al cambiar keywords/taxonomía y quieras activar en
+  BD categorías que el modelo aún no puede predecir (clases sin labels),
+  o dejar la BD alineada con un config ajustado.
+- Ciclo recomendado tras tocar config: `scan` (nuevos) → `apply-rules` →
+  `label --export` → `train_classifier.py --dry-run` → train → `apply-model`.
+
 ## Bootstrapping con Jev (dev puntual)
+
+> **⚠️ En pausa (2026-11-08, decisión usuario)**: no usar Jev hasta nuevo
+> aviso. El etiquetado bootstrap para clases sin labels se hace con
+> `apply-rules` o etiquetado manual (`label --interactive`/`--review`).
 
 `scripts/label_with_jev.py` etiqueta masivamente vía Vercel AI Gateway
 (`typesafe-ai/jev`) fuera del pipeline. Requiere `AI_GATEWAY_API_KEY` y

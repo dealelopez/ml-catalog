@@ -5,30 +5,34 @@
 
 **Estado v1.2** (2026-11-08): taxonomía **v3.1** (14 cat + Otros) con
 keywords owner único; foto/vídeo fusionada en `Diseno_Grafico_UI_UX`.
-BD y modelo consolidados en v3.1 (P5 ✅, F1=0.963).
-**Pendiente**: ground truth (P0) y labels para `Diseno_Grafico_UI_UX`
-y `Ciencia` (el modelo no las predice aún).
+BD 100% en v3.1 y modelo con 14 clases (F1=0.9827) tras el ciclo
+`apply-rules → export → train → apply-model` (incluidos Ciencia y Diseño).
+**Pendiente**: ground truth (P0) y revisar los flips DevOps del
+apply-rules.
 
 ---
 
 ## P0 — Etiquetado ground truth (requerido antes de P3) — **🔜 PRÓXIMO PASO**
 
 Los notebooks P3 comparan **reglas vs modelo** con ground truth real.
-Hoy hay 7.137 `model` + 3 `manual` + 4 `jev_uncertain` = **insuficiente**.
+El modelo mayoritariamente cuenta con pseudo-labels; hay ~130
+`manual`/`model+reviewed`.
+
+> **Jev en pausa (decisión de usuario)**: nada de bootstrapping externo
+> hasta nuevo aviso. El camino es solo etiquetado manual.
 
 ### Acción requerida (15–30 min)
 ```bash
-# 1. Revisar jev_uncertain (prioridad máxima — Jev pidió ayuda explícita)
-docker compose run --rm ml-catalog label --review
+# 1. Revisar jev_uncertain restantes (4) y márgenes bajos del modelo
+docker compose run --rm ml-catalog label --review --shuffle --limit 20
 
 # 2. Etiquetar muestra representativa (20–50 vídeos) para test set decente
 docker compose run --rm ml-catalog label --interactive
-# O por tandas temáticas:
-docker compose run --rm ml-catalog label --review --threshold 0.3
 ```
 
-**Objetivo**: 30–50 labels `manual` confirmados antes de arrancar P3.
-Sin ground truth, los notebooks 04/05 (análisis errores, reglas vs modelo) no tienen sentido.
+**Objetivo**: 30–50 labels `manual` nuevos sobre la BD consolidada v3.1
+antes de arrancar P3. Con la BD al 100% etiquetada, el `--review` prioriza
+márgenes bajos y es el mejor diagnóstico para el modelo.
 
 ---
 
@@ -94,13 +98,16 @@ La propuesta original (tabla y mapeo) queda abajo como referencia histórica.
       con labels), `labels.csv` re-exportado, dry-run idempotente ✓
 
 **Restante**:
-- [ ] `Diseno_Grafico_UI_UX` y `Ciencia` siguen con 0 labels: el modelo
-      actual (13 clases) no las predice y las reglas solo las cubren en
-      scan nuevos → enriquecer con etiquetado manual o la próxima tanda
-      de Jev antes de reentrenar
-- [ ] F1=0.963 sigue siendo optimista (pseudo-labels); el real se verá
+- [x] ~~`Diseno_Grafico_UI_UX` y `Ciencia` siguen con 0 labels~~ →
+      cerrado el círculo vicioso con `apply-rules` (243 Diseño, 39
+      Ciencia) + reentreno: el modelo ya tiene 14 clases (F1=0.9703)
+- [x] BD al 100% con label v3.1 (0 sin label)
+- [ ] `DevOps_Cloud` por debajo de MIN_SAMPLES en activos: el modelo no
+      la predice; la cubren reglas/carpetas. Revisar los ~28 flips
+      `DevOps→Negocio/Programacion` del apply-rules
+- [ ] F1=0.9703 sigue siendo optimista (pseudo-labels); el real se verá
       cuando P0 aporte ground truth manual
-- [ ] Notebook P3 (curva aprendizaje reglas vs modelo) sale de compactar
+- [ ] Notebook P3 (curva aprendizaje reglas vs modelo) sale de comparar
       este histórico: `docs/task-10..16-*.md`
 
 ---
@@ -150,6 +157,12 @@ La taxonomía v2 (22 cats, Task 20) tenía estos problemas:
 
 ## Ideas (sin fecha)
 
+- [ ] Ampliar cobertura del diccionario de carpetas: hoy 195 de ~836
+      segmentos L2 únicos mapeados (76% de los activos se deciden por
+      override de carpeta pura). Regenerar con
+      `scripts/generate_folder_candidates.py` y revisar candidatas.
+- [ ] Plurales avanzados (stemming Porter ES + sufijos -es/-ies) si el
+      matching simple se queda corto.
 - [ ] Comando `stats` rico (evolución cobertura temporal)
 - [ ] `chapters.py` integrado en pipeline (enriquecimiento catálogo)
 - [ ] Interfaz web de consulta (posterior; hoy solo CLI)

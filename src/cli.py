@@ -153,6 +153,29 @@ def build_parser() -> argparse.ArgumentParser:
         help="Ruta al SQLite (default: $DB_PATH o data/catalog.db).",
     )
 
+    # --- apply-rules (re-clasifica BD con reglas; rompe el bloqueo de
+    #     categorías sin labels para el modelo) ---
+    rules_parser = subparsers.add_parser(
+        "apply-rules",
+        help="Re-clasifica la BD con reglas del config (escribe label_source='rule')",
+    )
+    rules_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Muestra qué haría sin escribir en la BD.",
+    )
+    rules_parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Máximo de vídeos a procesar (para pruebas).",
+    )
+    rules_parser.add_argument(
+        "--db",
+        default=os.getenv("DB_PATH", "data/catalog.db"),
+        help="Ruta al SQLite (default: $DB_PATH o data/catalog.db).",
+    )
+
     # --- health ---
     subparsers.add_parser("health", help="Comprueba configuración, BD y ffprobe")
 
@@ -258,6 +281,15 @@ def _cmd_health(_args: argparse.Namespace) -> int:
     return 0 if ok else 1
 
 
+def _cmd_apply_rules(args: argparse.Namespace) -> int:
+    from src.config import load
+    from src.rules_apply import apply_rules, report
+
+    cfg = load()
+    report(apply_rules(cfg, args.db, dry_run=args.dry_run, limit=args.limit))
+    return 0
+
+
 def _cmd_apply_model(args: argparse.Namespace) -> int:
     from src.config import load
     from src.model_apply import apply_model
@@ -294,6 +326,7 @@ def main(argv: list[str] | None = None) -> int:
         "search": _cmd_search,
         "label": _cmd_label,
         "apply-model": _cmd_apply_model,
+        "apply-rules": _cmd_apply_rules,
         "health": _cmd_health,
     }
     try:

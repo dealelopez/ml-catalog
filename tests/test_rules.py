@@ -46,6 +46,24 @@ def test_ruta_desempata_categorias():
     assert result_dk["category"] == "Docker"
 
 
+def test_keyword_plural_matchea_singular():
+    """Plurales ES/EN matchean la keyword en singular (2026-11-08)."""
+    from src.rules import _count_matches as cm
+
+    assert cm("sales negotiations", ["negotiation"]) == 1  # EN plural
+    assert cm("10 retratos al oleo", ["retrato"]) == 1  # ES plural
+    assert cm("projects and patterns", ["project"]) == 1  # EN plural
+    assert cm("shortcut rapido", ["shortcuts"]) == 1  # kw plural
+
+
+def test_plural_no_rompe_tokens_cortos():
+    """'js' u otros tokens ≤3 chars no se derivan a stems absurdos."""
+    from src.rules import _count_matches as cm
+
+    assert cm("js conf", ["js"]) == 1
+    assert cm("j dos", ["js"]) == 0
+
+
 def test_keyword_py_no_coincide_con_python():
     """'py' como token completo no debe coincidir dentro de 'python'."""
     result = classify("python avanzado", "/videos/", CONFIG)

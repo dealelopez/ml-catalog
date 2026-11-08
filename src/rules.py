@@ -44,6 +44,7 @@ def _folder_hit(path: str, config: dict) -> str | None:
 # Normalización interna — sin importar src.normalizer (evita dependencia circular)
 # ---------------------------------------------------------------------------
 
+
 def _normalize_text(text: str) -> str:
     """Minúsculas, sin acentos (NFD → ASCII), separadores → espacios."""
     text = text.lower()
@@ -60,6 +61,7 @@ def _normalize_text(text: str) -> str:
 # ---------------------------------------------------------------------------
 # API pública
 # ---------------------------------------------------------------------------
+
 
 def extract_path_segments(path: str) -> str:
     """Extrae y normaliza los nombres de carpeta de la ruta (sin el fichero final).
@@ -113,6 +115,19 @@ def _count_matches(text: str, keywords: list) -> int:
 
     for token in tokens:
         if token and re.search(r"\b" + re.escape(token) + r"\b", working):
+            count += 1
+            continue
+        # Plurales ES/EN (2026-11-08) en ambas direcciones:
+        #   kw plural   → texto singular: 'shortcut' matchea 'shortcuts'
+        #   kw singular → texto plural:  'negotiation' matchea 'negotiations',
+        #                              y 'retrato' matchea 'retratos'
+        # Solo si la keyword tiene >3 chars (no derivar 'js' → 'j').
+        if not token or len(token) <= 3:
+            continue
+        stem = token[:-1] if token.endswith("s") else token
+        if re.search(r"\b" + re.escape(stem) + r"\b", working) or re.search(
+            r"\b" + re.escape(stem) + r"s\b", working
+        ):
             count += 1
 
     return count

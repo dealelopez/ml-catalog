@@ -4,13 +4,34 @@
 
 ## 2026-11-08 — P4 completado: taxonomía v3.1 con keywords owner único
 
+**Caso de uso — círculo vicioso desbloqueado con `apply-rules` (P5)**:
+- Problema: las clases sin labels (`Ciencia`, `Diseno_Grafico_UI_UX`)
+  nunca podían entrar al modelo (labels.csv vacío para ellas) y el
+  pipeline solo re-etiquetaba vía `apply-model` → 0 labels eternos.
+- Nuevo `src/rules_apply.py` + comando `apply-rules` (dry-run por
+  defecto): aplicó las reglas v3.1 con precedencia (protege manual/
+  model+reviewed, reglas > model/jev si hay hit competente).
+- Resultado: Ciencia 39, Diseño 264 labels → `labels.csv` → reentrenado
+  (F1 0.9703, 14 clases) → `apply-model`. 0 vídeos sin label.
+- Segunda pasada (tras plurales): +58 flips → F1 **0.9827** final.
+- **Plurales bidireccionales en `rules.py`** (`_count_matches`): la
+  keyword matchea texto en singular/plural ES/EN ('negotiation'/'sales
+  negotiations', 'retrato'/'retratos', 'shortcut'/'shortcuts') con guarda
+  len>3 para no derivar tokens cortos ('js'). Títulos españoles sin
+  contexto ahora clasifican (ej. "organización de proyectos y gestión del
+  tiempo" → Negocio_Gestion).
+- Fix en el paso: `research`/`investigacion` quitadas de Ciencia (falsos
+  positivos de cursos UX) y `ux research` añadida a Diseño.
+- Nota DevOps: por debajo de MIN_SAMPLES en el set activo → el modelo no
+  la predice; la cubren reglas/carpetas.
+- **Jev en pausa** (decisión usuario); `apply-rules` cubre el bootstrapping.
+
 **Fusión Fotografía & Video → Diseno_Grafico_UI_UX (v3.1)**:
 - Decisión de usuario: la edición de foto y vídeo clasifica como diseño
   gráfico. `Fotografia_Video` desaparece → 14 categorías + Otros.
 - 33 keywords de foto/vídeo migradas a la lista de Diseño (72 keywords;
   sin colisiones tras la purga del mismo día).
 - `train_classifier.py` mapea `Fotografia_Video → Diseno_Grafico_UI_UX`.
-
 **Keywords owner único (anti-colisión)**:
 - 49 keywords duplicadas entre categorías reubicadas (30 colisiones → 0):
   herramientas de datos/IA → `Datos_Analytics` (pandas, numpy, sklearn,

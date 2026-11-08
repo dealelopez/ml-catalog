@@ -148,14 +148,15 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 ## Estado actual (2026-11-08)
 
 - **Taxonomía v3.1 aplicada** (14 categorías + Otros; foto/vídeo fusionada
-  en `Diseno_Grafico_UI_UX`): keywords con owner único,
-  `folder_categories` regenerado. Pendiente consolidar la BD: ~5.9K vídeos
-  aún con labels de la taxonomía v2.
+  en `Diseno_Grafico_UI_UX`): keywords owner único, modelo con 14 clases
+  (F1=0.9703), BD consolidada al 100% en v3.1.
 - **v1 operativo en producción local**: ~12K vídeos catalogados con reglas
-  + contexto de ruta.
-- Dataset ML con etiquetas Jev + revisión manual (~130 `manual`); el resto
-  es pseudo-etiquetado (`label_source='model'`): el ground truth sigue en
-  P0. `model.joblib` LR_balanced, F1 en `data/model_metrics.json` (medido
-  contra pseudo-labels: optimista).
-- **Pendiente principal**: consolidar labels en BD a v3, ground truth
-  (P0 del roadmap) y los notebooks 10–16. Ver `docs/roadmap.md`.
+  + contexto de ruta; 0 sin label; Diseño (264) y Ciencia (39) ya activas.
+- **Jev en pausa** (decisión usuario): etiquetado solo manual/reglas hasta
+  nuevo aviso. `label_with_jev.py` no forma parte del pipeline.
+- Dataset ML mayoritariamente pseudo-etiquetado (`label_source='model'`) +
+  ~130 `manual`/`model+reviewed` sagrados; F1 medido contra pseudo-labels
+  (optimista; el real llegará con el ground truth de P0).
+- **Pendiente**: revisión manual de márgenes bajos (P0), DevOps por debajo
+  del mínimo de muestras del modelo (lo cubren reglas); notebooks 10–16.
+  Ver `docs/roadmap.md`.
