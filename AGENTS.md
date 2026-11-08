@@ -21,15 +21,7 @@ Dos motores de clasificación:
 (ver `docs/archive/specs.md`): las tareas pendientes están en
 `docs/roadmap.md`.
 
-## Repo público
-
-- **Este proyecto es público.** Nada de datos personales, rutas privadas
-  (`/mnt/z2d1`, …), tamaños de colecciones reales ni `.env` en commits nuevos.
-- Hook anti-PII: `scripts/check_no_pii.py` + `scripts/install_hooks.sh`
-  (una vez por clon). `scripts/pii_denylist.txt` es la lista de términos
-  bloqueados.
-- Nunca leer ni exponer el contenido de `.env` (contiene `AI_GATEWAY_API_KEY`)
-  en logs, respuestas ni depuración.
+---
 
 ## Git / push
 
@@ -38,9 +30,22 @@ Dos motores de clasificación:
 - **Features nuevas en rama propia** (patrón tiron): solo se mergea a main
   cuando el usuario valida. Cambios de docs/estructura sí pueden ir a main.
 
-## Orden de lectura recomendado
+---
 
-1. Este fichero.
+## Entorno del usuario
+
+- **Vídeos siempre `:ro`**: ningún módulo escribe en la ruta de vídeos.
+- **Docker Compose**: servicio `ml-catalog` (CLI), BD y modelos en `${DATA_PATH}:/app/data`, vídeos en `${VIDEOS_PATH}:/videos:ro`.
+- **Usuario contenedor**: `${PUID:-1000}:${PGID:-1000}` (ver `.env`).
+- **Tests**: pytest en `tests/` (sin tocar vídeos reales); marker `integration` para lentos.
+
+---
+
+## Cómo analizar este repositorio
+
+### Orden de lectura recomendado
+
+1. **Este fichero** — convenciones y orientación.
 2. `docs/architecture.md` — pipeline, módulos, esquema BD, modelo ML.
 3. `docs/operations.md` — uso diario: scan, search, label, train.
 4. `docs/roadmap.md` — índice centralizado de tareas e ideas.
@@ -50,11 +55,11 @@ Dos motores de clasificación:
 17–20 completadas, specs maestra, guías obsoletas). Consultar solo para
 trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 
-## Estructura del código
+### Estructura del código
 
 | Ruta | Responsabilidad |
 |---|---|
-| `src/cli.py` | CLI unificada: `scan / search / label / apply-model / health` |
+| `src/cli.py` | CLI unificada: `scan / search / label / apply-model / apply-rules / health` |
 | `src/config.py` | Carga y validación de `config.yaml` (único punto de acceso) |
 | `src/scanner.py` | Orquesta `find → metadata → normalize → rules(→ model) → db` |
 | `src/metadata.py` | `size/modified_at` + ffprobe fail-soft (duración/resolución/códec) |
@@ -75,7 +80,9 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 | `notebooks/` | `00_intro` + 01–05 (Tasks 10–16, pendientes) |
 | `tests/` | pytest rápido (sin vídeos reales) + marker `integration` |
 
-## Convenciones
+---
+
+## Convenciones del proyecto
 
 - **Stack**: Python 3.12, SQLite (WAL) + FTS5, scikit-learn. Deps pineadas
   exactas en `requirements.txt` / `requirements-dev.txt` (artefactos):
@@ -92,10 +99,11 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
   valores nulos en `upsert_video`.
 - **Fail soft**: errores de metadatos o clasificación se loguean en
   `scan_errors.log` y no detienen el escaneo.
-- **Vídeos siempre `:ro`**: ningún módulo escribe en la ruta de vídeos.
 - **Sin servicios externos en runtime**. `label_with_jev.py` es una
   operación puntual de desarrollo, no parte del pipeline.
 - **Sin inventar**: si un campo no se puede inferir con seguridad, queda `NULL`.
+
+---
 
 ## Mantenimiento de documentación
 
@@ -109,6 +117,8 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
   las pendientes viven en `docs/` y se referencian desde el roadmap.
 - Al mover un doc a archivo, extraer primero a los docs activos lo que siga
   siendo relevante (mediciones, decisiones, criterios).
+
+---
 
 ## Antes de modificar código
 
@@ -127,11 +137,19 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
    versión anterior antes de reemplazar `model.joblib`.
 8. `make lint && make typecheck` al final; commit descriptivo sin push.
 
-## Comandos (Makefile)
+---
 
-`make help` lista todo. Claves: `make test`, `make lint`, `make format`,
-`make typecheck`, `make scan`, `make dry-run`, `make search Q="…"`,
-`make label-stats`, `make health`, `make build`, `make logs`.
+## Seguridad y privacidad
+
+- **Este proyecto es público.** Nada de datos personales, rutas privadas
+  (`/mnt/z2d1`, …), tamaños de colecciones reales ni `.env` en commits nuevos.
+- Hook anti-PII: `scripts/check_no_pii.py` + `scripts/install_hooks.sh`
+  (una vez por clon). `scripts/pii_denylist.txt` es la lista de términos
+  bloqueados.
+- Nunca leer ni exponer el contenido de `.env` (contiene `AI_GATEWAY_API_KEY`)
+  en logs, respuestas ni depuración.
+
+---
 
 ## Ficheros clave
 
@@ -144,6 +162,8 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 | `data/model_metrics.json` | F1 macro, algoritmo, nº muestras del modelo activo |
 | `data/model_history/` | Versiones anteriores del modelo con timestamp |
 | `data/labels.csv` | Dataset exportado (vista de la BD, no fuente de verdad) |
+
+---
 
 ## Estado actual (2026-11-08)
 
@@ -160,3 +180,28 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 - **Pendiente**: revisión manual de márgenes bajos (P0), DevOps por debajo
   del mínimo de muestras del modelo (lo cubren reglas); notebooks 10–16.
   Ver `docs/roadmap.md`.
+
+---
+
+## Comandos habituales (Makefile)
+
+`make help` lista todo. Claves:
+
+| Comando | Qué hace |
+|---|---|
+| `make test` | pytest rápido (marker `not integration`) |
+| `make lint` | ruff check src/ tests/ scripts/ |
+| `make format` | ruff format src/ tests/ scripts/ |
+| `make typecheck` | mypy src/ |
+| `make scan` | escaneo incremental (pipeline completo + BD) |
+| `make dry-run` | escaneo de prueba, sin escribir en BD |
+| `make search Q="..."` | buscar en el catálogo |
+| `make label-stats` | estado del etiquetado (label_source, % revisado) |
+| `make label-review` | revisar márgenes bajos / inciertos (prioriza review) |
+| `make label-interactive` | etiquetado manual interactivo (ground truth P0) |
+| `make label-otros` | revisar/validar categoría "Otros" (interactive, filtro) |
+| `make label-otros-review` | revisar "Otros" con score bajo |
+| `make health` | diagnóstico de entorno: config, BD, ffprobe |
+| `make db-stats` | resumen de la BD (totales, por categoría/canal) |
+| `make build` | docker compose build |
+| `make logs` | docker compose logs -f |
