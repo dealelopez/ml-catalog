@@ -125,6 +125,44 @@ def main() -> int:
 
     df = pd.read_csv(LABELS_CSV)
     df = df[df["label"].notna()].copy()
+    
+    # Mapear taxonomía antigua → nueva
+    old_to_new = {
+        'Arte_dibujo': 'Arte',
+        'Pintura': 'Arte',
+        'Gestion': 'Negocio_Gestion',
+        'Escritura': 'Escritura_Narrativa',
+        'Bases_datos': 'Datos_Analytics',
+        'Web': 'Web_Frontend',
+        'Creatividad': 'Arte',  # or Diseno_Grafico_UI_UX
+        'Datos_Analytics': 'Datos_Analytics',
+        'Electronica': 'Electronica_Hardware',
+        'Ciencia': 'Ciencia',
+        'Diseno_Grafico_UI_UX': 'Diseno_Grafico_UI_UX',
+        'Negocio_Gestion': 'Negocio_Gestion',
+        'Modelado_3D': 'Modelado_3D',
+        'Sistemas': 'Infra_Sistemas',
+        'Productividad': 'Productividad_Herramientas',
+        'Fotografia_Video': 'Fotografia_Video',
+        'IA_ML': 'Datos_Analytics',  # ML clásico va aquí
+        'Costura': 'Costura_Textil',
+        'Python': 'Programacion',
+        'Docker': 'DevOps_Cloud',
+        'Linux': 'Infra_Sistemas',
+        'Web_Frontend': 'Web_Frontend',
+        'Productividad_Herramientas': 'Productividad_Herramientas',
+        'Escritura_Narrativa': 'Escritura_Narrativa',
+        'Arte': 'Arte',
+        'Costura_Textil': 'Costura_Textil',
+        'Infra_Sistemas': 'Infra_Sistemas',
+        'DevOps_Cloud': 'DevOps_Cloud',
+        'Electronica_Hardware': 'Electronica_Hardware',
+        'Programacion': 'Programacion',
+    }
+    
+    df['label'] = df['label'].map(old_to_new).fillna(df['label'])
+    print(f"  Mapeadas taxonomía: {df['label'].nunique()} clases únicas")
+    
     df["label"] = merge_rare(df["label"])
     print(f"Muestras: {len(df)} | Clases: {sorted(df['label'].unique())}")
 
