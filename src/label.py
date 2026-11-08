@@ -282,7 +282,7 @@ def interactive_label(conn: sqlite3.Connection, config: dict, category_filter: s
 
     where_clause = "WHERE status = 'active'"
     if category_filter:
-        where_clause += " AND (category = ? OR label = ?)"
+        where_clause += " AND (label = ? OR (label IS NULL AND category = ?))"
 
     try:
         params = (category_filter, category_filter) if category_filter else ()
@@ -393,7 +393,7 @@ def review_low_confidence(
     cat_where = ""
     cat_params: tuple[str, str] | tuple[()] = ()
     if category_filter:
-        cat_where = "AND (category = ? OR label = ?)"
+        cat_where = "AND (label = ? OR (label IS NULL AND category = ?))"
         cat_params = (category_filter, category_filter)
 
     if margin_threshold is None:
