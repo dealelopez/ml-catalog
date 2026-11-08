@@ -15,13 +15,9 @@ Añadir nueva entrada en el grupo correspondiente (ej. **GRUPO 3: OTROS** despu�
       - workout
       - workouts
       - fitness
-      - training
-      - exercise
-      - exercises
       - gym
       - cardio
       - strength
-      - strength training
       - weightlifting
       - powerlifting
       - bodybuilding
@@ -31,26 +27,20 @@ Añadir nueva entrada en el grupo correspondiente (ej. **GRUPO 3: OTROS** despu�
       - yoga
       - pilates
       - hiit
-      - interval training
       - stretching
       - mobility
       - flexibility
-      - warm up
-      - cool down
-      - reps
-      - sets
-      - progressive overload
-      - hypertrophy
-      - endurance
-      - athletic
-      - sport
-      - sports
       - running
       - cycling
       - swimming
 ```
 
-**Regla crítica**: cada keyword debe tener **owner único** (validado en `src/config.py::_validate`). Verificar que ninguna de estas keywords ya exista en otra categoría (ej. `training` puede estar en ML/AI → `Datos_Analytics`; `exercise` puede estar en escritura → `Escritura_Narrativa`). Si hay colisión, quitar de la nueva lista o mover la existente.
+**Regla crítica**: cada keyword debe tener **owner único** (validado en `src/config.py::_validate`). Verificar que ninguna de estas keywords ya exista en otra categoría:
+- `training` está en ML/AI → `Datos_Analytics` (quitar de Ejercicio)
+- `exercise` está en código/arte/escritura → genera falsos positivos (quitar)
+- `interval training` quitar por colisión con ML
+
+Si hay colisión, quitar de la nueva lista o mover la existente.
 
 ### 2. Actualizar `docs/operations.md`
 Añadir la nueva categoría en la tabla de taxonomía y en cualquier referencia a "14 categorías + Otros" → ahora "15 categorías + Otros".
@@ -94,6 +84,18 @@ git commit -m "feat: add Ejercicio category (workouts/fitness)
 - Regenerate folder candidates if applicable"
 ```
 
+## Comandos Makefile útiles (nuevos)
+```bash
+# Review interactivo de una categoría
+make label-category CAT=Ejercicio
+
+# Review de score bajo para una categoría (shuffle, limit 50)
+make label-category-review CAT=Ejercicio
+
+# Stats por categoría
+docker compose run --rm --entrypoint python ml-catalog -m src.db stats
+```
+
 ## Verificación rápida
 ```bash
 # Ver cuántos vídeos capturan las nuevas keywords (dry-run)
@@ -107,3 +109,4 @@ docker compose run --rm --entrypoint python ml-catalog -m src.db stats
 - La categoría `Otros` sigue existiendo como fallback.
 - El modelo ML no predecirá `Ejercicio` hasta tener `MIN_SAMPLES` (definido en `scripts/train_classifier.py`, default 30). Mientras tanto, las reglas la cubren.
 - `folder_categories` se regenera con `scripts/generate_folder_candidates.py`, NO se edita a mano.
+- **Falsos positivos detectados**: "exercise" en tutoriales de código/arte, "cardio" en JavaScript array methods, "running" en dbt, "training" en business/ML. Refinar keywords según experiencia real.
