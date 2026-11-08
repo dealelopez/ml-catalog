@@ -1,12 +1,11 @@
 # Roadmap — ml-catalog
 
-> Índice centralizado de tareas e ideas (patrón rssume/tiron). Actualizado: 2026-11-07.
+> Índice centralizado de tareas e ideas (patrón rssume/tiron). Actualizado: 2026-11-08.
 > Análisis completo roadmap↔código: [`261105--revision-roadmap-versus-codigo.md`](261105--revision-roadmap-versus-codigo.md).
 
-**Estado v1.1** (2026-11-07): pipeline ML cerrado y verificado end-to-end.
-- ~6K vídeos activos, `model.joblib` v1 (LR_balanced, F1=0.8472) aplicado.
-- **7.137 vídeos auto-etiquetados** (`label_source='model'`), 3 `manual` protegidos.
-- Ciclo completo operativo: scan → reglas+modelo → BD → apply-model → re-etiquetar.
+**Estado v1.2** (2026-11-08): taxonomía v3 (15 cat + Otros) en config con
+keywords owner único; modelo reentrenado con mapeo v2→v3.
+**Pendiente**: consolidar los ~5.9K labels v2 en BD (sección P5) y ground truth (P0).
 
 ---
 
@@ -60,9 +59,50 @@ Specs en `docs/task-10..16-*.md`; Task 12 técnico en `scripts/train_classifier.
 
 ---
 
-## P4 — Reorganización de taxonomía (12–14 categorías) — **📋 DOCUMENTADO, PENDIENTE**
+## P4 — Reorganización de taxonomía — **✅ COMPLETADO 2026-11-08**
 
-La taxonomía actual (22 cats, Task 20) tiene problemas:
+Resultado final: **15 categorías + Otros** (la propuesta de 12–14 se amplió
+con `Ciencia` y `Costura_Textil`, y `Ilustración`+`Pintura` quedaron
+fusionadas en una sola `Arte`).
+
+- [x] `config.yaml` taxonomía v3 + mapping v2→v3 documentado en cabecera
+- [x] `config-folder-dict.yaml` regenerado (204 carpetas mapeadas)
+- [x] `scripts/train_classifier.py`: entrena con todo el dataset mapeando
+      la taxonomía v2→v3 (IA_ML → Datos_Analytics, coherente con config)
+- [x] 2026-11-08: **keywords owner único** — 49 keywords duplicadas entre
+      categorías reubicadas (30 colisiones → 0) + validación anti-colisión
+      en `src/config.py::_validate` + tests de regresión (`test_config_real_v3`)
+- [x] Refuerzo `Ciencia` (+ math, geometría, divulgación…) — había vídeos
+      cayendo en `Otros` por keywords débiles
+- [x] Fixups: `software architecture` restaurada en `Programacion` (se perdió
+      al fusionar `Sistemas`), `negotiations`, `photo` en Fotografia_Video
+
+La propuesta original (tabla y mapeo) queda abajo como referencia histórica.
+
+## P5 — Consolidar taxonomía v3 en BD — **🔜 PRÓXIMO PASO**
+
+La BD está a medio camino: ~6.4K vídeos con labels v3 y **~5.9K aún con
+labels v2** (`Python`, `Web`, `Arte_dibujo`…), todos con
+`label_source='model'`. El mapeo v2→v3 solo se aplica al entrenar, no en BD.
+
+- [ ] Re-ejecutar `apply-model --force` (protege `manual`/`model+reviewed`)
+      o añadir un pequeño script de re-mapeo de labels v2→v3 en BD
+- [ ] Validar predicciones del modelo famélico: el reentreno se hizo antes
+      de la purga de colisiones; conviene `train_classifier.py --dry-run`
+      tras un nuevo export de `labels.csv` y, si mejora, re-entrenar +
+      re-aplicar
+- [ ] `Diseno_Grafico_UI_UX`, `Ciencia` y `Fotografia_Video` nacieron con
+      **0 labels**: el modelo actual (13 clases) no puede predecirlas →
+      decisión: reentrenar con labels Chi/re-mapeados o dejar que las reglas
+      las cubran hasta el próximo ciclo
+- [ ] F1=0.92 es optimista (pseudo-labels): el real se verá cuando P0
+      aporte ground truth manual
+
+---
+
+## Referencia histórica (P4) — propuesta original y problemas de la v2 (22 cats)
+
+La taxonomía v2 (22 cats, Task 20) tenía estos problemas:
 - **Demasiado granular**: `Pintura` separa acuarela/óleo/acrílico/gouache → todo va a `Arte_dibujo`
 - **Demasiado amplio**: `Web` agrupa JS, React, CSS, Astro, Node, TS, WordPress…
 - **Ambiguo**: Adobe tutorials → ¿`Diseno_UX`? ¿`Arte_dibujo`? ¿`Productividad`?
@@ -92,15 +132,14 @@ La taxonomía actual (22 cats, Task 20) tiene problemas:
 | Negocio & Gestión | Proyectos, estrategia, marketing, finanzas |
 | Otros | Lo que no encaje |
 
-### Plan de ejecución (cuando haya tiempo)
+### Plan de ejecución original (pendings cubiertos por P4/P5 y el changelog)
 
-- [ ] Validar lista final (12–14 cats) y keywords por categoría
-- [ ] Actualizar `config.yaml` + `config-folder-dict.yaml` (regenerar con generador)
-- [ ] Script de re-mapeo labels manuales existentes (~130, mayoría 1:1)
-- [ ] Re-entrenar modelo (`scripts/train_classifier.py --force`)
-- [ ] Re-ejecutar `apply-model` en BD completa
+- [x] Actualizar `config.yaml` + `config-folder-dict.yaml` (regenerar con generador)
+- [ ] Script de re-mapeo labels en BD (~5.9K, ver P5)
+- [x] Re-entrenar modelo (`scripts/train_classifier.py --force`, con mapping v2→v3)
+- [ ] Re-ejecutar `apply-model` en BD completa (ver P5)
 - [ ] Actualizar notebooks P3 con nueva taxonomía
-- [ ] Documentar decisiones en `docs/26XXXX--taxonomia-reorg.md`
+- [x] Documentar decisiones en `docs/261107--propuesta-reorg-taxonomia.md`
 
 ---
 

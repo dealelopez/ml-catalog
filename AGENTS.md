@@ -5,12 +5,15 @@
 Catálogo local de vídeos con clasificación automática por categorías.
 Escanea carpetas de vídeo (montadas `:ro`), extrae metadatos con ffprobe,
 normaliza nombres yt-dlp y clasifica cada vídeo en una categoría temática
-(22 categorías en `config.yaml`). Todo persiste en SQLite + FTS5.
+(taxonomía v3: 15 categorías + Otros en `config.yaml`). Todo persiste en
+SQLite + FTS5.
 
 Dos motores de clasificación:
 
 - **Reglas** (`src/rules.py`): keywords del config + override
   `folder_categories` (carpetas ≥95% puras) + margen 1º−2º. Baseline.
+  Cada keyword pertenece a una sola categoría (owner único; lo valida
+  `src/config.py::_validate` al cargar).
 - **ML** (`src/classifier.py`): TF-IDF + LogisticRegression entrenado con
   `labels.csv` (etiquetas manuales + Jev). Fallback a reglas si no hay modelo.
 
@@ -142,12 +145,16 @@ trazabilidad. Las conclusiones vigentes están en AGENTS.md y los docs activos.
 | `data/model_history/` | Versiones anteriores del modelo con timestamp |
 | `data/labels.csv` | Dataset exportado (vista de la BD, no fuente de verdad) |
 
-## Estado actual (2026-11-05)
+## Estado actual (2026-11-08)
 
-- **v1 operativo en producción local**: ~6K vídeos catalogados con reglas
-  + contexto de ruta; el coverage de `Otros` bajó de 87% a ~13% (Task 17–19).
-- Dataset ML con etiquetas Jev + revisión manual; `model.joblib` v1 entrenado
-  (LR; F1 en `data/model_metrics.json`).
-- **Pendiente principal**: integración del modelo en el pipeline
-  (Task 13), `apply-model`, ciclo de reentreno (Task 14) y los
-  notebooks 10–16. Ver `docs/roadmap.md`.
+- **Taxonomía v3 aplicada** (15 categorías + Otros): keywords con owner
+  único, `folder_categories` regenerado y reentreno en curso. Pendiente
+  consolidar la BD: ~5.9K vídeos conservan labels de la taxonomía v2.
+- **v1 operativo en producción local**: ~12K vídeos catalogados con reglas
+  + contexto de ruta.
+- Dataset ML con etiquetas Jev + revisión manual (~130 `manual`); el resto
+  es pseudo-etiquetado (`label_source='model'`): el ground truth sigue en
+  P0. `model.joblib` LR_balanced, F1 en `data/model_metrics.json` (medido
+  contra pseudo-labels: optimista).
+- **Pendiente principal**: consolidar labels en BD a v3, ground truth
+  (P0 del roadmap) y los notebooks 10–16. Ver `docs/roadmap.md`.

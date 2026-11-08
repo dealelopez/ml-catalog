@@ -1,24 +1,35 @@
 # =============================================================================
-# config.yaml — Configuración de clasificación (Taxonomía v3: 15 categorías)
+# config.yaml — Configuración de clasificación (Taxonomía v3: 15 categorías + Otros)
 # =============================================================================
 # Basado en docs/261107--propuesta-reorg-taxonomia.md
-# Mapeo desde modelo actual (Actual → Nueva):
+# Mapeo desde taxonomía v2 (Actual → Nueva):
 #   Python, Docker, Linux, IA_ML    → Programacion, DevOps_Cloud, Infra_Sistemas, Datos_Analytics
 #   Web                             → Web_Frontend
 #   Bases_datos                     → Datos_Analytics
 #   Redes, Seguridad, Sistemas      → Infra_Sistemas
 #   Diseno_UX                       → Diseno_Grafico_UI_UX
-#   Arte_dibujo                     → Arte_Tradicional (fusiona Ilustracion_Dibujo + Pintura_Tradicional)
-#   Pintura                         → Arte_Tradicional
+#   Arte_dibujo + Pintura + Creatividad → Arte (fusiona ilustración + pintura)
 #   Modelado_3D                     → Modelado_3D
 #   Fotografia                      → Fotografia_Video
 #   Productividad                   → Productividad_Herramientas
 #   Electronica                     → Electronica_Hardware
 #   Escritura                       → Escritura_Narrativa
 #   Gestion                         → Negocio_Gestion
-#   Ciencia                         → Ciencia (nueva)
-#   Costura                         → Costura_Textil (nueva)
-#   Creatividad                     → Arte_Tradicional o Diseno_Grafico_UI_UX (se fusiona)
+#   Ciencia                         → Ciencia
+#   Costura                         → Costura_Textil
+# IA/GenAI (tensorflow, openai, langchain…) en Datos_Analytics junto al ML
+# clásico, coherente con el mapeo de reentreno de scripts/train_classifier.py.
+#
+# INVARIANTE (2026-11-08): una keyword solo puede pertenecer a una categoría
+# (owner único). Lo valida src/config.py::_validate al cargar. Mapeo de owners:
+#   - react/vue/svelte/nextjs/nuxt                    → Web_Frontend
+#   - pandas/numpy/sklearn/tensorflow/openai/jupyter  → Datos_Analytics
+#   - photoshop/premiere/davinci/color grading/video editing → Fotografia_Video
+#   - after effects/motion graphics                   → Diseno_Grafico_UI_UX
+#   - sketch/composition/character/paper              → Arte
+#   - tmux/terminal/cli                               → Infra_Sistemas
+#   - poetry (gestor de paquetes de Python)           → Programacion
+#   - redshift (render engine)                        → Modelado_3D
 # =============================================================================
 
 scan:
@@ -41,8 +52,6 @@ categories:
     keywords:
       - python
       - py
-      - pandas
-      - numpy
       - django
       - flask
       - fastapi
@@ -52,21 +61,6 @@ categories:
       - poetry
       - pip
       - venv
-      - jupyter
-      - ipython
-      - matplotlib
-      - seaborn
-      - scipy
-      - scikit-learn
-      - sklearn
-      - tensorflow
-      - pytorch
-      - keras
-      - huggingface
-      - transformers
-      - langchain
-      - openai
-      - anthropic
       - javascript
       - js
       - typescript
@@ -90,12 +84,6 @@ categories:
       - swift
       - dart
       - flutter
-      - react
-      - vue
-      - svelte
-      - nextjs
-      - nuxt
-      - angular
       - node
       - nodejs
       - deno
@@ -106,6 +94,7 @@ categories:
       - grpc
       - microservices
       - design patterns
+      - software architecture
       - clean code
       - testing
       - tdd
@@ -132,7 +121,6 @@ categories:
       - html
       - html5
       - svg
-      - animation
       - motion
       - framer
       - gsap
@@ -142,8 +130,6 @@ categories:
       - shopify
       - webflow
       - frontend
-      - ui
-      - ux
       - responsive
       - accessibility
       - a11y
@@ -160,6 +146,13 @@ categories:
   # 3. DATOS_ANALYTICS — SQL, DBT, Pandas, BI, ML clásico, data engineering
   Datos_Analytics:
     keywords:
+      - deep learning
+      - neural network
+      - redes neuronales
+      - llm
+      - gpt
+      - chatgpt
+      - inteligencia artificial
       - sql
       - database
       - db
@@ -204,7 +197,6 @@ categories:
       - feature engineering
       - bigquery
       - snowflake
-      - redshift
 
   # 4. DEVOPS_CLOUD — Contenedores, K8s, CI/CD, IaC, cloud providers
   DevOps_Cloud:
@@ -324,7 +316,6 @@ categories:
       - prototipado
       - wireframe
       - figma
-      - sketch
       - adobe xd
       - typography
       - tipografia
@@ -342,10 +333,7 @@ categories:
       - motion design
       - motion graphics
       - after effects
-      - lottie
-      - framer
       - adobe
-      - photoshop
       - indesign
       - adobe indesign
       - indesign layout
@@ -357,11 +345,6 @@ categories:
       - page layout
       - desktop publishing
       - dtp
-      - premiere
-      - davinci
-      - davinci resolve
-      - color grading
-      - video editing
 
   # 7. ARTE — Ilustración, dibujo, pintura (acuarela, óleo, acrílico, gouache, digital)
   # Fusiona: Ilustracion_Dibujo + Pintura_Tradicional
@@ -488,6 +471,7 @@ categories:
       - photography
       - fotografia
       - photo editing
+      - photo
       - edicion de fotos
       - lightroom
       - photoshop
@@ -502,8 +486,6 @@ categories:
       - paisaje
       - street photography
       - callejera
-      - composition
-      - composicion
       - exposure
       - exposicion
       - aperture
@@ -516,8 +498,6 @@ categories:
       - davinci resolve
       - davinci
       - final cut
-      - after effects
-      - motion graphics
       - lut
       - log
       - rec709
@@ -549,11 +529,6 @@ categories:
       - visual studio code
       - intellij
       - jetbrains
-      - tmux
-      - screen
-      - terminal
-      - cli
-      - command line
       - automation
       - automatizacion
       - scripting
@@ -623,8 +598,6 @@ categories:
       - historia
       - plot
       - trama
-      - character
-      - personaje
       - worldbuilding
       - construccion de mundos
       - screenwriting
@@ -639,7 +612,6 @@ categories:
       - articulo
       - essay
       - ensayo
-      - poetry
       - poesia
       - creative writing
       - escritura creativa
@@ -681,6 +653,7 @@ categories:
       - strategy
       - estrategia
       - negotiation
+      - negotiations
       - negociacion
       - sales
       - ventas
@@ -692,6 +665,15 @@ categories:
   # 14. CIENCIA — Física, matemáticas, biología, astronomía, método científico
   Ciencia:
     keywords:
+      - math
+      - matematica
+      - geometria
+      - algebra
+      - evolucion
+      - universo
+      - galaxia
+      - divulgacion
+      - neurociencia
       - science
       - ciencia
       - scientific thinking
@@ -717,7 +699,6 @@ categories:
       - hipotesis
       - peer review
       - publication
-      - paper
       - journal
       - nature
       - science magazine

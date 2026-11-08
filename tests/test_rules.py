@@ -2,7 +2,6 @@
 test_rules.py — Tests para src/rules.py (Task 07).
 """
 
-
 from src.rules import classify, extract_path_segments
 
 # ---------------------------------------------------------------------------
@@ -15,9 +14,9 @@ CONFIG = {
     "categories": {
         "Python": {"keywords": ["python", "py", "pandas", "numpy", "django", "flask"]},
         "Docker": {"keywords": ["docker", "container", "contenedor", "compose"]},
-        "IA_ML":  {"keywords": ["machine learning", "ml", "inteligencia artificial", "neural"]},
-        "Web":    {"keywords": ["javascript", "js", "react", "vue", "astro", "css", "html"]},
-        "Otros":  {"keywords": []},
+        "IA_ML": {"keywords": ["machine learning", "ml", "inteligencia artificial", "neural"]},
+        "Web": {"keywords": ["javascript", "js", "react", "vue", "astro", "css", "html"]},
+        "Otros": {"keywords": []},
     },
 }
 
@@ -25,6 +24,7 @@ CONFIG = {
 # ---------------------------------------------------------------------------
 # Tests de classify()
 # ---------------------------------------------------------------------------
+
 
 def test_clasifica_python_por_titulo():
     result = classify("curso completo python desde cero", "/videos/", CONFIG)
@@ -95,6 +95,7 @@ def test_sin_keywords_en_config_devuelve_otros():
 # Tests de extract_path_segments()
 # ---------------------------------------------------------------------------
 
+
 def test_extract_path_segments_con_separadores():
     segments = extract_path_segments("/51--tutoriales/midudev-desarrollo/video.mp4")
     assert "midudev" in segments
@@ -129,6 +130,7 @@ def test_extract_path_segments_ruta_con_trailing_slash():
 # Tests de classify() con contexto de ruta (Task 17)
 # ---------------------------------------------------------------------------
 
+
 def test_contexto_no_cambia_resultado_sin_contexto():
     """Sin contexto el algoritmo es el de siempre."""
     a = classify("curso completo python desde cero", "/videos/", CONFIG)
@@ -138,12 +140,15 @@ def test_contexto_no_cambia_resultado_sin_contexto():
 
 def test_contexto_rescata_titulo_ambiguo():
     """El contexto pesa doble: el curso puede imponerse al título."""
-    cfg = {"categories": {**CONFIG["categories"],
-                          "Pintura": {"keywords": ["painting", "watercolor", "oil", "canvas"]}}}
+    cfg = {
+        "categories": {
+            **CONFIG["categories"],
+            "Pintura": {"keywords": ["painting", "watercolor", "oil", "canvas"]},
+        }
+    }
     path = "/videos/docker/intro.mp4"
     sin = classify("docker basics", path, cfg)
-    con = classify("docker basics", path, cfg,
-                   context="painting watercolor oil")
+    con = classify("docker basics", path, cfg, context="painting watercolor oil")
     assert sin["category"] == "Docker"
     assert con["category"] == "Pintura"
     assert con["score"] > sin["score"]
@@ -152,25 +157,32 @@ def test_contexto_rescata_titulo_ambiguo():
 def test_contexto_end_to_end_con_path_context():
     """summarize() + classify() rescatan un título genérico real."""
     from src.path_context import summarize
-    path = ("/videos/51.005--masterclass-maestro/"
-            "masterclass-david_mamet_teaches_dramatic_writing/16 Scenes.mp4")
+
+    path = (
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-david_mamet_teaches_dramatic_writing/16 Scenes.mp4"
+    )
     ctx = summarize(path)
-    cfg = {"categories": {"Escritura": {"keywords": ["writing", "narrative", "novel"]},
-                          "Otros": {"keywords": []}}}
+    cfg = {
+        "categories": {
+            "Escritura": {"keywords": ["writing", "narrative", "novel"]},
+            "Otros": {"keywords": []},
+        }
+    }
     r = classify("16 scenes", path, cfg, context=ctx)
     assert r["category"] == "Escritura"
 
 
 def test_contexto_acepta_string():
     """El contexto también puede pasarse como texto ya preparado."""
-    r = classify("tutorial basico", "/misc/", CONFIG,
-                 context="python pandas numpy")
+    r = classify("tutorial basico", "/misc/", CONFIG, context="python pandas numpy")
     assert r["category"] == "Python"
 
 
 # ---------------------------------------------------------------------------
 # Tests del margen 1º−2º (score bajo pero claro vs. ambiguo)
 # ---------------------------------------------------------------------------
+
 
 def test_margen_claro_con_score_bajo():
     """1 acierto frente a 0 en el resto: score bajo pero margen = score."""
@@ -220,24 +232,40 @@ def _real_config():
     return _load_config()
 
 
-def test_config_real_sin_duplicados_y_con_nuevas():
-    """El bug del 'Escritura' duplicado silenció storytelling: que no vuelva."""
+def test_config_real_v3_categorias_y_sin_colisiones():
+    """Taxonomía v3: categorías actuales e invariante una keyword = un owner."""
     cfg = _real_config()
     cats = cfg["categories"]
-    for nueva in ("Ciencia", "Diseno_UX", "Fotografia", "Modelado_3D"):
-        assert nueva in cats, f"falta categoría {nueva}"
-        assert len(cats[nueva]["keywords"]) >= 5
-    assert "storytelling" in cats["Escritura"]["keywords"]
-    assert "story" not in cats["Escritura"]["keywords"]  # pisa cómics (Task 19)
-    assert "negotiation" in cats["Gestion"]["keywords"]
-    assert "software architecture" in cats["Sistemas"]["keywords"]
+    for cat in (
+        "Ciencia",
+        "Diseno_Grafico_UI_UX",
+        "Fotografia_Video",
+        "Modelado_3D",
+        "Costura_Textil",
+    ):
+        assert cat in cats, f"falta categoría {cat}"
+        assert len(cats[cat]["keywords"]) >= 5
+    assert "storytelling" in cats["Escritura_Narrativa"]["keywords"]
+    assert "negotiation" in cats["Negocio_Gestion"]["keywords"]
+    assert "software architecture" in cats["Programacion"]["keywords"]
+    owner: dict = {}
+    for cat, spec in cats.items():
+        for kw in spec.get("keywords", []):
+            key = kw.strip().lower()
+            assert key not in owner or owner[key] == cat, (
+                f"'{kw}' duplicada entre {owner.get(key)} y {cat}"
+            )
+            owner[key] = cat
 
 
 def test_ciencia_bill_nye():
     from src.path_context import summarize
+
     cfg = _real_config()
-    path = ("/videos/51.005--masterclass-maestro/"
-            "masterclass-bill_nye_teaches_science_and_problem-solving/x.mkv")
+    path = (
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-bill_nye_teaches_science_and_problem-solving/x.mkv"
+    )
     ctx = summarize(path)
     r = classify("05 achieve freedom from fear", path, cfg, context=ctx)
     assert r["category"] == "Ciencia"
@@ -245,55 +273,69 @@ def test_ciencia_bill_nye():
 
 def test_escritura_sedaris():
     from src.path_context import summarize
+
     cfg = _real_config()
-    path = ("/videos/51.005--masterclass-maestro/"
-            "masterclass-david_sedaris_teaches_storytelling_and_humor/x.mkv")
+    path = (
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-david_sedaris_teaches_storytelling_and_humor/x.mkv"
+    )
     ctx = summarize(path)
     r = classify("04 breaking into a story", path, cfg, context=ctx)
-    assert r["category"] == "Escritura"
+    assert r["category"] == "Escritura_Narrativa"
 
 
 def test_gestion_negotiation():
     from src.path_context import summarize
+
     cfg = _real_config()
-    path = ("/videos/51.005--masterclass-maestro/"
-            "masterclass-chris-voss-win-workplace-negotiations/x.mkv")
+    path = (
+        "/videos/51.005--masterclass-maestro/"
+        "masterclass-chris-voss-win-workplace-negotiations/x.mkv"
+    )
     ctx = summarize(path)
     r = classify("02 useless negotiation", path, cfg, context=ctx)
-    assert r["category"] == "Gestion"
+    assert r["category"] == "Negocio_Gestion"
 
 
-def test_modelado_3d_sketchup_y_sistemas_no_roba_software():
-    """'architecture' es 3D pero 'software architecture' es Sistemas."""
+def test_programacion_no_roba_modelado_3d():
+    """'architecture' es 3D pero 'software architecture' es Programación.
+
+    (La antigua 'Sistemas' se fusionó en Infra_Sistemas; la arquitectura de
+    software vive con 'design patterns'/'clean code' en Programacion.)
+    """
     from src.path_context import summarize
+
     cfg = _real_config()
     path3d = "/videos/51.000--buzon/curso-sketchup/01.mp4"
     ctx3d = summarize(path3d)
     r3d = classify("navigating the model", path3d, cfg, context=ctx3d)
     assert r3d["category"] == "Modelado_3D"
-    pathsw = ("/videos/51.003--tecnologia-ordenar/linkedin/"
-              "Lynda.Software.Architecture.Foundations/x.mp4")
+    pathsw = (
+        "/videos/51.003--tecnologia-ordenar/linkedin/Lynda.Software.Architecture.Foundations/x.mp4"
+    )
     ctxsw = summarize(pathsw)
     rsw = classify("software architecture foundations", pathsw, cfg, context=ctxsw)
-    assert rsw["category"] == "Sistemas"
+    assert rsw["category"] == "Programacion"
 
 
 def test_diseno_ux_y_fotografia():
-    from src.path_context import summarize
     from src.config import load
+    from src.path_context import summarize
+
     cfg = load()
-    # Usar threshold más bajo para tests con títulos cortos (config real tiene 0.2)
+    # Listas de keywords más grandes que en v2 → cobertura fraccional más baja;
+    # el umbral de tests baja acorde (config real usa 0.03)
     cfg_test = dict(cfg)
-    cfg_test["classification"] = {"confidence_threshold": 0.15}
-    
+    cfg_test["classification"] = {"confidence_threshold": 0.05}
+
     pathux = "/videos/packt-ux-design-process/x.mp4"
     ctxux = summarize(pathux)
     rux = classify("16 empathy maps", pathux, cfg_test, context=ctxux)
-    assert rux["category"] == "Diseno_UX"
+    assert rux["category"] == "Diseno_Grafico_UI_UX"
     pathph = "/videos/51.000--buzon/curso-photo/x.mp4"
     ctxph = summarize(pathph)
     rph = classify("what is photo colorization", pathph, cfg_test, context=ctxph)
-    assert rph["category"] == "Fotografia"
+    assert rph["category"] == "Fotografia_Video"
 
 
 # ---------------------------------------------------------------------------
@@ -328,8 +370,7 @@ def test_folder_gana_nivel_profundo():
     """El segmento más profundo manda sobre el área."""
     r = classify(
         "01 meet your instructor",
-        "/videos/51.005--masterclass-maestro/"
-        "masterclass-bill-nye-teaches-science/x.mp4",
+        "/videos/51.005--masterclass-maestro/masterclass-bill-nye-teaches-science/x.mp4",
         FOLDER_CFG,
     )
     assert r["category"] == "Ciencia"

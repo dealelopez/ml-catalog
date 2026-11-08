@@ -1,6 +1,31 @@
 # Changelog
 
-> Última actualización: 2026-11-07
+> Última actualización: 2026-11-08
+
+## 2026-11-08 — P4 completado: taxonomía v3 con keywords owner único
+
+**Keywords owner único (anti-colisión)**:
+- 49 keywords duplicadas entre categorías reubicadas (30 colisiones → 0):
+  herramientas de datos/IA → `Datos_Analytics` (pandas, numpy, sklearn,
+  tensorflow, openai, langchain…), frameworks frontend → `Web_Frontend`
+  (react, vue, svelte, nextjs, nuxt), herramientas de foto/vídeo →
+  `Fotografia_Video` (photoshop, premiere, davinci, color grading…),
+  motion design → `Diseno_Grafico_UI_UX` (after effects, motion graphics),
+  terminales → `Infra_Sistemas` (tmux, terminal, cli).
+- Nueva validación en `src/config.py::_validate`: falla si una keyword
+  aparece en más de una categoría (evita regresiones al añadir keywords).
+- Refuerzo `Ciencia` (+math, matematica, geometria, algebra, evolucion,
+  universo, galaxia, divulgacion, neurociencia): había ciencia cayendo en
+  `Otros`.
+- Fixups de la fusión 22→15+: `software architecture` restaurada en
+  `Programacion`, añadidas `negotiations` (Negocio_Gestion) y `photo`
+  (Fotografia_Video).
+- `tests/test_rules.py` actualizado a v3 (5 tests estaban rotos desde el
+  cambio de taxonomía); 122/122 tests OK.
+
+**Pendiente (ver roadmap)**: P5 consolidar ~5.9K labels v2 en BD
+(`apply-model --force` o script de re-mapeo) y reentrenar tras el export
+post-purgado.
 
 ## 2026-11-07 — P0 etiquetado + label --review shuffle + taxonomía documentada
 

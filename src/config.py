@@ -65,6 +65,7 @@ def load(path: str | Path = CONFIG_PATH) -> dict:
 # Helpers privados
 # ---------------------------------------------------------------------------
 
+
 def _validate(cfg: dict) -> None:
     """Valida las claves obligatorias y sus tipos."""
     # Clave de primer nivel: scan
@@ -91,6 +92,24 @@ def _validate(cfg: dict) -> None:
     if not isinstance(cfg["categories"], dict) or len(cfg["categories"]) == 0:
         raise ValueError("'categories' debe ser un dict no vacío")
 
+    # Una keyword solo puede pertenecer a una categoría: si aparece en dos,
+    # diluye ambas coberturas (denominador de rules.py) y empaña el margen
+    # 1º−2º (Task 18). Mapeo owner único 2026-11-08; esta validación evita
+    # que vuelva a colarse una duplicada al añadir keywords.
+    kw_owner: dict[str, str] = {}
+    for cat, spec in cfg["categories"].items():
+        for kw in (spec or {}).get("keywords", []) or []:
+            key = kw.strip().lower()
+            if not key:
+                continue
+            owner = kw_owner.get(key)
+            if owner is not None and owner != cat:
+                raise ValueError(
+                    f"Keyword duplicada en categorías: '{kw}' en "
+                    f"'{owner}' y '{cat}'. Debe tener un solo owner."
+                )
+            kw_owner[key] = cat
+
 
 def _normalize_extensions(cfg: dict) -> None:
     """Convierte extensiones a minúsculas sin punto.
@@ -98,6 +117,4 @@ def _normalize_extensions(cfg: dict) -> None:
     Ej.: '.MP4' → 'mp4', 'MKV' → 'mkv'
     Modifica cfg en el lugar.
     """
-    cfg["scan"]["extensions"] = [
-        ext.lstrip(".").lower() for ext in cfg["scan"]["extensions"]
-    ]
+    cfg["scan"]["extensions"] = [ext.lstrip(".").lower() for ext in cfg["scan"]["extensions"]]
