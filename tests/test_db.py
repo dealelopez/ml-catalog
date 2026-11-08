@@ -15,25 +15,25 @@ from src.search import search, search_filters
 # ---------------------------------------------------------------------------
 
 VIDEO_A = {
-    "path":        "/videos/curso_python.mp4",
-    "filename":    "curso_python.mp4",
-    "extension":   "mp4",
-    "size_bytes":  500_000_000,
+    "path": "/videos/curso_python.mp4",
+    "filename": "curso_python.mp4",
+    "extension": "mp4",
+    "size_bytes": 500_000_000,
     "modified_at": "2025-01-01T00:00:00",
     "clean_title": "curso completo python desde cero",
-    "channel":     "midudev",
-    "category":    "Python",
+    "channel": "midudev",
+    "category": "Python",
 }
 
 VIDEO_B = {
-    "path":        "/videos/intro_docker.mp4",
-    "filename":    "intro_docker.mp4",
-    "extension":   "mp4",
-    "size_bytes":  300_000_000,
+    "path": "/videos/intro_docker.mp4",
+    "filename": "intro_docker.mp4",
+    "extension": "mp4",
+    "size_bytes": 300_000_000,
     "modified_at": "2025-02-01T00:00:00",
     "clean_title": "introduccion a docker containers",
-    "channel":     "midudev",
-    "category":    "Docker",
+    "channel": "midudev",
+    "category": "Docker",
 }
 
 
@@ -49,6 +49,7 @@ def conn(tmp_path):
 # ---------------------------------------------------------------------------
 # Tests de upsert
 # ---------------------------------------------------------------------------
+
 
 def test_upsert_insert(conn):
     result = upsert_video(conn, VIDEO_A)
@@ -88,19 +89,23 @@ def test_upsert_persiste_campos(conn):
     upsert_video(conn, VIDEO_A)
     row = conn.execute("SELECT * FROM videos WHERE path = ?", (VIDEO_A["path"],)).fetchone()
     assert row["clean_title"] == VIDEO_A["clean_title"]
-    assert row["channel"]     == VIDEO_A["channel"]
-    assert row["size_bytes"]  == VIDEO_A["size_bytes"]
-    assert row["status"]      == "active"
+    assert row["channel"] == VIDEO_A["channel"]
+    assert row["size_bytes"] == VIDEO_A["size_bytes"]
+    assert row["status"] == "active"
 
 
 def test_upsert_first_seen_no_cambia(conn):
     """first_seen debe mantenerse igual tras un update."""
     upsert_video(conn, VIDEO_A)
-    first = conn.execute("SELECT first_seen FROM videos WHERE path = ?", (VIDEO_A["path"],)).fetchone()[0]
+    first = conn.execute(
+        "SELECT first_seen FROM videos WHERE path = ?", (VIDEO_A["path"],)
+    ).fetchone()[0]
 
     modificado = {**VIDEO_A, "size_bytes": 999_000_000}
     upsert_video(conn, modificado)
-    first_after = conn.execute("SELECT first_seen FROM videos WHERE path = ?", (VIDEO_A["path"],)).fetchone()[0]
+    first_after = conn.execute(
+        "SELECT first_seen FROM videos WHERE path = ?", (VIDEO_A["path"],)
+    ).fetchone()[0]
 
     assert first == first_after
 
@@ -108,6 +113,7 @@ def test_upsert_first_seen_no_cambia(conn):
 # ---------------------------------------------------------------------------
 # Tests de mark_missing
 # ---------------------------------------------------------------------------
+
 
 def test_mark_missing(conn):
     upsert_video(conn, VIDEO_A)
@@ -145,6 +151,7 @@ def test_get_all_active_paths(conn):
 # Tests de búsqueda FTS5
 # ---------------------------------------------------------------------------
 
+
 def test_fts_busca_por_titulo(conn):
     upsert_video(conn, VIDEO_A)
     results = search(conn, "python")
@@ -179,6 +186,7 @@ def test_fts_sin_resultados(conn):
 # Tests de search_filters
 # ---------------------------------------------------------------------------
 
+
 def test_search_filters_por_categoria(conn):
     upsert_video(conn, VIDEO_A)
     upsert_video(conn, VIDEO_B)
@@ -206,14 +214,15 @@ def test_search_filters_por_tamanyo(conn):
 # Tests de get_stats
 # ---------------------------------------------------------------------------
 
+
 def test_get_stats_basico(conn):
     upsert_video(conn, VIDEO_A)
     upsert_video(conn, VIDEO_B)
     stats = get_stats(conn)
-    assert stats["total"]       == 2
-    assert stats["active"]      == 2
-    assert stats["missing"]     == 0
-    assert stats["unclassified"] == 2          # label es NULL
+    assert stats["total"] == 2
+    assert stats["active"] == 2
+    assert stats["missing"] == 0
+    assert stats["unclassified"] == 2  # label es NULL
     assert "Python" in stats["by_category"]
     assert "Docker" in stats["by_category"]
     assert "midudev" in stats["by_channel"]
@@ -224,7 +233,7 @@ def test_get_stats_con_missing(conn):
     upsert_video(conn, VIDEO_B)
     mark_missing(conn, {VIDEO_A["path"]})
     stats = get_stats(conn)
-    assert stats["active"]  == 1
+    assert stats["active"] == 1
     assert stats["missing"] == 1
 
 
@@ -232,12 +241,13 @@ def test_get_stats_con_missing(conn):
 # Tests de idempotencia de init_db
 # ---------------------------------------------------------------------------
 
+
 def test_init_db_idempotente(tmp_path):
     """Llamar init_db dos veces sobre la misma BD no debe fallar."""
     db_path = str(tmp_path / "catalog.db")
     conn1 = init_db(db_path)
     conn1.close()
-    conn2 = init_db(db_path)   # segunda vez — no debe lanzar excepción
+    conn2 = init_db(db_path)  # segunda vez — no debe lanzar excepción
     conn2.close()
 
 
@@ -247,12 +257,14 @@ def test_init_db_crea_directorio(tmp_path):
     conn = init_db(db_path)
     conn.close()
     import os
+
     assert os.path.exists(db_path)
 
 
 # ---------------------------------------------------------------------------
 # Tests de preservación de labels en upsert (Task 17)
 # ---------------------------------------------------------------------------
+
 
 def test_upsert_no_borra_label_en_update(conn):
     """Un rescan (label=None) no debe borrar una etiqueta Jev/manual."""
@@ -273,8 +285,10 @@ def test_upsert_actualiza_label_si_viene_valor(conn):
     """Un label no nulo sí se actualiza (p. ej. corrección manual)."""
     upsert_video(conn, VIDEO_A)
     corregido = {
-        **VIDEO_A, "size_bytes": 999_000_000,
-        "label": "Docker", "label_source": "manual",
+        **VIDEO_A,
+        "size_bytes": 999_000_000,
+        "label": "Docker",
+        "label_source": "manual",
     }
     assert upsert_video(conn, corregido) == "updated"
     row = conn.execute(

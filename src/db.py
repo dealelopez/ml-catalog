@@ -18,13 +18,30 @@ from datetime import datetime, timezone
 # No incluye los campos de control (first_seen, last_seen, status)
 # ni el id autogenerado.
 _VIDEO_FIELDS = [
-    "path", "filename", "extension", "size_bytes", "modified_at",
-    "duration_s", "width", "height", "codec",
-    "channel", "yt_id", "clean_title",
-    "platform", "course", "teacher",
-    "category", "subcategory", "rule_score", "rule_margin", "rule_source",
-    "model_category", "model_confidence",
-    "label", "label_source",
+    "path",
+    "filename",
+    "extension",
+    "size_bytes",
+    "modified_at",
+    "duration_s",
+    "width",
+    "height",
+    "codec",
+    "channel",
+    "yt_id",
+    "clean_title",
+    "platform",
+    "course",
+    "teacher",
+    "category",
+    "subcategory",
+    "rule_score",
+    "rule_margin",
+    "rule_source",
+    "model_category",
+    "model_confidence",
+    "label",
+    "label_source",
 ]
 
 _SCHEMA = """
@@ -119,9 +136,7 @@ def _migrate(conn: sqlite3.Connection) -> None:
 
     from src.path_context import summarize  # noqa: PLC0415 (evita ciclo)
 
-    rows = conn.execute(
-        "SELECT id, path FROM videos WHERE platform IS NULL"
-    ).fetchall()
+    rows = conn.execute("SELECT id, path FROM videos WHERE platform IS NULL").fetchall()
     for r in rows:
         ctx = summarize(r["path"])
         conn.execute(
@@ -184,22 +199,17 @@ def upsert_video(conn: sqlite3.Connection, data: dict) -> str:
         cols = _VIDEO_FIELDS + ["first_seen", "last_seen", "status"]
         vals = [data.get(f) for f in _VIDEO_FIELDS] + [now, now, "active"]
         placeholders = ",".join("?" * len(cols))
-        conn.execute(
-            f"INSERT INTO videos ({','.join(cols)}) VALUES ({placeholders})", vals
-        )
+        conn.execute(f"INSERT INTO videos ({','.join(cols)}) VALUES ({placeholders})", vals)
         conn.commit()
         return "inserted"
 
-    changed = (
-        row["size_bytes"] != data.get("size_bytes")
-        or row["modified_at"] != data.get("modified_at")
+    changed = row["size_bytes"] != data.get("size_bytes") or row["modified_at"] != data.get(
+        "modified_at"
     )
 
     if changed:
         # label/label_source solo se pisan con valores no nulos (ver docstring)
-        update_cols = [
-            c for c in _VIDEO_FIELDS if c not in ("label", "label_source")
-        ]
+        update_cols = [c for c in _VIDEO_FIELDS if c not in ("label", "label_source")]
         vals = [data.get(f) for f in update_cols]
         if data.get("label") is not None:
             update_cols.append("label")
@@ -232,9 +242,7 @@ def mark_missing(conn: sqlite3.Connection, active_paths: set) -> int:
     Returns:
         Número de registros marcados como missing.
     """
-    rows = conn.execute(
-        "SELECT id, path FROM videos WHERE status = 'active'"
-    ).fetchall()
+    rows = conn.execute("SELECT id, path FROM videos WHERE status = 'active'").fetchall()
     missing_ids = [r["id"] for r in rows if r["path"] not in active_paths]
 
     if not missing_ids:
@@ -262,12 +270,8 @@ def get_stats(conn: sqlite3.Connection) -> dict:
         Dict con: total, active, missing, by_category, by_channel, unclassified.
     """
     total = conn.execute("SELECT COUNT(*) FROM videos").fetchone()[0]
-    active = conn.execute(
-        "SELECT COUNT(*) FROM videos WHERE status = 'active'"
-    ).fetchone()[0]
-    missing = conn.execute(
-        "SELECT COUNT(*) FROM videos WHERE status = 'missing'"
-    ).fetchone()[0]
+    active = conn.execute("SELECT COUNT(*) FROM videos WHERE status = 'active'").fetchone()[0]
+    missing = conn.execute("SELECT COUNT(*) FROM videos WHERE status = 'missing'").fetchone()[0]
     unclassified = conn.execute(
         "SELECT COUNT(*) FROM videos WHERE label IS NULL AND status = 'active'"
     ).fetchone()[0]

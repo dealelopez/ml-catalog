@@ -31,8 +31,7 @@ def search(conn: sqlite3.Connection, query: str, limit: int = 20) -> list[dict]:
     """
     if not query or not query.strip():
         rows = conn.execute(
-            "SELECT * FROM videos WHERE status = 'active' "
-            "ORDER BY last_seen DESC LIMIT ?",
+            "SELECT * FROM videos WHERE status = 'active' ORDER BY last_seen DESC LIMIT ?",
             (limit,),
         ).fetchall()
         return [dict(r) for r in rows]
@@ -86,12 +85,12 @@ def search_filters(conn: sqlite3.Connection, **kwargs: Any) -> list[dict]:
     params: list[Any] = []
 
     filters = {
-        "category":    ("category = ?",    kwargs.get("category")),
-        "channel":     ("channel = ?",     kwargs.get("channel")),
-        "min_size":    ("size_bytes >= ?", kwargs.get("min_size")),
-        "max_size":    ("size_bytes <= ?", kwargs.get("max_size")),
-        "after_date":  ("modified_at >= ?",kwargs.get("after_date")),
-        "before_date": ("modified_at <= ?",kwargs.get("before_date")),
+        "category": ("category = ?", kwargs.get("category")),
+        "channel": ("channel = ?", kwargs.get("channel")),
+        "min_size": ("size_bytes >= ?", kwargs.get("min_size")),
+        "max_size": ("size_bytes <= ?", kwargs.get("max_size")),
+        "after_date": ("modified_at >= ?", kwargs.get("after_date")),
+        "before_date": ("modified_at <= ?", kwargs.get("before_date")),
     }
 
     for _key, (clause, val) in filters.items():
@@ -133,12 +132,12 @@ def format_results(results: list[dict]) -> str:
         return "No se encontraron resultados."
 
     table = Table(title=f"{len(results)} resultado(s)", show_lines=False)
-    table.add_column("#",         style="dim",    width=4)
-    table.add_column("Título",    min_width=35)
-    table.add_column("Canal",     min_width=12)
+    table.add_column("#", style="dim", width=4)
+    table.add_column("Título", min_width=35)
+    table.add_column("Canal", min_width=12)
     table.add_column("Categoría", min_width=12)
-    table.add_column("Tamaño",    min_width=9, justify="right")
-    table.add_column("Fecha",     min_width=10)
+    table.add_column("Tamaño", min_width=9, justify="right")
+    table.add_column("Fecha", min_width=10)
 
     for i, r in enumerate(results, 1):
         size = r.get("size_bytes") or 0

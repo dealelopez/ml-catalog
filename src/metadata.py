@@ -39,9 +39,7 @@ def extract(path: str | Path) -> dict:
     try:
         stat = Path(path).stat()
         result["size_bytes"] = stat.st_size
-        result["modified_at"] = datetime.fromtimestamp(stat.st_mtime).isoformat(
-            timespec="seconds"
-        )
+        result["modified_at"] = datetime.fromtimestamp(stat.st_mtime).isoformat(timespec="seconds")
     except Exception:
         # Fichero inexistente o sin permisos: devolvemos todo a None
         return result
@@ -69,8 +67,10 @@ def extract_ffprobe(path: str | Path, timeout: int = 30) -> dict:
 
     cmd = [
         "ffprobe",
-        "-v", "quiet",
-        "-print_format", "json",
+        "-v",
+        "quiet",
+        "-print_format",
+        "json",
         "-show_streams",
         "-show_format",
         str(path),
@@ -98,9 +98,7 @@ def extract_ffprobe(path: str | Path, timeout: int = 30) -> dict:
         streams = data.get("streams", [])
         fmt = data.get("format", {})
 
-        video_stream = next(
-            (s for s in streams if s.get("codec_type") == "video"), None
-        )
+        video_stream = next((s for s in streams if s.get("codec_type") == "video"), None)
 
         # duration_s: primero desde el stream, luego desde format
         duration_s = None
@@ -111,7 +109,11 @@ def extract_ffprobe(path: str | Path, timeout: int = 30) -> dict:
 
         width = int(video_stream["width"]) if video_stream and "width" in video_stream else None
         height = int(video_stream["height"]) if video_stream and "height" in video_stream else None
-        codec = video_stream["codec_name"].lower() if video_stream and "codec_name" in video_stream else None
+        codec = (
+            video_stream["codec_name"].lower()
+            if video_stream and "codec_name" in video_stream
+            else None
+        )
 
         return {
             "duration_s": duration_s,

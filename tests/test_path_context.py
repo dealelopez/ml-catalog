@@ -54,8 +54,7 @@ def test_domestika_sin_profesor():
 
 def test_linkedin_learning():
     r = summarize(
-        "/videos/51.002--management/"
-        "LinkedIn - Learning_Pricing_Strategy_Explained/video.mp4"
+        "/videos/51.002--management/LinkedIn - Learning_Pricing_Strategy_Explained/video.mp4"
     )
     assert r["platform"] == "LinkedIn Learning"
     assert "pricing strategy" in (r["course"] or "")
@@ -92,6 +91,7 @@ def test_fail_soft_ruta_rara():
 # ---------------------------------------------------------------------------
 # Tests de dir_tokens() (Task 18)
 # ---------------------------------------------------------------------------
+
 
 def test_dir_tokens_caso_bill_nye():
     toks = dir_tokens(

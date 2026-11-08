@@ -1,4 +1,4 @@
-.PHONY: help build up up-build down restart logs shell test lint format typecheck scan dry-run search label-stats health db-stats
+.PHONY: help build up up-build down restart logs shell test lint format typecheck scan dry-run search label-stats label-review label-interactive health db-stats
 
 help: ## Muestra ayuda auto-documentada
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -60,6 +60,18 @@ search: ## buscar en el catálogo: make search Q="python asyncio"
 
 label-stats: ## estado del etiquetado (label_source, % revisado)
 	docker compose run --rm ml-catalog label --stats
+
+label-review: ## revisar márgenes bajos / inciertos (prioriza review)
+	docker compose run --rm ml-catalog label --review --shuffle --limit 20
+
+label-interactive: ## etiquetado manual interactivo (ground truth P0)
+	docker compose run --rm ml-catalog label --interactive
+
+label-otros: ## revisar/validar categoría "Otros" (interactive, filtro)
+	docker compose run --rm ml-catalog label --interactive --category Otros
+
+label-otros-review: ## revisar "Otros" con score bajo
+	docker compose run --rm ml-catalog label --review --category Otros --shuffle --limit 50
 
 health: ## diagnóstico de entorno: config, BD, ffprobe
 	docker compose run --rm ml-catalog health

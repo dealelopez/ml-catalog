@@ -13,6 +13,7 @@ El campo `label_source` rastrea la procedencia de cada etiqueta:
 
 import csv
 import os
+import sqlite3
 
 from src.normalizer import tokenize
 from src.path_context import dir_tokens
@@ -21,12 +22,13 @@ from src.path_context import dir_tokens
 # Helpers internos
 # ---------------------------------------------------------------------------
 
-def _get_categories(config: dict) -> list:
+
+def _get_categories(config: dict) -> list[str]:
     """Devuelve la lista de categorías del config en orden de inserción."""
     return list(config.get("categories", {}).keys())
 
 
-def _row_margin(row) -> float | None:
+def _row_margin(row: sqlite3.Row) -> float | None:
     """Devuelve rule_margin si la fila lo trae, si no None (BDs antiguas)."""
     try:
         keys = row.keys()
@@ -34,10 +36,11 @@ def _row_margin(row) -> float | None:
         return None
     if "rule_margin" not in keys:
         return None
-    return row["rule_margin"]
+    val = row["rule_margin"]
+    return float(val) if val is not None else None
 
 
-def _row_context(row) -> str | None:
+def _row_context(row: sqlite3.Row) -> str | None:
     """Línea 'platform · course · prof. teacher' o None si no hay datos.
 
     Tolerante con BDs antiguas: si las columnas no vienen en la fila,
@@ -60,7 +63,7 @@ def _row_context(row) -> str | None:
     return " · ".join(parts) if parts else None
 
 
-def _show_video(idx: int, total: int, row, categories: list) -> None:
+def _show_video(idx: int, total: int, row: sqlite3.Row, categories: list[str]) -> None:
     """Imprime la ficha del vídeo y el menú de categorías."""
     channel = row["channel"] or "?"
     title = row["clean_title"] or os.path.basename(row["path"])
@@ -106,7 +109,7 @@ def _show_video(idx: int, total: int, row, categories: list) -> None:
     print("  [Enter] confirmar  [número] cambiar  [s] saltar  [q] guardar y salir")
 
 
-def _run_label_loop(conn, rows, categories: list) -> int:
+def _run_label_loop(conn: sqlite3.Connection, rows: list[sqlite3.Row], categories: list[str]) -> int:
     """Bucle interactivo compartido por interactive_label y review_low_confidence.
 
     Args:
@@ -174,7 +177,8 @@ def _run_label_loop(conn, rows, categories: list) -> int:
 # API pública
 # ---------------------------------------------------------------------------
 
-def export_csv(conn, output_path: str) -> int:
+
+def export_csv(conn: sqlite3.Connection, output_path: str) -> int:
     """Genera un CSV con todos los vídeos activos para etiquetar.
 
     Columnas: path, channel, clean_title, tokens, platform, course,
@@ -216,12 +220,24 @@ def export_csv(conn, output_path: str) -> int:
 
     with open(output_path, "w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh)
-        writer.writerow([
-            "path", "channel", "clean_title", "tokens",
-            "platform", "course", "teacher",
-            "category", "rule_score", "rule_margin", "rule_source",
-            "path_tokens", "label", "label_source",
-        ])
+        writer.writerow(
+            [
+                "path",
+                "channel",
+                "clean_title",
+                "tokens",
+                "platform",
+                "course",
+                "teacher",
+                "category",
+                "rule_score",
+                "rule_margin",
+                "rule_source",
+                "path_tokens",
+                "label",
+                "label_source",
+            ]
+        )
         for r in rows:
             tokens_str = " ".join(tokenize(r["clean_title"] or ""))
             keys = r.keys()
@@ -229,27 +245,29 @@ def export_csv(conn, output_path: str) -> int:
                 path_toks = " ".join(dir_tokens(r["path"] or ""))
             except Exception:
                 path_toks = ""
-            writer.writerow([
-                r["path"],
-                r["channel"],
-                r["clean_title"],
-                tokens_str,
-                r["platform"] if "platform" in keys else None,
-                r["course"] if "course" in keys else None,
-                r["teacher"] if "teacher" in keys else None,
-                r["category"],
-                r["rule_score"],
-                r["rule_margin"] if "rule_margin" in keys else None,
-                r["rule_source"] if "rule_source" in keys else None,
-                path_toks,
-                r["label"],
-                r["label_source"],
-            ])
+            writer.writerow(
+                [
+                    r["path"],
+                    r["channel"],
+                    r["clean_title"],
+                    tokens_str,
+                    r["platform"] if "platform" in keys else None,
+                    r["course"] if "course" in keys else None,
+                    r["teacher"] if "teacher" in keys else None,
+                    r["category"],
+                    r["rule_score"],
+                    r["rule_margin"] if "rule_margin" in keys else None,
+                    r["rule_source"] if "rule_source" in keys else None,
+                    path_toks,
+                    r["label"],
+                    r["label_source"],
+                ]
+            )
 
     return len(rows)
 
 
-def interactive_label(conn, config: dict) -> None:
+def interactive_label(conn: sqlite3.Connection, config: dict, category_filter: str | None = None) -> None:
     """Sesión interactiva de etiquetado para todos los vídeos activos.
 
     Muestra cada vídeo con su categoría actual (regla o label previo)
@@ -258,26 +276,39 @@ def interactive_label(conn, config: dict) -> None:
     Args:
         conn: Conexión SQLite activa.
         config: Dict validado por src.config.load().
+        category_filter: Si se indica, filtra por category o label que coincida.
     """
     categories = _get_categories(config)
 
+    where_clause = "WHERE status = 'active'"
+    if category_filter:
+        where_clause += " AND (category = ? OR label = ?)"
+
     try:
-        rows = conn.execute("""
+        params = (category_filter, category_filter) if category_filter else ()
+        rows = conn.execute(
+            f"""
             SELECT path, channel, clean_title, category, rule_score, rule_margin,
                    rule_source, platform, course, teacher, label, label_source
             FROM videos
-            WHERE status = 'active'
+            {where_clause}
             ORDER BY path
-        """).fetchall()
+        """,
+            params,
+        ).fetchall()
     except Exception:
         # BD anterior a las migraciones de rule_margin / contexto
-        rows = conn.execute("""
+        params = (category_filter, category_filter) if category_filter else ()
+        rows = conn.execute(
+            f"""
             SELECT path, channel, clean_title, category, rule_score,
                    label, label_source
             FROM videos
-            WHERE status = 'active'
+            {where_clause}
             ORDER BY path
-        """).fetchall()
+        """,
+            params,
+        ).fetchall()
 
     if not rows:
         print("  No hay vídeos activos en la base de datos.")
@@ -288,7 +319,7 @@ def interactive_label(conn, config: dict) -> None:
     print(f"\n  Sesión terminada. {labeled} vídeo(s) etiquetado(s) en esta sesión.")
 
 
-def _has_column(conn, column: str) -> bool:
+def _has_column(conn: sqlite3.Connection, column: str) -> bool:
     """True si la tabla videos tiene *column* (tolerante con BDs antiguas)."""
     try:
         cols = {r["name"] for r in conn.execute("PRAGMA table_info(videos)")}
@@ -298,8 +329,13 @@ def _has_column(conn, column: str) -> bool:
 
 
 def review_low_confidence(
-    conn, config: dict, threshold: float = 0.3, margin_threshold: float | None = None,
-    shuffle: bool = False, limit: int | None = None
+    conn: sqlite3.Connection,
+    config: dict,
+    threshold: float = 0.3,
+    margin_threshold: float | None = None,
+    shuffle: bool = False,
+    limit: int | None = None,
+    category_filter: str | None = None,
 ) -> None:
     """Sesión de revisión centrada en vídeos con baja confianza de reglas
     o marcados como inciertos por Jev (label_source = 'jev_uncertain').
@@ -331,12 +367,11 @@ def review_low_confidence(
         margin_threshold: Margen máximo para incluir (None = no filtrar por margen).
         shuffle: Si True, aleatoriza el orden dentro de cada prioridad.
         limit: Máximo de vídeos a devolver (None = sin límite).
+        category_filter: Si se indica, filtra por category o label que coincida.
     """
     categories = _get_categories(config)
     has_margin = _has_column(conn, "rule_margin")
-    has_ctx = all(
-        _has_column(conn, c) for c in ("platform", "course", "teacher")
-    )
+    has_ctx = all(_has_column(conn, c) for c in ("platform", "course", "teacher"))
 
     if has_margin:
         select_margin = "rule_margin"
@@ -347,19 +382,24 @@ def review_low_confidence(
         margin_threshold = None
     select_ctx = (
         "platform, course, teacher"
-        if has_ctx else "NULL AS platform, NULL AS course, NULL AS teacher"
+        if has_ctx
+        else "NULL AS platform, NULL AS course, NULL AS teacher"
     )
-    select_src = (
-        "rule_source"
-        if _has_column(conn, "rule_source") else "NULL AS rule_source"
-    )
+    select_src = "rule_source" if _has_column(conn, "rule_source") else "NULL AS rule_source"
 
     # Cláusula de aleatorización dentro de cada prioridad
     rand_clause = "RANDOM()" if shuffle else ""
 
+    cat_where = ""
+    cat_params: tuple[str, str] | tuple[()] = ()
+    if category_filter:
+        cat_where = "AND (category = ? OR label = ?)"
+        cat_params = (category_filter, category_filter)
+
     if margin_threshold is None:
         limit_clause = f"LIMIT {limit}" if limit else ""
-        rows = conn.execute(f"""
+        rows = conn.execute(
+            f"""
             WITH cand AS (
                 SELECT path, channel, clean_title, category, rule_score,
                        {select_margin},
@@ -369,6 +409,7 @@ def review_low_confidence(
                        CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END AS prio
                 FROM videos
                 WHERE status = 'active'
+                  {cat_where}
                   AND (
                     label_source = 'jev_uncertain'
                     OR rule_score IS NULL
@@ -378,11 +419,14 @@ def review_low_confidence(
             SELECT * FROM cand
             ORDER BY prio, {order_margin} rule_score ASC NULLS FIRST, {rand_clause}
             {limit_clause}
-        """, (threshold,)).fetchall()
+        """,
+            (*cat_params, threshold),
+        ).fetchall()
         criteria = f"score < {threshold}"
     else:
         limit_clause = f"LIMIT {limit}" if limit else ""
-        rows = conn.execute(f"""
+        rows = conn.execute(
+            f"""
             WITH cand AS (
                 SELECT path, channel, clean_title, category, rule_score,
                        {select_margin},
@@ -392,6 +436,7 @@ def review_low_confidence(
                        CASE WHEN label_source = 'jev_uncertain' THEN 0 ELSE 1 END AS prio
                 FROM videos
                 WHERE status = 'active'
+                  {cat_where}
                   AND (
                     label_source = 'jev_uncertain'
                     OR rule_score IS NULL
@@ -402,7 +447,9 @@ def review_low_confidence(
             SELECT * FROM cand
             ORDER BY prio, {order_margin} rule_score ASC NULLS FIRST, {rand_clause}
             {limit_clause}
-        """, (margin_threshold,)).fetchall()
+        """,
+            (*cat_params, margin_threshold),
+        ).fetchall()
         criteria = f"margen < {margin_threshold}"
 
     if not rows:
@@ -421,15 +468,13 @@ def review_low_confidence(
     print(f"\n  Sesión terminada. {labeled} vídeo(s) etiquetado(s) en esta sesión.")
 
 
-def stats(conn) -> dict:
+def stats(conn: sqlite3.Connection) -> dict:
     """Devuelve y muestra en terminal estadísticas del estado del etiquetado.
 
     Returns:
         Dict con: total, by_source, pct_reviewed, by_category.
     """
-    total = conn.execute(
-        "SELECT COUNT(*) FROM videos WHERE status = 'active'"
-    ).fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) FROM videos WHERE status = 'active'").fetchone()[0]
 
     # Conteo por label_source — dinámico, incluye jev_reviewed / jev_uncertain
     src_rows = conn.execute("""
@@ -500,32 +545,39 @@ if __name__ == "__main__":
         description="Herramienta de etiquetado manual para el dataset ML",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--export", action="store_true",
-                      help="Exportar todos los vídeos a CSV")
-    mode.add_argument("--interactive", action="store_true",
-                      help="Sesión interactiva de etiquetado")
-    mode.add_argument("--review", action="store_true",
-                      help="Revisar vídeos con score bajo")
-    mode.add_argument("--stats", action="store_true",
-                      help="Mostrar estadísticas del etiquetado")
+    mode.add_argument("--export", action="store_true", help="Exportar todos los vídeos a CSV")
+    mode.add_argument("--interactive", action="store_true", help="Sesión interactiva de etiquetado")
+    mode.add_argument("--review", action="store_true", help="Revisar vídeos con score bajo")
+    mode.add_argument("--stats", action="store_true", help="Mostrar estadísticas del etiquetado")
 
     parser.add_argument(
-        "--threshold", type=float, default=0.3,
+        "--threshold",
+        type=float,
+        default=0.3,
         help="Umbral de rule_score para --review (default: 0.3)",
     )
     parser.add_argument(
-        "--margin-threshold", type=float, default=None,
+        "--margin-threshold",
+        type=float,
+        default=None,
         help="Si se indica, --review filtra por rule_margin en vez de por "
-             "rule_score y excluye ganadores claros aunque su score sea bajo "
-             "(p. ej. 0.05).",
+        "rule_score y excluye ganadores claros aunque su score sea bajo "
+        "(p. ej. 0.05).",
     )
     parser.add_argument(
-        "--db", default=os.getenv("DB_PATH", "data/catalog.db"),
+        "--db",
+        default=os.getenv("DB_PATH", "data/catalog.db"),
         help="Ruta al fichero SQLite (default: $DB_PATH o data/catalog.db)",
     )
     parser.add_argument(
-        "--output", default="data/labels.csv",
+        "--output",
+        default="data/labels.csv",
         help="Ruta del CSV de salida para --export (default: data/labels.csv)",
+    )
+    parser.add_argument(
+        "--category",
+        default=None,
+        help="Filtrar por categoría (category o label) — solo para --interactive y --review",
     )
 
     args = parser.parse_args()
@@ -538,11 +590,18 @@ if __name__ == "__main__":
         print(f"  ✓ {n} fila(s) exportada(s) a {args.output}")
 
     elif args.interactive:
-        interactive_label(conn, cfg)
+        interactive_label(conn, cfg, category_filter=args.category)
 
     elif args.review:
-        review_low_confidence(conn, cfg, threshold=args.threshold,
-                              margin_threshold=args.margin_threshold)
+        review_low_confidence(
+            conn,
+            cfg,
+            threshold=args.threshold,
+            margin_threshold=args.margin_threshold,
+            shuffle=args.shuffle,
+            limit=args.limit,
+            category_filter=args.category,
+        )
 
     elif args.stats:
         stats(conn)

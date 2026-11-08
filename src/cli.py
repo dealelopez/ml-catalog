@@ -32,6 +32,7 @@ console = Console()
 # ARGPARSE — Definición de subcomandos y argumentos
 # =============================================================================
 
+
 def build_parser() -> argparse.ArgumentParser:
     """Construye el parser de argumentos con todos los subcomandos."""
     parser = argparse.ArgumentParser(
@@ -80,9 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
     label_mode.add_argument(
         "--interactive", action="store_true", help="Sesión interactiva de etiquetado"
     )
-    label_mode.add_argument(
-        "--review", action="store_true", help="Revisar vídeos con score bajo"
-    )
+    label_mode.add_argument("--review", action="store_true", help="Revisar vídeos con score bajo")
     label_mode.add_argument(
         "--stats", action="store_true", help="Mostrar estadísticas del etiquetado"
     )
@@ -118,6 +117,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--output",
         default="data/labels.csv",
         help="CSV de salida para --export (default: data/labels.csv)",
+    )
+    label_parser.add_argument(
+        "--category",
+        default=None,
+        help="Filtrar por categoría (category o label) — solo para --interactive y --review",
     )
 
     # --- apply-model (re-clasifica BD con modelo ML) ---
@@ -186,6 +190,7 @@ def build_parser() -> argparse.ArgumentParser:
 # Handlers — un subcomando, una función
 # =============================================================================
 
+
 def _cmd_scan(args: argparse.Namespace) -> int:
     from src.config import load
     from src.scanner import scan
@@ -222,11 +227,16 @@ def _cmd_label(args: argparse.Namespace) -> int:
         n = export_csv(conn, args.output)
         print(f"  ✓ {n} fila(s) exportada(s) a {args.output}")
     elif args.interactive:
-        interactive_label(conn, cfg)
+        interactive_label(conn, cfg, category_filter=args.category)
     elif args.review:
         review_low_confidence(
-            conn, cfg, threshold=args.threshold, margin_threshold=args.margin_threshold,
-            shuffle=args.shuffle, limit=args.limit
+            conn,
+            cfg,
+            threshold=args.threshold,
+            margin_threshold=args.margin_threshold,
+            shuffle=args.shuffle,
+            limit=args.limit,
+            category_filter=args.category,
         )
     elif args.stats:
         stats(conn)
@@ -272,7 +282,9 @@ def _cmd_health(_args: argparse.Namespace) -> int:
 
         info = get_model_info()
         if info:
-            console.print(f"[green]✓[/green] Modelo ML: F1={info.get('f1_macro')}, algo={info.get('algorithm')}")
+            console.print(
+                f"[green]✓[/green] Modelo ML: F1={info.get('f1_macro')}, algo={info.get('algorithm')}"
+            )
         else:
             console.print("[yellow]![/yellow] Modelo ML: no entrenado (data/model.joblib)")
     except Exception as e:
@@ -311,6 +323,7 @@ def _cmd_apply_model(args: argparse.Namespace) -> int:
 # =============================================================================
 # main(argv) testeable
 # =============================================================================
+
 
 def main(argv: list[str] | None = None) -> int:
     """Punto de entrada de la CLI. Devuelve exit code (testeable)."""

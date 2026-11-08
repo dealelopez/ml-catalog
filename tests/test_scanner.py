@@ -13,6 +13,7 @@ from src.scanner import find_video_files, format_size, scan
 # find_video_files
 # ---------------------------------------------------------------------------
 
+
 def test_find_video_files_filtra_extensiones(tmp_path):
     (tmp_path / "video.mp4").touch()
     (tmp_path / "documento.pdf").touch()
@@ -75,6 +76,7 @@ def test_find_video_files_ignora_multiples_carpetas(tmp_path):
 # format_size
 # ---------------------------------------------------------------------------
 
+
 def test_format_size_kb():
     assert format_size(1_000) == "1.0 KB"
 
@@ -92,17 +94,16 @@ def test_format_size_exacto_mb():
 
 
 def test_format_size_exacto_gb():
-    assert format_size(1024 ** 3) == "1.0 GB"
+    assert format_size(1024**3) == "1.0 GB"
 
 
 # ---------------------------------------------------------------------------
 # scan (dry_run — sin BD)
 # ---------------------------------------------------------------------------
 
+
 def test_scan_dry_run_sin_videos(tmp_path):
-    config = {
-        "scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}
-    }
+    config = {"scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}}
     result = scan(config, dry_run=True)
     assert result["found"] == 0
     assert result["errors"] == 0
@@ -112,18 +113,14 @@ def test_scan_dry_run_cuenta_videos(tmp_path):
     (tmp_path / "a.mp4").touch()
     (tmp_path / "b.mp4").touch()
     (tmp_path / "c.pdf").touch()
-    config = {
-        "scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}
-    }
+    config = {"scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}}
     result = scan(config, dry_run=True)
     assert result["found"] == 2
     assert result["errors"] == 0
 
 
 def test_scan_dry_run_devuelve_elapsed(tmp_path):
-    config = {
-        "scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}
-    }
+    config = {"scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}}
     result = scan(config, dry_run=True)
     assert "elapsed_s" in result
     assert result["elapsed_s"] >= 0
@@ -132,19 +129,17 @@ def test_scan_dry_run_devuelve_elapsed(tmp_path):
 def test_scan_dry_run_no_escribe(tmp_path):
     """El dry-run no debe crear ningún fichero extra."""
     (tmp_path / "video.mp4").touch()
-    config = {
-        "scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}
-    }
+    config = {"scan": {"folders": [str(tmp_path)], "extensions": ["mp4"], "ignore_folders": []}}
     archivos_antes = set(tmp_path.iterdir())
     scan(config, dry_run=True)
     archivos_despues = set(tmp_path.iterdir())
     assert archivos_antes == archivos_despues
 
 
-
 # ---------------------------------------------------------------------------
 # Fixtures para tests de integración del pipeline
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def video_folder(tmp_path):
@@ -179,6 +174,7 @@ def config_test(video_folder, tmp_path):
 # Tests de integración del pipeline
 # ---------------------------------------------------------------------------
 
+
 def test_pipeline_inserta_videos(config_test, tmp_path):
     result = scan(config_test, dry_run=False)
     assert result["found"] == 2
@@ -204,9 +200,7 @@ def test_pipeline_clasifica_python(config_test, tmp_path):
     scan(config_test, dry_run=False)
     conn = sqlite3.connect(str(tmp_path / "catalog.db"))
     conn.row_factory = sqlite3.Row
-    row = conn.execute(
-        "SELECT category FROM videos WHERE filename LIKE '%Python%'"
-    ).fetchone()
+    row = conn.execute("SELECT category FROM videos WHERE filename LIKE '%Python%'").fetchone()
     assert row["category"] == "Python"
 
 

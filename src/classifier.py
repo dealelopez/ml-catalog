@@ -27,9 +27,11 @@ def load_model(model_path: str = MODEL_PATH_DEFAULT):
         FileNotFoundError: Si model_path no existe.
     """
     if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Modelo no encontrado: {model_path} "
-                                f"(entrena con scripts/train_classifier.py)")
+        raise FileNotFoundError(
+            f"Modelo no encontrado: {model_path} (entrena con scripts/train_classifier.py)"
+        )
     import joblib  # noqa: PLC0415 (import diferido: sklearn es pesado)
+
     return joblib.load(model_path)
 
 
@@ -48,6 +50,7 @@ def try_load_model(model_path: str = MODEL_PATH_DEFAULT):
     if not os.path.exists(model_path):
         return None
     import joblib  # noqa: PLC0415
+
     return joblib.load(model_path)
 
 
@@ -67,6 +70,7 @@ def get_model_info(model_path: str = MODEL_PATH_DEFAULT) -> dict | None:
     if not os.path.exists(metrics_path):
         return None
     import json  # noqa: PLC0415
+
     with open(metrics_path, "r", encoding="utf-8") as fh:
         return json.load(fh)
 

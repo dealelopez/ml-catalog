@@ -23,8 +23,14 @@ import sys
 # Segmentos de flujo de trabajo: organización personal, no temática.
 # Se excluyen del texto de búsqueda pero se conservan en `workflow`.
 WORKFLOW_DIRS = {
-    "00-sin_revisar", "01-revisados", "01--revisados",
-    "tuts", "temp", "tmp", ".trash", "@eadir",
+    "00-sin_revisar",
+    "01-revisados",
+    "01--revisados",
+    "tuts",
+    "temp",
+    "tmp",
+    ".trash",
+    "@eadir",
 }
 
 # Prefijo normalizado → nombre de plataforma para mostrar.
@@ -115,13 +121,13 @@ def _split_platform(seg: str) -> tuple:
     # Primer token: "craftsy marc taro holmes" (de "craftsy--...")
     first = norm.split(" ")[0]
     if first in PLATFORMS:
-        rest = norm[len(first):].strip()
+        rest = norm[len(first) :].strip()
         return PLATFORMS[first], rest
 
     # Prefijo por inicio: "midudev-desarrollo", "linkedin learning ..."
     for prefix, name in sorted(PLATFORMS.items(), key=lambda kv: -len(kv[0])):
         if norm.startswith(prefix) and len(norm) > len(prefix):
-            rest = norm[len(prefix):].lstrip("- ").strip()
+            rest = norm[len(prefix) :].lstrip("- ").strip()
             return name, rest
 
     return None, norm
@@ -190,9 +196,7 @@ def summarize(path: str) -> dict:
 
     teacher = _extract_teacher(course, platform)
 
-    context_text = " ".join(
-        t for t in [area or "", platform or "", course, teacher or ""] if t
-    )
+    context_text = " ".join(t for t in [area or "", platform or "", course, teacher or ""] if t)
 
     return {
         "area": area,
@@ -246,8 +250,10 @@ def dir_tokens(path: str) -> list:
 
 def state_lines(parsed: dict) -> str:
     """Líneas estructuradas en inglés para el `state` de Jev."""
+
     def val(v):
         return v if v else "unknown"
+
     return (
         f"Platform: {val(parsed.get('platform'))}. "
         f"Course: {val(parsed.get('course'))}. "

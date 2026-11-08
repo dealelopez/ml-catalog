@@ -67,9 +67,16 @@ CATEGORIES = {
 
 # ── Lógica principal ───────────────────────────────────────────────────────────
 
-def classify_with_jev(clean_title: str, channel: str, path: str, api_key: str,
-                      platform: str | None = None, course: str | None = None,
-                      teacher: str | None = None) -> dict:
+
+def classify_with_jev(
+    clean_title: str,
+    channel: str,
+    path: str,
+    api_key: str,
+    platform: str | None = None,
+    course: str | None = None,
+    teacher: str | None = None,
+) -> dict:
     """
     Envía un vídeo a Jev y devuelve la categoría predicha y la probabilidad
     de ambigüedad.
@@ -84,8 +91,10 @@ def classify_with_jev(clean_title: str, channel: str, path: str, api_key: str,
             "ambiguous_prob": float  # 0.0 (seguro) → 1.0 (muy incierto)
         }
     """
+
     def known(v):
         return v if v else "unknown"
+
     state = (
         f"Video title: '{clean_title}'. "
         f"Channel: '{channel}'. "
@@ -150,9 +159,15 @@ def _wait_for_429(resp: requests.Response, attempt: int) -> None:
     time.sleep(wait)
 
 
-def classify_with_retry(clean_title: str, channel: str, path: str, api_key: str,
-                        platform: str | None = None, course: str | None = None,
-                        teacher: str | None = None) -> dict:
+def classify_with_retry(
+    clean_title: str,
+    channel: str,
+    path: str,
+    api_key: str,
+    platform: str | None = None,
+    course: str | None = None,
+    teacher: str | None = None,
+) -> dict:
     """Igual que classify_with_jev pero reintenta ante 429 con backoff.
 
     Otros errores se propagan al llamante (los cuenta como ERROR por fila).
@@ -161,8 +176,13 @@ def classify_with_retry(clean_title: str, channel: str, path: str, api_key: str,
     for attempt in range(1, MAX_429_RETRIES + 1):
         try:
             return classify_with_jev(
-                clean_title, channel, path, api_key,
-                platform=platform, course=course, teacher=teacher,
+                clean_title,
+                channel,
+                path,
+                api_key,
+                platform=platform,
+                course=course,
+                teacher=teacher,
             )
         except requests.HTTPError as e:
             last_exc = e

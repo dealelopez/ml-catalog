@@ -73,8 +73,9 @@ def apply_rules(
     per_category: dict = {}
 
     for row in rows:
-        res = classify(row["clean_title"] or "", row["path"], config,
-                       context=summarize(row["path"]))
+        res = classify(
+            row["clean_title"] or "", row["path"], config, context=summarize(row["path"])
+        )
         cat = res["category"]
 
         # Sin hit competente: rules devuelve 'Otros' con score 0. Ni tocar.
@@ -89,8 +90,7 @@ def apply_rules(
         per_category[cat] = per_category.get(cat, 0) + 1
         if not dry_run:
             conn.execute(
-                "UPDATE videos SET label = ?, label_source = 'rule' "
-                "WHERE id = ?",
+                "UPDATE videos SET label = ?, label_source = 'rule' WHERE id = ?",
                 (cat, row["id"]),
             )
         written += 1

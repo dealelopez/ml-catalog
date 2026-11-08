@@ -6,8 +6,8 @@ from src.rules_apply import apply_rules
 from src.scanner import scan
 
 VIDEO_TITLES = [
-    "midudev - Curso Python [abc123].webm",       # → rules dirían Python
-    "midudev - Charla miscelanea [def456].webm",   # → sin hit: skip_low_conf
+    "midudev - Curso Python [abc123].webm",  # → rules dirían Python
+    "midudev - Charla miscelanea [def456].webm",  # → sin hit: skip_low_conf
 ]
 
 
@@ -111,8 +111,6 @@ def test_apply_rules_dry_run_no_escribe(tmp_path):
     assert result["written"] > 0  # habría re-etiquetado
 
     conn = sqlite3.connect(str(tmp_path / "catalog.db"))
-    n_rule = conn.execute(
-        "SELECT COUNT(*) FROM videos WHERE label_source = 'rule'"
-    ).fetchone()[0]
+    n_rule = conn.execute("SELECT COUNT(*) FROM videos WHERE label_source = 'rule'").fetchone()[0]
     conn.close()
     assert n_rule == 0  # dry-run no escribió nada

@@ -43,6 +43,7 @@ console = Console()
 # API pública
 # ---------------------------------------------------------------------------
 
+
 def scan(config: dict, dry_run: bool = False) -> dict:
     """Orquesta el pipeline completo: escanea, normaliza, clasifica y persiste.
 
@@ -82,9 +83,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
     # Dry-run: mostrar, no escribir
     # -----------------------------------------------------------------------
     if dry_run:
-        console.print(
-            f"\n[bold][dry-run][/bold] Escaneando {len(folders)} carpeta(s)...\n"
-        )
+        console.print(f"\n[bold][dry-run][/bold] Escaneando {len(folders)} carpeta(s)...\n")
 
         # Cargar modelo ML si existe (fallback silencioso a solo reglas)
         model = _classifier.try_load_model()
@@ -95,9 +94,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                 meta = _metadata.extract(filepath)
                 norm = _normalizer.normalize(filepath.name)
                 ctx = _path_context.summarize(str(filepath))
-                classif = _rules.classify(
-                    norm["clean_title"], str(filepath), config, context=ctx
-                )
+                classif = _rules.classify(norm["clean_title"], str(filepath), config, context=ctx)
 
                 # Predicción ML si hay modelo
                 ml_tag = ""
@@ -119,9 +116,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                 errors += 1
 
         elapsed = time.monotonic() - t0
-        console.print(
-            f"\n  Encontrados: {found}  |  Errores: {errors}  |  Tiempo: {elapsed:.1f}s"
-        )
+        console.print(f"\n  Encontrados: {found}  |  Errores: {errors}  |  Tiempo: {elapsed:.1f}s")
         console.print("  [dim][dry-run] Nada escrito en la base de datos.[/dim]")
 
         return {
@@ -176,9 +171,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                     # ----------------------------------------------------------
                     stat = filepath.stat()
                     stat_size = stat.st_size
-                    stat_mtime = datetime.fromtimestamp(stat.st_mtime).isoformat(
-                        timespec="seconds"
-                    )
+                    stat_mtime = datetime.fromtimestamp(stat.st_mtime).isoformat(timespec="seconds")
 
                     if (
                         path_str in existing
@@ -187,8 +180,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                     ):
                         now = datetime.now(timezone.utc).isoformat()
                         conn.execute(
-                            "UPDATE videos SET last_seen = ?, status = 'active'"
-                            " WHERE path = ?",
+                            "UPDATE videos SET last_seen = ?, status = 'active' WHERE path = ?",
                             (now, path_str),
                         )
                         conn.commit()
@@ -202,9 +194,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                     meta = _metadata.extract(filepath)
                     norm = _normalizer.normalize(filepath.name)
                     ctx = _path_context.summarize(path_str)
-                    classif = _rules.classify(
-                        norm["clean_title"], path_str, config, context=ctx
-                    )
+                    classif = _rules.classify(norm["clean_title"], path_str, config, context=ctx)
 
                     # Predicción ML si hay modelo cargado
                     model_category = None
@@ -252,9 +242,7 @@ def scan(config: dict, dry_run: bool = False) -> dict:
                     _log_error(log_path, path_str, traceback.format_exc())
 
         except KeyboardInterrupt:
-            console.print(
-                "\n[yellow]Interrupción detectada: cerrando limpiamente…[/yellow]"
-            )
+            console.print("\n[yellow]Interrupción detectada: cerrando limpiamente…[/yellow]")
 
     # Marcar como 'missing' los activos que no aparecieron en este escaneo
     missing_count = _db.mark_missing(conn, scanned_paths)
@@ -302,6 +290,7 @@ def _log_error(log_path: Path, filepath: str, tb: str) -> None:
 # ---------------------------------------------------------------------------
 # Funciones de soporte (sin cambios respecto a la versión anterior)
 # ---------------------------------------------------------------------------
+
 
 def find_video_files(
     folders: list,
@@ -355,16 +344,17 @@ def find_video_files(
 
 def format_size(size_bytes: int) -> str:
     """Convierte bytes a formato legible: '1.2 GB', '345.6 MB', '12.3 KB'."""
-    if size_bytes >= 1024 ** 3:
-        return f"{size_bytes / 1024 ** 3:.1f} GB"
-    if size_bytes >= 1024 ** 2:
-        return f"{size_bytes / 1024 ** 2:.1f} MB"
+    if size_bytes >= 1024**3:
+        return f"{size_bytes / 1024**3:.1f} GB"
+    if size_bytes >= 1024**2:
+        return f"{size_bytes / 1024**2:.1f} MB"
     return f"{size_bytes / 1024:.1f} KB"
 
 
 # ---------------------------------------------------------------------------
 # Punto de entrada como script: python -m src.scanner
 # ---------------------------------------------------------------------------
+
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(

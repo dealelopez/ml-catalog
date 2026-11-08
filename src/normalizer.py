@@ -15,21 +15,111 @@ import sys
 # ---------------------------------------------------------------------------
 
 _STOPWORDS_ES = {
-    "a", "al", "aunque", "con", "como", "cuando", "de", "del", "desde",
-    "donde", "e", "el", "en", "entre", "era", "esa", "esas", "ese",
-    "esos", "esta", "estas", "este", "estos", "fue", "hay", "la", "las",
-    "le", "les", "lo", "los", "mas", "me", "mi", "muy", "ni", "no",
-    "o", "para", "pero", "por", "porque", "que", "se", "ser", "si",
-    "sin", "sobre", "su", "sus", "tanto", "te", "todo", "todos",
-    "todas", "tu", "un", "una", "unas", "unos", "y", "ya",
+    "a",
+    "al",
+    "aunque",
+    "con",
+    "como",
+    "cuando",
+    "de",
+    "del",
+    "desde",
+    "donde",
+    "e",
+    "el",
+    "en",
+    "entre",
+    "era",
+    "esa",
+    "esas",
+    "ese",
+    "esos",
+    "esta",
+    "estas",
+    "este",
+    "estos",
+    "fue",
+    "hay",
+    "la",
+    "las",
+    "le",
+    "les",
+    "lo",
+    "los",
+    "mas",
+    "me",
+    "mi",
+    "muy",
+    "ni",
+    "no",
+    "o",
+    "para",
+    "pero",
+    "por",
+    "porque",
+    "que",
+    "se",
+    "ser",
+    "si",
+    "sin",
+    "sobre",
+    "su",
+    "sus",
+    "tanto",
+    "te",
+    "todo",
+    "todos",
+    "todas",
+    "tu",
+    "un",
+    "una",
+    "unas",
+    "unos",
+    "y",
+    "ya",
 }
 
 _STOPWORDS_EN = {
-    "a", "an", "and", "are", "at", "be", "been", "being", "but", "by",
-    "could", "did", "do", "does", "for", "from", "had", "has", "have",
-    "in", "is", "it", "its", "may", "might", "of", "on", "or",
-    "should", "that", "the", "these", "this", "those", "to", "was",
-    "were", "will", "with", "would",
+    "a",
+    "an",
+    "and",
+    "are",
+    "at",
+    "be",
+    "been",
+    "being",
+    "but",
+    "by",
+    "could",
+    "did",
+    "do",
+    "does",
+    "for",
+    "from",
+    "had",
+    "has",
+    "have",
+    "in",
+    "is",
+    "it",
+    "its",
+    "may",
+    "might",
+    "of",
+    "on",
+    "or",
+    "should",
+    "that",
+    "the",
+    "these",
+    "this",
+    "those",
+    "to",
+    "was",
+    "were",
+    "will",
+    "with",
+    "would",
 }
 
 STOPWORDS = _STOPWORDS_ES | _STOPWORDS_EN
@@ -38,17 +128,30 @@ STOPWORDS = _STOPWORDS_ES | _STOPWORDS_EN
 # Accent transliteration map
 # ---------------------------------------------------------------------------
 
-_ACCENT_MAP = str.maketrans({
-    "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u",
-    "Á": "a", "É": "e", "Í": "i", "Ó": "o", "Ú": "u",
-    "ñ": "n", "Ñ": "n",
-    "ü": "u", "Ü": "u",
-})
+_ACCENT_MAP = str.maketrans(
+    {
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "Á": "a",
+        "É": "e",
+        "Í": "i",
+        "Ó": "o",
+        "Ú": "u",
+        "ñ": "n",
+        "Ñ": "n",
+        "ü": "u",
+        "Ü": "u",
+    }
+)
 
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def extract_channel(filename: str) -> str | None:
     """Extrae el nombre del canal desde el nombre del fichero.
@@ -155,10 +258,7 @@ def tokenize(text: str) -> list[str]:
     tokens = text.split()
 
     # 4. Filtrar vacíos, un solo carácter y números puros
-    tokens = [
-        t for t in tokens
-        if len(t) > 1 and not t.isdigit()
-    ]
+    tokens = [t for t in tokens if len(t) > 1 and not t.isdigit()]
 
     # 5. Filtrar stopwords
     tokens = [t for t in tokens if t not in STOPWORDS]

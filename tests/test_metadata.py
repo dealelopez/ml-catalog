@@ -39,6 +39,7 @@ def test_extract_fichero_inexistente():
 
 def test_extract_ffprobe_timeout(monkeypatch):
     """Timeout de ffprobe devuelve Nones sin lanzar excepción."""
+
     def mock_run(*args, **kwargs):
         raise subprocess.TimeoutExpired(cmd="ffprobe", timeout=1)
 

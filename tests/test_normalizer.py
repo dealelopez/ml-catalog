@@ -8,6 +8,7 @@ from src.normalizer import clean_title, extract_channel, extract_yt_id, normaliz
 # extract_channel
 # ---------------------------------------------------------------------------
 
+
 def test_extract_channel_formato_ytdlp():
     assert extract_channel("midudev - Curso Python [abc].webm") == "midudev"
 
@@ -28,6 +29,7 @@ def test_extract_channel_nombre_con_espacios():
 # extract_yt_id
 # ---------------------------------------------------------------------------
 
+
 def test_extract_yt_id_presente():
     assert extract_yt_id("midudev - Curso Python [TkN2i-_4N4g].webm") == "TkN2i-_4N4g"
 
@@ -43,6 +45,7 @@ def test_extract_yt_id_id_largo():
 # ---------------------------------------------------------------------------
 # clean_title
 # ---------------------------------------------------------------------------
+
 
 def test_clean_title_formato_ytdlp_completo():
     result = clean_title("midudev - Curso COMPLETO de Python DESDE CERO [TkN2i-_4N4g].webm")
@@ -76,6 +79,7 @@ def test_clean_title_elimina_caracteres_especiales():
 # ---------------------------------------------------------------------------
 # tokenize
 # ---------------------------------------------------------------------------
+
 
 def test_tokenize_elimina_stopwords():
     tokens = tokenize("curso completo de python desde cero")
@@ -122,6 +126,7 @@ def test_tokenize_solo_stopwords():
 # ---------------------------------------------------------------------------
 # normalize (integración)
 # ---------------------------------------------------------------------------
+
 
 def test_normalize_ytdlp_completo():
     result = normalize("midudev - Curso COMPLETO de Python DESDE CERO [TkN2i-_4N4g].webm")

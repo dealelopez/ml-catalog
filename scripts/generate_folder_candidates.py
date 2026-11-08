@@ -40,33 +40,180 @@ MAX_DEPTH = 2
 
 # Nombres de segmento demasiado genericos (nombres de seccion de curso, no de carpeta)
 _GENERIC_SEGMENTS = {
-    "video", "videos", "segment", "segments", "part", "part 1", "part 2",
-    "basic", "basics", "intro", "introduction", "overview", "summary",
-    "conclusion", "final", "recap", "review", "practice", "exercise",
-    "lesson", "lesson 1", "lesson 2", "chapter", "chapter 1", "module",
-    "module 1", "week", "week 1", "unit", "unit 1", "section", "section 1",
-    "js", "javascript", "python", "css", "html", "sql", "git", "docker",
-    "linux", "bash", "shell", "aws", "azure", "gcp", "api", "rest", "graphql",
-    "ui", "ux", "ui ux", "figma", "sketch", "adobe", "photoshop", "illustrator",
-    "blender", "unity", "unreal", "godot", "cpp", "c++", "java", "kotlin",
-    "swift", "rust", "go", "golang", "ruby", "php", "laravel", "django",
-    "flask", "fastapi", "react", "vue", "angular", "svelte", "nextjs",
-    "node", "nodejs", "express", "nestjs", "spring", "hibernate",
-    "postgres", "mysql", "mongodb", "redis", "elasticsearch", "kafka",
-    "kubernetes", "k8s", "helm", "terraform", "ansible", "jenkins",
-    "github", "gitlab", "bitbucket", "ci", "cd", "cicd", "devops",
-    "monitoring", "logging", "prometheus", "grafana", "datadog",
-    "security", "auth", "oauth", "jwt", "ssl", "tls", "https",
-    "testing", "tdd", "bdd", "unit", "integration", "e2e", "cypress",
-    "playwright", "selenium", "pytest", "jest", "vitest", "mocha",
-    "debugging", "profiling", "performance", "optimization", "scaling",
-    "architecture", "microservices", "monolith", "ddd", "clean",
-    "hexagonal", "onion", "cqrs", "event sourcing", "saga",
-    "message queue", "rabbitmq", "kafka", "nats", "grpc", "protobuf",
-    "graphql", "rest api", "webhook", "serverless", "lambda", "fargate",
-    "ecs", "eks", "rds", "s3", "cloudfront", "route53", "iam",
-    "vpc", "subnet", "security group", "nacl", "alb", "nlb",
-    "autoscaling", "load balancer", "target group", "listener",
+    "video",
+    "videos",
+    "segment",
+    "segments",
+    "part",
+    "part 1",
+    "part 2",
+    "basic",
+    "basics",
+    "intro",
+    "introduction",
+    "overview",
+    "summary",
+    "conclusion",
+    "final",
+    "recap",
+    "review",
+    "practice",
+    "exercise",
+    "lesson",
+    "lesson 1",
+    "lesson 2",
+    "chapter",
+    "chapter 1",
+    "module",
+    "module 1",
+    "week",
+    "week 1",
+    "unit",
+    "unit 1",
+    "section",
+    "section 1",
+    "js",
+    "javascript",
+    "python",
+    "css",
+    "html",
+    "sql",
+    "git",
+    "docker",
+    "linux",
+    "bash",
+    "shell",
+    "aws",
+    "azure",
+    "gcp",
+    "api",
+    "rest",
+    "graphql",
+    "ui",
+    "ux",
+    "ui ux",
+    "figma",
+    "sketch",
+    "adobe",
+    "photoshop",
+    "illustrator",
+    "blender",
+    "unity",
+    "unreal",
+    "godot",
+    "cpp",
+    "c++",
+    "java",
+    "kotlin",
+    "swift",
+    "rust",
+    "go",
+    "golang",
+    "ruby",
+    "php",
+    "laravel",
+    "django",
+    "flask",
+    "fastapi",
+    "react",
+    "vue",
+    "angular",
+    "svelte",
+    "nextjs",
+    "node",
+    "nodejs",
+    "express",
+    "nestjs",
+    "spring",
+    "hibernate",
+    "postgres",
+    "mysql",
+    "mongodb",
+    "redis",
+    "elasticsearch",
+    "kafka",
+    "kubernetes",
+    "k8s",
+    "helm",
+    "terraform",
+    "ansible",
+    "jenkins",
+    "github",
+    "gitlab",
+    "bitbucket",
+    "ci",
+    "cd",
+    "cicd",
+    "devops",
+    "monitoring",
+    "logging",
+    "prometheus",
+    "grafana",
+    "datadog",
+    "security",
+    "auth",
+    "oauth",
+    "jwt",
+    "ssl",
+    "tls",
+    "https",
+    "testing",
+    "tdd",
+    "bdd",
+    "unit",
+    "integration",
+    "e2e",
+    "cypress",
+    "playwright",
+    "selenium",
+    "pytest",
+    "jest",
+    "vitest",
+    "mocha",
+    "debugging",
+    "profiling",
+    "performance",
+    "optimization",
+    "scaling",
+    "architecture",
+    "microservices",
+    "monolith",
+    "ddd",
+    "clean",
+    "hexagonal",
+    "onion",
+    "cqrs",
+    "event sourcing",
+    "saga",
+    "message queue",
+    "rabbitmq",
+    "kafka",
+    "nats",
+    "grpc",
+    "protobuf",
+    "graphql",
+    "rest api",
+    "webhook",
+    "serverless",
+    "lambda",
+    "fargate",
+    "ecs",
+    "eks",
+    "rds",
+    "s3",
+    "cloudfront",
+    "route53",
+    "iam",
+    "vpc",
+    "subnet",
+    "security group",
+    "nacl",
+    "alb",
+    "nlb",
+    "autoscaling",
+    "load balancer",
+    "target group",
+    "listener",
 }
 
 
@@ -93,7 +240,9 @@ def main() -> int:
     ap.add_argument("--min-purity", type=float, default=0.95)
     ap.add_argument("--min-n", type=int, default=5)
     ap.add_argument("--db", default=os.getenv("DB_PATH", "data/catalog.db"))
-    ap.add_argument("--out", default=None, help="Ruta de salida (default: config-folder-dict.yaml en raíz)")
+    ap.add_argument(
+        "--out", default=None, help="Ruta de salida (default: config-folder-dict.yaml en raíz)"
+    )
     args = ap.parse_args()
 
     # Ruta de salida: --out o config-folder-dict.yaml en raíz del proyecto
@@ -104,8 +253,7 @@ def main() -> int:
 
     conn = sqlite3.connect(args.db)
     rows = conn.execute(
-        "SELECT path, COALESCE(label, category) AS lab "
-        "FROM videos WHERE status = 'active'"
+        "SELECT path, COALESCE(label, category) AS lab FROM videos WHERE status = 'active'"
     ).fetchall()
 
     buckets: dict = defaultdict(list)
@@ -124,12 +272,18 @@ def main() -> int:
         if len(labs) >= args.min_n and purity >= args.min_purity and top != "Otros":
             raw = Counter(v[1] for v in vals).most_common(1)[0][0]
             cands.append(
-                {"key": key, "depth": depth, "category": top,
-                 "n": len(labs), "purity": round(purity, 4), "raw": raw}
+                {
+                    "key": key,
+                    "depth": depth,
+                    "category": top,
+                    "n": len(labs),
+                    "purity": round(purity, 4),
+                    "raw": raw,
+                }
             )
 
     cands.sort(key=lambda c: (c["category"], c["depth"], -c["n"]))
-    
+
     # Deduplicar claves normalizadas: mantener la mas profunda (ultima en el sort)
     seen = set()
     unique_cands = []
@@ -138,7 +292,7 @@ def main() -> int:
             seen.add(c["key"])
             unique_cands.append(c)
     cands = unique_cands
-    
+
     by_cat = Counter(c["category"] for c in cands)
     vids = sum(c["n"] for c in cands)
 
@@ -150,13 +304,17 @@ def main() -> int:
     print("\nNo 100% puras (revisar a mano):")
     for c in cands:
         if c["purity"] < 1.0:
-            print(f"  {c['n']:4d} {c['purity']:.2f} {c['category']:14s} L{c['depth']} {c['raw'][:70]}")
+            print(
+                f"  {c['n']:4d} {c['purity']:.2f} {c['category']:14s} L{c['depth']} {c['raw'][:70]}"
+            )
 
     # Escribir archivo completo listo para usar (fusionado por config.py)
     with open(folder_dict_path, "w", encoding="utf-8") as fh:
         fh.write("# folder_categories (Task 19) — GENERADO AUTOMATICAMENTE, NO EDITAR A MANO.\n")
         fh.write("# Regenerar con: python scripts/generate_folder_candidates.py\n")
-        fh.write("# Clave = segmento normalizado (strip Dewey, minusculas). Gana el nivel mas profundo.\n")
+        fh.write(
+            "# Clave = segmento normalizado (strip Dewey, minusculas). Gana el nivel mas profundo.\n"
+        )
         fh.write("folder_categories:\n")
         for c in cands:
             fh.write(f"  # n={c['n']} pureza={c['purity']} L{c['depth']} (ej: {c['raw']})\n")

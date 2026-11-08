@@ -48,31 +48,28 @@ MAX_BYTES = 1_000_000  # no inspeccionar ficheros enormes (modelos, datasets)
 # "password" o "token": darían falsos positivos (ej: texto de la GPL,
 # "estimate_tokens"). Solo patrones de alta confianza.
 PATTERNS: list[tuple[str, re.Pattern[str]]] = [
-    ("clave privada",
-     re.compile(r"-----BEGIN (?:RSA |OPENSSH |DSA |EC |PGP )?PRIVATE KEY-----")),
-    ("AWS access key",
-     re.compile(r"AKIA[0-9A-Z]{16}")),
-    ("token de GitHub",
-     re.compile(r"(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})")),
-    ("API key estilo OpenAI",
-     re.compile(r"sk-(?:proj-|live-)?[A-Za-z0-9]{20,}")),
-    ("asignación de secreto",
-     re.compile(
-         r"(?i)\b(api[_-]?key|api[_-]?secret|secret[_-]?key|client[_-]?secret|"
-         r"auth[_-]?token|access[_-]?token|private[_-]?token|passwd|db[_-]?password)"
-         r"\s*[:=]\s*['\"]?([A-Za-z0-9_\-./+]{12,})['\"]?"
-     )),
-    ("email",
-     re.compile(
-         r"[A-Za-z0-9._%+-]+@(?!(?:example\.com|example\.org|localhost)\b)"
-         r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
-     )),
-    ("ruta local /Users/<usuario>",
-     re.compile(r"/Users/(?!usuario\b)[A-Za-z0-9_.-]+")),
-    ("ruta local /home/<usuario>",
-     re.compile(r"/home/(?!usuario\b)[A-Za-z0-9_.-]+")),
-    ("ruta local Windows",
-     re.compile(r"[A-Za-z]:\\Users\\(?!usuario\b)[A-Za-z0-9_.-]+")),
+    ("clave privada", re.compile(r"-----BEGIN (?:RSA |OPENSSH |DSA |EC |PGP )?PRIVATE KEY-----")),
+    ("AWS access key", re.compile(r"AKIA[0-9A-Z]{16}")),
+    ("token de GitHub", re.compile(r"(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})")),
+    ("API key estilo OpenAI", re.compile(r"sk-(?:proj-|live-)?[A-Za-z0-9]{20,}")),
+    (
+        "asignación de secreto",
+        re.compile(
+            r"(?i)\b(api[_-]?key|api[_-]?secret|secret[_-]?key|client[_-]?secret|"
+            r"auth[_-]?token|access[_-]?token|private[_-]?token|passwd|db[_-]?password)"
+            r"\s*[:=]\s*['\"]?([A-Za-z0-9_\-./+]{12,})['\"]?"
+        ),
+    ),
+    (
+        "email",
+        re.compile(
+            r"[A-Za-z0-9._%+-]+@(?!(?:example\.com|example\.org|localhost)\b)"
+            r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+        ),
+    ),
+    ("ruta local /Users/<usuario>", re.compile(r"/Users/(?!usuario\b)[A-Za-z0-9_.-]+")),
+    ("ruta local /home/<usuario>", re.compile(r"/home/(?!usuario\b)[A-Za-z0-9_.-]+")),
+    ("ruta local Windows", re.compile(r"[A-Za-z]:\\Users\\(?!usuario\b)[A-Za-z0-9_.-]+")),
 ]
 
 
@@ -92,7 +89,8 @@ def staged_files() -> list[str]:
     """Ficheros staged (added/copied/modified). Lee el blob staged, no el disco."""
     out = subprocess.run(
         ["git", "diff", "--cached", "--name-only", "-z", "--diff-filter=ACM"],
-        capture_output=True, cwd=ROOT,
+        capture_output=True,
+        cwd=ROOT,
     )
     if out.returncode != 0:
         print("ERROR: no se pudo leer el staging de git.", file=sys.stderr)
@@ -103,7 +101,9 @@ def staged_files() -> list[str]:
 def read_staged_blob(path: str) -> bytes | None:
     """Contenido staged de un fichero (None si no se puede leer)."""
     out = subprocess.run(
-        ["git", "show", f":{path}"], capture_output=True, cwd=ROOT,
+        ["git", "show", f":{path}"],
+        capture_output=True,
+        cwd=ROOT,
     )
     return out.stdout if out.returncode == 0 else None
 
@@ -132,8 +132,7 @@ def scan_text(rel: str, data: bytes, denylist: list[str]) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Bloquea PII/secretos en commits.")
     parser.add_argument("files", nargs="*", help="ficheros a revisar (defecto: staged)")
-    parser.add_argument("--all", action="store_true",
-                        help="revisa todos los ficheros trackeados")
+    parser.add_argument("--all", action="store_true", help="revisa todos los ficheros trackeados")
     args = parser.parse_args(argv)
 
     # La propia denylist contiene los literales: nunca escanearla.
@@ -167,8 +166,10 @@ def main(argv: list[str] | None = None) -> int:
         print("BLOQUEADO por check_no_pii: posible PII o secreto detectado:")
         for f in findings:
             print(f"  {f}")
-        print("Si es un falso positivo, ajusta los patrones o la denylist; "
-              "para saltarlo una vez: git commit --no-verify")
+        print(
+            "Si es un falso positivo, ajusta los patrones o la denylist; "
+            "para saltarlo una vez: git commit --no-verify"
+        )
         return 1
     print(f"check_no_pii OK ({len(targets)} fichero(s) revisados).")
     return 0
